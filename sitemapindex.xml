@@ -7,11 +7,11 @@
                         http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
  <sitemap>
   <loc>https://bryansim.github.io/categories/mediocre-museum.xml</loc>
-  <lastmod>2016-05-02T17:30:00Z</lastmod>
+  <lastmod>2016-05-02T17:34:00Z</lastmod>
  </sitemap>
  <sitemap>
   <loc>https://bryansim.github.io/galleries/rss.xml</loc>
-  <lastmod>2016-05-02T03:17:00Z</lastmod>
+  <lastmod>2016-05-02T17:34:00Z</lastmod>
  </sitemap>
  <sitemap>
   <loc>https://bryansim.github.io/rss.xml</loc>
@@ -19,6 +19,6 @@
  </sitemap>
  <sitemap>
   <loc>https://bryansim.github.io/sitemap.xml</loc>
-  <lastmod>2016-05-02T17:30:00Z</lastmod>
+  <lastmod>2016-05-02T17:34:00Z</lastmod>
  </sitemap>
 </sitemapindex>
