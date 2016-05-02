@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<?xml-stylesheet type="text/xsl" href="assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:dc="http://purl.org/dc/elements/1.1/"><channel><title>Bryan Sim</title><link>http://bryans.im/</link><description>This is my blog!</description><atom:link href="http://bryans.im/rss.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><lastBuildDate>Mon, 02 May 2016 02:06:31 GMT</lastBuildDate><generator>https://getnikola.com/</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>The Average Thing</title><link>http://bryans.im/posts/the-average-thing/</link><dc:creator>Bryan Sim</dc:creator><description>&lt;div tabindex="-1" id="notebook" class="border-box-sizing"&gt;
+<?xml-stylesheet type="text/xsl" href="assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Bryan Sim</title><link>https://bryansim.github.io</link><description>This is my blog!</description><atom:link type="application/rss+xml" href="https://bryansim.github.io/rss.xml" rel="self"></atom:link><language>en</language><lastBuildDate>Mon, 02 May 2016 02:49:06 GMT</lastBuildDate><generator>https://getnikola.com/</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>The Average Thing</title><link>https://bryansim.github.io/posts/the-average-thing/</link><dc:creator>Bryan Sim</dc:creator><description>&lt;div tabindex="-1" id="notebook" class="border-box-sizing"&gt;
     &lt;div class="container" id="notebook-container"&gt;
 
 &lt;div class="cell border-box-sizing text_cell rendered"&gt;
@@ -7,7 +7,7 @@
 &lt;/div&gt;
 &lt;div class="inner_cell"&gt;
 &lt;div class="text_cell_render border-box-sizing rendered_html"&gt;
-&lt;h2 id="The-Average-Thing"&gt;The Average Thing&lt;a class="anchor-link" href="http://bryans.im/posts/the-average-thing/#The-Average-Thing"&gt;¶&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;The Canada Science and Technology Museums Corporation hosts a repository of all the artifacts in its collection here: (&lt;a href="http://techno-science.ca/en/data.php"&gt;http://techno-science.ca/en/data.php&lt;/a&gt;). Let's do something interesting with it.&lt;/p&gt;
+&lt;h2 id="The-Average-Thing"&gt;The Average Thing&lt;a class="anchor-link" href="https://bryansim.github.io/posts/the-average-thing/#The-Average-Thing"&gt;¶&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;The Canada Science and Technology Museums Corporation hosts a repository of all the artifacts in its collection here: (&lt;a href="http://techno-science.ca/en/data.php"&gt;http://techno-science.ca/en/data.php&lt;/a&gt;). Let's do something interesting with it.&lt;/p&gt;
 
 &lt;/div&gt;
 &lt;/div&gt;
@@ -17,7 +17,7 @@
 &lt;/div&gt;
 &lt;div class="inner_cell"&gt;
 &lt;div class="text_cell_render border-box-sizing rendered_html"&gt;
-&lt;h3 id="Reading-and-cleaning-data"&gt;Reading and cleaning data&lt;a class="anchor-link" href="http://bryans.im/posts/the-average-thing/#Reading-and-cleaning-data"&gt;¶&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;The data come in either a .csv or .xml format. Let's first try reading the .csv file, because Pandas has native support for that. First, we import all the packages that we might need (e.g., regex), and tell Pandas not to truncate the columns like it usually does.&lt;/p&gt;
+&lt;h3 id="Reading-and-cleaning-data"&gt;Reading and cleaning data&lt;a class="anchor-link" href="https://bryansim.github.io/posts/the-average-thing/#Reading-and-cleaning-data"&gt;¶&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;The data come in either a .csv or .xml format. Let's first try reading the .csv file, because Pandas has native support for that. First, we import all the packages that we might need (e.g., regex), and tell Pandas not to truncate the columns like it usually does.&lt;/p&gt;
 
 &lt;/div&gt;
 &lt;/div&gt;
@@ -1365,7 +1365,7 @@ C:\Users\dfthd\Anaconda3\envs\python2\lib\site-packages\IPython\core\interactive
 &lt;/div&gt;
 &lt;div class="inner_cell"&gt;
 &lt;div class="text_cell_render border-box-sizing rendered_html"&gt;
-&lt;h3 id="Recoding-dimensions-into-actual-units"&gt;Recoding dimensions into actual units&lt;a class="anchor-link" href="http://bryans.im/posts/the-average-thing/#Recoding-dimensions-into-actual-units"&gt;¶&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;The first thing we're going to do is to do convert all the dimensions, which have mixed units (e.g., 16cm and 10m or whatever) into one common unit. To do this, we're going to use regular expressions and loop through the dimension columns.&lt;/p&gt;
+&lt;h3 id="Recoding-dimensions-into-actual-units"&gt;Recoding dimensions into actual units&lt;a class="anchor-link" href="https://bryansim.github.io/posts/the-average-thing/#Recoding-dimensions-into-actual-units"&gt;¶&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;The first thing we're going to do is to do convert all the dimensions, which have mixed units (e.g., 16cm and 10m or whatever) into one common unit. To do this, we're going to use regular expressions and loop through the dimension columns.&lt;/p&gt;
 &lt;p&gt;The other thing that we might want to do is decide what artifacts to actually use. It looks like some of the artifacts are things like documents and paper, and others are really big things like engines.&lt;/p&gt;
 
 &lt;/div&gt;
@@ -1376,7 +1376,7 @@ C:\Users\dfthd\Anaconda3\envs\python2\lib\site-packages\IPython\core\interactive
 &lt;/div&gt;
 &lt;div class="inner_cell"&gt;
 &lt;div class="text_cell_render border-box-sizing rendered_html"&gt;
-&lt;h4 id="Dealing-with-missing-data"&gt;Dealing with missing data&lt;a class="anchor-link" href="http://bryans.im/posts/the-average-thing/#Dealing-with-missing-data"&gt;¶&lt;/a&gt;&lt;/h4&gt;&lt;p&gt;As you can see from the example cases above, lots of data is missing or unavailable, which is probably to be expected given that not all columns are necessarily relevant to each artifact. However, this forces us to make a decision when trying to summarize data: How do we decide whether to include or exclude artifacts?&lt;/p&gt;
+&lt;h4 id="Dealing-with-missing-data"&gt;Dealing with missing data&lt;a class="anchor-link" href="https://bryansim.github.io/posts/the-average-thing/#Dealing-with-missing-data"&gt;¶&lt;/a&gt;&lt;/h4&gt;&lt;p&gt;As you can see from the example cases above, lots of data is missing or unavailable, which is probably to be expected given that not all columns are necessarily relevant to each artifact. However, this forces us to make a decision when trying to summarize data: How do we decide whether to include or exclude artifacts?&lt;/p&gt;
 
 &lt;/div&gt;
 &lt;/div&gt;
@@ -1713,7 +1713,7 @@ Name: 32639, dtype: object
 &lt;/div&gt;
 &lt;div class="inner_cell"&gt;
 &lt;div class="text_cell_render border-box-sizing rendered_html"&gt;
-&lt;h4 id="Functions-to-extract-digits-and-units:"&gt;Functions to extract digits and units:&lt;a class="anchor-link" href="http://bryans.im/posts/the-average-thing/#Functions-to-extract-digits-and-units:"&gt;¶&lt;/a&gt;&lt;/h4&gt;&lt;p&gt;Now that we've done this once with length, we can write some functions to do the above easily with the rest of the dimensions. We also have a function that will take a list of dimensions, and "numberize" all of them.&lt;/p&gt;
+&lt;h4 id="Functions-to-extract-digits-and-units:"&gt;Functions to extract digits and units:&lt;a class="anchor-link" href="https://bryansim.github.io/posts/the-average-thing/#Functions-to-extract-digits-and-units:"&gt;¶&lt;/a&gt;&lt;/h4&gt;&lt;p&gt;Now that we've done this once with length, we can write some functions to do the above easily with the rest of the dimensions. We also have a function that will take a list of dimensions, and "numberize" all of them.&lt;/p&gt;
 
 &lt;/div&gt;
 &lt;/div&gt;
@@ -1778,7 +1778,7 @@ Name: 32639, dtype: object
 &lt;/div&gt;
 &lt;div class="inner_cell"&gt;
 &lt;div class="text_cell_render border-box-sizing rendered_html"&gt;
-&lt;h4 id="Rest-of-the-dimensions"&gt;Rest of the dimensions&lt;a class="anchor-link" href="http://bryans.im/posts/the-average-thing/#Rest-of-the-dimensions"&gt;¶&lt;/a&gt;&lt;/h4&gt;&lt;p&gt;From the above, the average length of all the artifacts in the collection is 44.7cm. Let's find out what the average is for all the other dimensions:&lt;/p&gt;
+&lt;h4 id="Rest-of-the-dimensions"&gt;Rest of the dimensions&lt;a class="anchor-link" href="https://bryansim.github.io/posts/the-average-thing/#Rest-of-the-dimensions"&gt;¶&lt;/a&gt;&lt;/h4&gt;&lt;p&gt;From the above, the average length of all the artifacts in the collection is 44.7cm. Let's find out what the average is for all the other dimensions:&lt;/p&gt;
 
 &lt;/div&gt;
 &lt;/div&gt;
@@ -2636,4 +2636,4 @@ Name: 32639, dtype: object
 &lt;/div&gt;
     &lt;/div&gt;
   &lt;/div&gt;
-</description><guid>http://bryans.im/posts/the-average-thing/</guid><pubDate>Mon, 02 May 2016 02:06:22 GMT</pubDate></item></channel></rss>
+</description><guid>https://bryansim.github.io/posts/the-average-thing/</guid><pubDate>Mon, 02 May 2016 02:06:22 GMT</pubDate></item></channel></rss>

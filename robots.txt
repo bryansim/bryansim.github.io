@@ -1,4 +1,4 @@
-Sitemap: http://bryans.im/sitemapindex.xml
+Sitemap: https://bryansim.github.io/sitemapindex.xml
 
 User-Agent: *
-Host: bryans.im
+Host: bryansim.github.io
