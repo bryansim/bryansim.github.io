@@ -1,0 +1,2639 @@
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet type="text/xsl" href="assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:dc="http://purl.org/dc/elements/1.1/"><channel><title>Bryan Sim</title><link>http://bryans.im/</link><description>This is my blog!</description><atom:link href="http://bryans.im/rss.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><lastBuildDate>Mon, 02 May 2016 02:06:31 GMT</lastBuildDate><generator>https://getnikola.com/</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>The Average Thing</title><link>http://bryans.im/posts/the-average-thing/</link><dc:creator>Bryan Sim</dc:creator><description>&lt;div tabindex="-1" id="notebook" class="border-box-sizing"&gt;
+    &lt;div class="container" id="notebook-container"&gt;
+
+&lt;div class="cell border-box-sizing text_cell rendered"&gt;
+&lt;div class="prompt input_prompt"&gt;
+&lt;/div&gt;
+&lt;div class="inner_cell"&gt;
+&lt;div class="text_cell_render border-box-sizing rendered_html"&gt;
+&lt;h2 id="The-Average-Thing"&gt;The Average Thing&lt;a class="anchor-link" href="http://bryans.im/posts/the-average-thing/#The-Average-Thing"&gt;¶&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;The Canada Science and Technology Museums Corporation hosts a repository of all the artifacts in its collection here: (&lt;a href="http://techno-science.ca/en/data.php"&gt;http://techno-science.ca/en/data.php&lt;/a&gt;). Let's do something interesting with it.&lt;/p&gt;
+
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="cell border-box-sizing text_cell rendered"&gt;
+&lt;div class="prompt input_prompt"&gt;
+&lt;/div&gt;
+&lt;div class="inner_cell"&gt;
+&lt;div class="text_cell_render border-box-sizing rendered_html"&gt;
+&lt;h3 id="Reading-and-cleaning-data"&gt;Reading and cleaning data&lt;a class="anchor-link" href="http://bryans.im/posts/the-average-thing/#Reading-and-cleaning-data"&gt;¶&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;The data come in either a .csv or .xml format. Let's first try reading the .csv file, because Pandas has native support for that. First, we import all the packages that we might need (e.g., regex), and tell Pandas not to truncate the columns like it usually does.&lt;/p&gt;
+
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="cell border-box-sizing code_cell rendered"&gt;
+&lt;div class="input"&gt;
+&lt;div class="prompt input_prompt"&gt;In [ ]:&lt;/div&gt;
+&lt;div class="inner_cell"&gt;
+    &lt;div class="input_area"&gt;
+&lt;div class=" highlight hl-ipython2"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;pandas&lt;/span&gt; &lt;span class="kn"&gt;as&lt;/span&gt; &lt;span class="nn"&gt;pd&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;re&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;csv&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;itertools&lt;/span&gt;
+&lt;span class="n"&gt;pd&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;get_option&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;"display.max_columns"&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;pd&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;set_option&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;"display.max_columns"&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;40&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;/div&gt;
+&lt;div class="cell border-box-sizing text_cell rendered"&gt;
+&lt;div class="prompt input_prompt"&gt;
+&lt;/div&gt;
+&lt;div class="inner_cell"&gt;
+&lt;div class="text_cell_render border-box-sizing rendered_html"&gt;
+&lt;p&gt;Now, we import the data to a datafram named "data", using Pandas' built-in method .read_csv, specifying the delimiter "|", and telling it not to break when it comes across a bad line, but instead show a bunch of warnings and still continue.&lt;/p&gt;
+
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="cell border-box-sizing code_cell rendered"&gt;
+&lt;div class="input"&gt;
+&lt;div class="prompt input_prompt"&gt;In [2]:&lt;/div&gt;
+&lt;div class="inner_cell"&gt;
+    &lt;div class="input_area"&gt;
+&lt;div class=" highlight hl-ipython2"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;data&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;pd&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;read_csv&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;"cstmc-CSV-en.csv"&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;delimiter&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;"|"&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;error_bad_lines&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="bp"&gt;False&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;div class="output_wrapper"&gt;
+&lt;div class="output"&gt;
+
+
+&lt;div class="output_area"&gt;&lt;div class="prompt"&gt;&lt;/div&gt;
+&lt;div class="output_subarea output_stream output_stderr output_text"&gt;
+&lt;pre&gt;Skipping line 8679: expected 36 fields, saw 38
+
+Skipping line 18953: expected 36 fields, saw 46
+Skipping line 20182: expected 36 fields, saw 39
+
+Skipping line 37797: expected 36 fields, saw 37
+Skipping line 37798: expected 36 fields, saw 37
+Skipping line 37799: expected 36 fields, saw 37
+Skipping line 37800: expected 36 fields, saw 37
+Skipping line 37801: expected 36 fields, saw 37
+Skipping line 37802: expected 36 fields, saw 37
+Skipping line 37803: expected 36 fields, saw 37
+Skipping line 37804: expected 36 fields, saw 37
+Skipping line 37805: expected 36 fields, saw 37
+Skipping line 37806: expected 36 fields, saw 37
+Skipping line 37807: expected 36 fields, saw 37
+Skipping line 37808: expected 36 fields, saw 37
+Skipping line 37809: expected 36 fields, saw 37
+Skipping line 37810: expected 36 fields, saw 37
+Skipping line 37811: expected 36 fields, saw 37
+Skipping line 37812: expected 36 fields, saw 37
+Skipping line 37813: expected 36 fields, saw 37
+Skipping line 37814: expected 36 fields, saw 37
+Skipping line 37815: expected 36 fields, saw 37
+Skipping line 37816: expected 36 fields, saw 37
+Skipping line 37817: expected 36 fields, saw 37
+Skipping line 37818: expected 36 fields, saw 37
+Skipping line 37819: expected 36 fields, saw 37
+Skipping line 37820: expected 36 fields, saw 37
+Skipping line 37821: expected 36 fields, saw 37
+Skipping line 37822: expected 36 fields, saw 37
+Skipping line 37823: expected 36 fields, saw 37
+Skipping line 37824: expected 36 fields, saw 37
+Skipping line 37825: expected 36 fields, saw 37
+Skipping line 37826: expected 36 fields, saw 37
+Skipping line 37827: expected 36 fields, saw 37
+Skipping line 37828: expected 36 fields, saw 37
+Skipping line 37829: expected 36 fields, saw 37
+Skipping line 37830: expected 36 fields, saw 37
+Skipping line 37831: expected 36 fields, saw 37
+Skipping line 37832: expected 36 fields, saw 37
+Skipping line 37833: expected 36 fields, saw 37
+Skipping line 37834: expected 36 fields, saw 37
+Skipping line 37835: expected 36 fields, saw 37
+Skipping line 37836: expected 36 fields, saw 37
+Skipping line 37837: expected 36 fields, saw 37
+Skipping line 37838: expected 36 fields, saw 37
+Skipping line 37839: expected 36 fields, saw 37
+Skipping line 37840: expected 36 fields, saw 37
+Skipping line 37841: expected 36 fields, saw 37
+Skipping line 37842: expected 36 fields, saw 37
+Skipping line 37843: expected 36 fields, saw 37
+Skipping line 37844: expected 36 fields, saw 37
+Skipping line 37845: expected 36 fields, saw 37
+Skipping line 37846: expected 36 fields, saw 37
+Skipping line 37847: expected 36 fields, saw 37
+Skipping line 37848: expected 36 fields, saw 37
+Skipping line 37849: expected 36 fields, saw 37
+Skipping line 37850: expected 36 fields, saw 37
+Skipping line 37851: expected 36 fields, saw 37
+Skipping line 37852: expected 36 fields, saw 37
+Skipping line 37853: expected 36 fields, saw 37
+Skipping line 37854: expected 36 fields, saw 37
+Skipping line 37855: expected 36 fields, saw 37
+Skipping line 37856: expected 36 fields, saw 37
+Skipping line 37857: expected 36 fields, saw 37
+Skipping line 37858: expected 36 fields, saw 37
+Skipping line 37859: expected 36 fields, saw 37
+Skipping line 37860: expected 36 fields, saw 37
+Skipping line 37861: expected 36 fields, saw 37
+Skipping line 37862: expected 36 fields, saw 37
+Skipping line 37863: expected 36 fields, saw 37
+Skipping line 37864: expected 36 fields, saw 37
+Skipping line 37865: expected 36 fields, saw 37
+Skipping line 37866: expected 36 fields, saw 37
+Skipping line 37867: expected 36 fields, saw 37
+Skipping line 37868: expected 36 fields, saw 37
+Skipping line 37869: expected 36 fields, saw 37
+Skipping line 37870: expected 36 fields, saw 37
+Skipping line 37871: expected 36 fields, saw 37
+Skipping line 37872: expected 36 fields, saw 37
+Skipping line 37873: expected 36 fields, saw 37
+Skipping line 37874: expected 36 fields, saw 37
+Skipping line 37875: expected 36 fields, saw 37
+Skipping line 37876: expected 36 fields, saw 37
+Skipping line 37877: expected 36 fields, saw 37
+Skipping line 37878: expected 36 fields, saw 37
+Skipping line 37879: expected 36 fields, saw 37
+Skipping line 37880: expected 36 fields, saw 37
+Skipping line 37881: expected 36 fields, saw 37
+Skipping line 37882: expected 36 fields, saw 37
+Skipping line 37883: expected 36 fields, saw 37
+Skipping line 37884: expected 36 fields, saw 37
+Skipping line 37885: expected 36 fields, saw 37
+Skipping line 37886: expected 36 fields, saw 37
+Skipping line 37887: expected 36 fields, saw 37
+Skipping line 37888: expected 36 fields, saw 37
+Skipping line 37889: expected 36 fields, saw 37
+Skipping line 37890: expected 36 fields, saw 37
+Skipping line 37891: expected 36 fields, saw 37
+Skipping line 37892: expected 36 fields, saw 37
+Skipping line 37893: expected 36 fields, saw 37
+Skipping line 37894: expected 36 fields, saw 37
+Skipping line 37895: expected 36 fields, saw 37
+Skipping line 37896: expected 36 fields, saw 37
+Skipping line 37897: expected 36 fields, saw 37
+Skipping line 37898: expected 36 fields, saw 37
+Skipping line 37899: expected 36 fields, saw 37
+Skipping line 37900: expected 36 fields, saw 37
+Skipping line 37901: expected 36 fields, saw 37
+Skipping line 37902: expected 36 fields, saw 37
+Skipping line 37903: expected 36 fields, saw 37
+Skipping line 37904: expected 36 fields, saw 37
+Skipping line 37905: expected 36 fields, saw 37
+Skipping line 37906: expected 36 fields, saw 37
+Skipping line 37907: expected 36 fields, saw 37
+Skipping line 37908: expected 36 fields, saw 37
+Skipping line 37909: expected 36 fields, saw 37
+Skipping line 37910: expected 36 fields, saw 37
+Skipping line 37911: expected 36 fields, saw 37
+Skipping line 37912: expected 36 fields, saw 37
+Skipping line 37913: expected 36 fields, saw 37
+Skipping line 37914: expected 36 fields, saw 37
+Skipping line 37915: expected 36 fields, saw 37
+Skipping line 37916: expected 36 fields, saw 37
+Skipping line 37917: expected 36 fields, saw 37
+Skipping line 37918: expected 36 fields, saw 37
+Skipping line 37919: expected 36 fields, saw 37
+Skipping line 37920: expected 36 fields, saw 37
+Skipping line 37921: expected 36 fields, saw 37
+Skipping line 37922: expected 36 fields, saw 37
+Skipping line 37923: expected 36 fields, saw 37
+Skipping line 37924: expected 36 fields, saw 37
+Skipping line 37925: expected 36 fields, saw 37
+Skipping line 37926: expected 36 fields, saw 37
+Skipping line 37927: expected 36 fields, saw 37
+Skipping line 37928: expected 36 fields, saw 37
+Skipping line 37929: expected 36 fields, saw 37
+Skipping line 37930: expected 36 fields, saw 37
+Skipping line 37931: expected 36 fields, saw 37
+Skipping line 37932: expected 36 fields, saw 37
+Skipping line 37933: expected 36 fields, saw 37
+Skipping line 37934: expected 36 fields, saw 37
+Skipping line 37935: expected 36 fields, saw 37
+Skipping line 37936: expected 36 fields, saw 37
+Skipping line 37937: expected 36 fields, saw 37
+Skipping line 37938: expected 36 fields, saw 37
+Skipping line 37939: expected 36 fields, saw 37
+Skipping line 37940: expected 36 fields, saw 37
+Skipping line 37941: expected 36 fields, saw 37
+Skipping line 37942: expected 36 fields, saw 37
+Skipping line 37943: expected 36 fields, saw 37
+Skipping line 37944: expected 36 fields, saw 37
+Skipping line 37945: expected 36 fields, saw 37
+Skipping line 37946: expected 36 fields, saw 37
+Skipping line 37947: expected 36 fields, saw 37
+Skipping line 37948: expected 36 fields, saw 37
+Skipping line 37949: expected 36 fields, saw 37
+Skipping line 37950: expected 36 fields, saw 37
+Skipping line 37951: expected 36 fields, saw 37
+Skipping line 37952: expected 36 fields, saw 37
+Skipping line 37953: expected 36 fields, saw 37
+Skipping line 37954: expected 36 fields, saw 37
+Skipping line 37955: expected 36 fields, saw 37
+Skipping line 37956: expected 36 fields, saw 37
+Skipping line 37957: expected 36 fields, saw 37
+Skipping line 37958: expected 36 fields, saw 37
+Skipping line 37959: expected 36 fields, saw 37
+Skipping line 37960: expected 36 fields, saw 37
+Skipping line 37961: expected 36 fields, saw 37
+Skipping line 37962: expected 36 fields, saw 37
+Skipping line 37963: expected 36 fields, saw 37
+Skipping line 37964: expected 36 fields, saw 37
+Skipping line 37965: expected 36 fields, saw 37
+Skipping line 37966: expected 36 fields, saw 37
+Skipping line 37967: expected 36 fields, saw 37
+Skipping line 37968: expected 36 fields, saw 37
+Skipping line 37969: expected 36 fields, saw 37
+Skipping line 37970: expected 36 fields, saw 37
+Skipping line 37971: expected 36 fields, saw 37
+Skipping line 37972: expected 36 fields, saw 37
+Skipping line 37973: expected 36 fields, saw 37
+Skipping line 37974: expected 36 fields, saw 37
+Skipping line 37975: expected 36 fields, saw 37
+Skipping line 37976: expected 36 fields, saw 37
+Skipping line 37977: expected 36 fields, saw 37
+Skipping line 37978: expected 36 fields, saw 37
+Skipping line 37979: expected 36 fields, saw 37
+Skipping line 37980: expected 36 fields, saw 37
+Skipping line 37981: expected 36 fields, saw 37
+Skipping line 37982: expected 36 fields, saw 37
+Skipping line 37983: expected 36 fields, saw 37
+Skipping line 37984: expected 36 fields, saw 37
+Skipping line 37985: expected 36 fields, saw 37
+Skipping line 37986: expected 36 fields, saw 37
+Skipping line 37987: expected 36 fields, saw 37
+Skipping line 37988: expected 36 fields, saw 37
+Skipping line 37989: expected 36 fields, saw 37
+Skipping line 37990: expected 36 fields, saw 37
+Skipping line 37991: expected 36 fields, saw 37
+Skipping line 37992: expected 36 fields, saw 37
+Skipping line 37993: expected 36 fields, saw 37
+Skipping line 37994: expected 36 fields, saw 37
+Skipping line 37995: expected 36 fields, saw 37
+Skipping line 37996: expected 36 fields, saw 37
+Skipping line 37997: expected 36 fields, saw 37
+Skipping line 37998: expected 36 fields, saw 37
+Skipping line 37999: expected 36 fields, saw 37
+Skipping line 38000: expected 36 fields, saw 37
+Skipping line 38001: expected 36 fields, saw 37
+Skipping line 38002: expected 36 fields, saw 37
+Skipping line 38003: expected 36 fields, saw 37
+Skipping line 38004: expected 36 fields, saw 37
+Skipping line 38005: expected 36 fields, saw 37
+Skipping line 38006: expected 36 fields, saw 37
+Skipping line 38007: expected 36 fields, saw 37
+Skipping line 38008: expected 36 fields, saw 37
+Skipping line 38009: expected 36 fields, saw 37
+Skipping line 38010: expected 36 fields, saw 37
+Skipping line 38011: expected 36 fields, saw 37
+Skipping line 38012: expected 36 fields, saw 37
+Skipping line 38013: expected 36 fields, saw 37
+Skipping line 38014: expected 36 fields, saw 37
+Skipping line 38015: expected 36 fields, saw 37
+Skipping line 38016: expected 36 fields, saw 37
+Skipping line 38017: expected 36 fields, saw 37
+Skipping line 38018: expected 36 fields, saw 37
+Skipping line 38019: expected 36 fields, saw 37
+Skipping line 38020: expected 36 fields, saw 37
+Skipping line 38021: expected 36 fields, saw 37
+Skipping line 38022: expected 36 fields, saw 37
+Skipping line 38023: expected 36 fields, saw 37
+Skipping line 38024: expected 36 fields, saw 37
+Skipping line 38025: expected 36 fields, saw 37
+Skipping line 38026: expected 36 fields, saw 37
+Skipping line 38027: expected 36 fields, saw 37
+Skipping line 38028: expected 36 fields, saw 37
+Skipping line 38029: expected 36 fields, saw 37
+Skipping line 38030: expected 36 fields, saw 37
+Skipping line 38031: expected 36 fields, saw 37
+Skipping line 38032: expected 36 fields, saw 37
+Skipping line 38033: expected 36 fields, saw 37
+Skipping line 38034: expected 36 fields, saw 37
+Skipping line 38035: expected 36 fields, saw 37
+Skipping line 38036: expected 36 fields, saw 37
+Skipping line 38037: expected 36 fields, saw 37
+Skipping line 38038: expected 36 fields, saw 37
+Skipping line 38039: expected 36 fields, saw 37
+Skipping line 38040: expected 36 fields, saw 37
+Skipping line 38041: expected 36 fields, saw 37
+Skipping line 38042: expected 36 fields, saw 37
+Skipping line 38043: expected 36 fields, saw 37
+Skipping line 38044: expected 36 fields, saw 37
+Skipping line 38045: expected 36 fields, saw 37
+Skipping line 38046: expected 36 fields, saw 37
+Skipping line 38047: expected 36 fields, saw 37
+Skipping line 38048: expected 36 fields, saw 37
+Skipping line 38049: expected 36 fields, saw 37
+Skipping line 38050: expected 36 fields, saw 37
+Skipping line 38051: expected 36 fields, saw 37
+Skipping line 38052: expected 36 fields, saw 37
+Skipping line 38053: expected 36 fields, saw 37
+Skipping line 38054: expected 36 fields, saw 37
+Skipping line 38055: expected 36 fields, saw 37
+Skipping line 38056: expected 36 fields, saw 37
+Skipping line 38057: expected 36 fields, saw 37
+Skipping line 38058: expected 36 fields, saw 37
+Skipping line 38059: expected 36 fields, saw 37
+Skipping line 38060: expected 36 fields, saw 37
+Skipping line 38061: expected 36 fields, saw 37
+Skipping line 38062: expected 36 fields, saw 37
+Skipping line 38063: expected 36 fields, saw 37
+Skipping line 38064: expected 36 fields, saw 37
+Skipping line 38065: expected 36 fields, saw 37
+Skipping line 38066: expected 36 fields, saw 37
+Skipping line 38067: expected 36 fields, saw 37
+Skipping line 38068: expected 36 fields, saw 37
+Skipping line 38069: expected 36 fields, saw 37
+Skipping line 38070: expected 36 fields, saw 37
+Skipping line 38071: expected 36 fields, saw 37
+Skipping line 38072: expected 36 fields, saw 37
+Skipping line 38073: expected 36 fields, saw 37
+Skipping line 38074: expected 36 fields, saw 37
+Skipping line 38075: expected 36 fields, saw 37
+Skipping line 38076: expected 36 fields, saw 37
+Skipping line 38077: expected 36 fields, saw 37
+Skipping line 38078: expected 36 fields, saw 37
+Skipping line 38079: expected 36 fields, saw 37
+Skipping line 38080: expected 36 fields, saw 37
+Skipping line 38081: expected 36 fields, saw 37
+Skipping line 38082: expected 36 fields, saw 37
+Skipping line 38083: expected 36 fields, saw 37
+Skipping line 38084: expected 36 fields, saw 37
+Skipping line 38085: expected 36 fields, saw 37
+Skipping line 38086: expected 36 fields, saw 37
+Skipping line 38087: expected 36 fields, saw 37
+Skipping line 38088: expected 36 fields, saw 37
+Skipping line 38089: expected 36 fields, saw 37
+Skipping line 38090: expected 36 fields, saw 37
+Skipping line 38091: expected 36 fields, saw 37
+Skipping line 38092: expected 36 fields, saw 37
+Skipping line 38093: expected 36 fields, saw 37
+Skipping line 38094: expected 36 fields, saw 37
+Skipping line 38095: expected 36 fields, saw 37
+Skipping line 38096: expected 36 fields, saw 37
+Skipping line 38097: expected 36 fields, saw 37
+Skipping line 38098: expected 36 fields, saw 37
+Skipping line 38099: expected 36 fields, saw 37
+Skipping line 38100: expected 36 fields, saw 37
+Skipping line 38101: expected 36 fields, saw 37
+Skipping line 38102: expected 36 fields, saw 37
+Skipping line 38103: expected 36 fields, saw 37
+Skipping line 38104: expected 36 fields, saw 37
+Skipping line 38105: expected 36 fields, saw 37
+Skipping line 38106: expected 36 fields, saw 37
+Skipping line 38107: expected 36 fields, saw 37
+Skipping line 38108: expected 36 fields, saw 37
+Skipping line 38109: expected 36 fields, saw 37
+Skipping line 38110: expected 36 fields, saw 37
+Skipping line 38111: expected 36 fields, saw 37
+Skipping line 38112: expected 36 fields, saw 37
+Skipping line 38113: expected 36 fields, saw 37
+Skipping line 38114: expected 36 fields, saw 37
+Skipping line 38115: expected 36 fields, saw 37
+Skipping line 38116: expected 36 fields, saw 37
+Skipping line 38117: expected 36 fields, saw 37
+Skipping line 38118: expected 36 fields, saw 37
+Skipping line 38119: expected 36 fields, saw 37
+Skipping line 38120: expected 36 fields, saw 37
+Skipping line 38121: expected 36 fields, saw 37
+Skipping line 38122: expected 36 fields, saw 37
+Skipping line 38123: expected 36 fields, saw 37
+Skipping line 38124: expected 36 fields, saw 37
+Skipping line 38125: expected 36 fields, saw 37
+Skipping line 38126: expected 36 fields, saw 37
+Skipping line 38127: expected 36 fields, saw 37
+Skipping line 38128: expected 36 fields, saw 37
+Skipping line 38129: expected 36 fields, saw 37
+Skipping line 38130: expected 36 fields, saw 37
+Skipping line 38131: expected 36 fields, saw 37
+Skipping line 38132: expected 36 fields, saw 37
+Skipping line 38133: expected 36 fields, saw 37
+Skipping line 38134: expected 36 fields, saw 37
+Skipping line 38135: expected 36 fields, saw 37
+Skipping line 38136: expected 36 fields, saw 37
+Skipping line 38137: expected 36 fields, saw 37
+Skipping line 38138: expected 36 fields, saw 37
+Skipping line 38139: expected 36 fields, saw 37
+Skipping line 38140: expected 36 fields, saw 37
+Skipping line 38141: expected 36 fields, saw 37
+Skipping line 38142: expected 36 fields, saw 37
+Skipping line 38143: expected 36 fields, saw 37
+Skipping line 38144: expected 36 fields, saw 37
+Skipping line 38145: expected 36 fields, saw 37
+Skipping line 38146: expected 36 fields, saw 37
+Skipping line 38147: expected 36 fields, saw 37
+Skipping line 38148: expected 36 fields, saw 37
+Skipping line 38149: expected 36 fields, saw 37
+Skipping line 38150: expected 36 fields, saw 37
+Skipping line 38151: expected 36 fields, saw 37
+Skipping line 38152: expected 36 fields, saw 37
+Skipping line 38153: expected 36 fields, saw 37
+Skipping line 38154: expected 36 fields, saw 37
+Skipping line 38155: expected 36 fields, saw 37
+Skipping line 38156: expected 36 fields, saw 37
+Skipping line 38157: expected 36 fields, saw 37
+Skipping line 38158: expected 36 fields, saw 37
+Skipping line 38159: expected 36 fields, saw 37
+Skipping line 38160: expected 36 fields, saw 37
+Skipping line 38161: expected 36 fields, saw 37
+Skipping line 38162: expected 36 fields, saw 37
+Skipping line 38163: expected 36 fields, saw 37
+Skipping line 38164: expected 36 fields, saw 37
+Skipping line 38165: expected 36 fields, saw 37
+Skipping line 38166: expected 36 fields, saw 37
+Skipping line 38167: expected 36 fields, saw 37
+Skipping line 38168: expected 36 fields, saw 37
+Skipping line 38169: expected 36 fields, saw 37
+Skipping line 38170: expected 36 fields, saw 37
+Skipping line 38171: expected 36 fields, saw 37
+Skipping line 38172: expected 36 fields, saw 37
+Skipping line 38173: expected 36 fields, saw 37
+Skipping line 38174: expected 36 fields, saw 37
+Skipping line 38175: expected 36 fields, saw 37
+Skipping line 38176: expected 36 fields, saw 37
+Skipping line 38177: expected 36 fields, saw 37
+Skipping line 38178: expected 36 fields, saw 37
+Skipping line 38179: expected 36 fields, saw 37
+Skipping line 38180: expected 36 fields, saw 37
+Skipping line 38181: expected 36 fields, saw 37
+Skipping line 38182: expected 36 fields, saw 37
+Skipping line 38183: expected 36 fields, saw 37
+Skipping line 38184: expected 36 fields, saw 37
+Skipping line 38185: expected 36 fields, saw 37
+Skipping line 38186: expected 36 fields, saw 37
+Skipping line 38187: expected 36 fields, saw 37
+Skipping line 38188: expected 36 fields, saw 37
+Skipping line 38189: expected 36 fields, saw 37
+Skipping line 38190: expected 36 fields, saw 37
+Skipping line 38191: expected 36 fields, saw 37
+Skipping line 38192: expected 36 fields, saw 37
+Skipping line 38193: expected 36 fields, saw 37
+Skipping line 38194: expected 36 fields, saw 37
+Skipping line 38195: expected 36 fields, saw 37
+Skipping line 38196: expected 36 fields, saw 37
+Skipping line 38197: expected 36 fields, saw 37
+Skipping line 38198: expected 36 fields, saw 37
+Skipping line 38199: expected 36 fields, saw 37
+Skipping line 38200: expected 36 fields, saw 37
+Skipping line 38201: expected 36 fields, saw 37
+Skipping line 38202: expected 36 fields, saw 37
+Skipping line 38203: expected 36 fields, saw 37
+Skipping line 38204: expected 36 fields, saw 37
+Skipping line 38205: expected 36 fields, saw 37
+Skipping line 38206: expected 36 fields, saw 37
+Skipping line 38207: expected 36 fields, saw 37
+Skipping line 38208: expected 36 fields, saw 37
+Skipping line 38209: expected 36 fields, saw 37
+Skipping line 38210: expected 36 fields, saw 37
+Skipping line 38211: expected 36 fields, saw 37
+Skipping line 38212: expected 36 fields, saw 37
+Skipping line 38213: expected 36 fields, saw 37
+Skipping line 38214: expected 36 fields, saw 37
+Skipping line 38215: expected 36 fields, saw 37
+Skipping line 38216: expected 36 fields, saw 37
+Skipping line 38217: expected 36 fields, saw 37
+Skipping line 38218: expected 36 fields, saw 37
+Skipping line 38219: expected 36 fields, saw 37
+Skipping line 38220: expected 36 fields, saw 37
+Skipping line 38221: expected 36 fields, saw 37
+Skipping line 38222: expected 36 fields, saw 37
+Skipping line 38223: expected 36 fields, saw 37
+Skipping line 38224: expected 36 fields, saw 37
+Skipping line 38225: expected 36 fields, saw 37
+Skipping line 38226: expected 36 fields, saw 37
+Skipping line 38227: expected 36 fields, saw 37
+Skipping line 38228: expected 36 fields, saw 37
+Skipping line 38229: expected 36 fields, saw 37
+Skipping line 38230: expected 36 fields, saw 37
+Skipping line 38231: expected 36 fields, saw 37
+Skipping line 38232: expected 36 fields, saw 37
+Skipping line 38233: expected 36 fields, saw 37
+Skipping line 38234: expected 36 fields, saw 37
+Skipping line 38235: expected 36 fields, saw 37
+Skipping line 38236: expected 36 fields, saw 37
+Skipping line 38237: expected 36 fields, saw 37
+Skipping line 38238: expected 36 fields, saw 37
+Skipping line 38239: expected 36 fields, saw 37
+Skipping line 38240: expected 36 fields, saw 37
+Skipping line 38241: expected 36 fields, saw 37
+Skipping line 38242: expected 36 fields, saw 37
+Skipping line 38243: expected 36 fields, saw 37
+Skipping line 38244: expected 36 fields, saw 37
+Skipping line 38245: expected 36 fields, saw 37
+Skipping line 38246: expected 36 fields, saw 37
+Skipping line 38247: expected 36 fields, saw 37
+Skipping line 38248: expected 36 fields, saw 37
+Skipping line 38249: expected 36 fields, saw 37
+Skipping line 38250: expected 36 fields, saw 37
+Skipping line 38251: expected 36 fields, saw 37
+Skipping line 38252: expected 36 fields, saw 37
+Skipping line 38253: expected 36 fields, saw 37
+Skipping line 38254: expected 36 fields, saw 37
+Skipping line 38255: expected 36 fields, saw 37
+Skipping line 38256: expected 36 fields, saw 37
+Skipping line 38257: expected 36 fields, saw 37
+Skipping line 38258: expected 36 fields, saw 37
+Skipping line 38259: expected 36 fields, saw 37
+Skipping line 38260: expected 36 fields, saw 37
+Skipping line 38261: expected 36 fields, saw 37
+Skipping line 38262: expected 36 fields, saw 37
+Skipping line 38263: expected 36 fields, saw 37
+Skipping line 38264: expected 36 fields, saw 37
+Skipping line 38265: expected 36 fields, saw 37
+Skipping line 38266: expected 36 fields, saw 37
+Skipping line 38267: expected 36 fields, saw 37
+Skipping line 38268: expected 36 fields, saw 37
+Skipping line 38269: expected 36 fields, saw 37
+Skipping line 38270: expected 36 fields, saw 37
+Skipping line 38271: expected 36 fields, saw 37
+Skipping line 38272: expected 36 fields, saw 37
+Skipping line 38273: expected 36 fields, saw 37
+Skipping line 38274: expected 36 fields, saw 37
+Skipping line 38275: expected 36 fields, saw 37
+Skipping line 38276: expected 36 fields, saw 37
+Skipping line 38277: expected 36 fields, saw 37
+Skipping line 38278: expected 36 fields, saw 37
+Skipping line 38279: expected 36 fields, saw 37
+Skipping line 38280: expected 36 fields, saw 37
+Skipping line 38281: expected 36 fields, saw 37
+Skipping line 38282: expected 36 fields, saw 37
+Skipping line 38283: expected 36 fields, saw 37
+Skipping line 38284: expected 36 fields, saw 37
+Skipping line 38285: expected 36 fields, saw 37
+Skipping line 38286: expected 36 fields, saw 37
+Skipping line 38287: expected 36 fields, saw 37
+Skipping line 38288: expected 36 fields, saw 37
+Skipping line 38289: expected 36 fields, saw 37
+Skipping line 38290: expected 36 fields, saw 37
+Skipping line 38291: expected 36 fields, saw 37
+Skipping line 38292: expected 36 fields, saw 37
+Skipping line 38293: expected 36 fields, saw 37
+Skipping line 38294: expected 36 fields, saw 37
+Skipping line 38295: expected 36 fields, saw 37
+Skipping line 38296: expected 36 fields, saw 37
+Skipping line 38297: expected 36 fields, saw 37
+Skipping line 38298: expected 36 fields, saw 37
+Skipping line 38299: expected 36 fields, saw 37
+Skipping line 38300: expected 36 fields, saw 37
+Skipping line 38301: expected 36 fields, saw 37
+Skipping line 38302: expected 36 fields, saw 37
+Skipping line 38303: expected 36 fields, saw 37
+Skipping line 38304: expected 36 fields, saw 37
+Skipping line 38305: expected 36 fields, saw 37
+Skipping line 38306: expected 36 fields, saw 37
+Skipping line 38307: expected 36 fields, saw 37
+Skipping line 38308: expected 36 fields, saw 37
+Skipping line 38309: expected 36 fields, saw 37
+Skipping line 38310: expected 36 fields, saw 37
+Skipping line 38311: expected 36 fields, saw 37
+Skipping line 38312: expected 36 fields, saw 37
+Skipping line 38313: expected 36 fields, saw 37
+Skipping line 38314: expected 36 fields, saw 37
+Skipping line 38315: expected 36 fields, saw 37
+Skipping line 38316: expected 36 fields, saw 37
+Skipping line 38317: expected 36 fields, saw 37
+Skipping line 38318: expected 36 fields, saw 37
+Skipping line 38319: expected 36 fields, saw 37
+Skipping line 38320: expected 36 fields, saw 37
+Skipping line 38321: expected 36 fields, saw 37
+Skipping line 38322: expected 36 fields, saw 37
+Skipping line 38323: expected 36 fields, saw 37
+Skipping line 38324: expected 36 fields, saw 37
+Skipping line 38325: expected 36 fields, saw 37
+Skipping line 38326: expected 36 fields, saw 37
+Skipping line 38327: expected 36 fields, saw 37
+Skipping line 38328: expected 36 fields, saw 37
+Skipping line 38329: expected 36 fields, saw 37
+Skipping line 38330: expected 36 fields, saw 37
+Skipping line 38331: expected 36 fields, saw 37
+Skipping line 38332: expected 36 fields, saw 37
+Skipping line 38333: expected 36 fields, saw 37
+Skipping line 38334: expected 36 fields, saw 37
+Skipping line 38335: expected 36 fields, saw 37
+Skipping line 38336: expected 36 fields, saw 37
+Skipping line 38337: expected 36 fields, saw 37
+Skipping line 38338: expected 36 fields, saw 37
+Skipping line 38339: expected 36 fields, saw 37
+Skipping line 38340: expected 36 fields, saw 37
+Skipping line 38341: expected 36 fields, saw 37
+Skipping line 38342: expected 36 fields, saw 37
+Skipping line 38343: expected 36 fields, saw 37
+Skipping line 38344: expected 36 fields, saw 37
+Skipping line 38345: expected 36 fields, saw 37
+Skipping line 38346: expected 36 fields, saw 37
+Skipping line 38347: expected 36 fields, saw 37
+Skipping line 38348: expected 36 fields, saw 37
+Skipping line 38349: expected 36 fields, saw 37
+Skipping line 38350: expected 36 fields, saw 37
+Skipping line 38351: expected 36 fields, saw 37
+Skipping line 38352: expected 36 fields, saw 37
+Skipping line 38353: expected 36 fields, saw 37
+Skipping line 38354: expected 36 fields, saw 37
+Skipping line 38355: expected 36 fields, saw 37
+Skipping line 38356: expected 36 fields, saw 37
+Skipping line 38357: expected 36 fields, saw 37
+Skipping line 38358: expected 36 fields, saw 37
+Skipping line 38359: expected 36 fields, saw 37
+Skipping line 38360: expected 36 fields, saw 37
+Skipping line 38361: expected 36 fields, saw 37
+Skipping line 38362: expected 36 fields, saw 37
+Skipping line 38363: expected 36 fields, saw 37
+Skipping line 38364: expected 36 fields, saw 37
+Skipping line 38365: expected 36 fields, saw 37
+Skipping line 38366: expected 36 fields, saw 37
+Skipping line 38367: expected 36 fields, saw 37
+Skipping line 38368: expected 36 fields, saw 37
+Skipping line 38369: expected 36 fields, saw 37
+Skipping line 38370: expected 36 fields, saw 37
+Skipping line 38371: expected 36 fields, saw 37
+Skipping line 38372: expected 36 fields, saw 37
+Skipping line 38373: expected 36 fields, saw 37
+Skipping line 38374: expected 36 fields, saw 37
+Skipping line 38375: expected 36 fields, saw 37
+Skipping line 38376: expected 36 fields, saw 37
+Skipping line 38377: expected 36 fields, saw 37
+Skipping line 38378: expected 36 fields, saw 37
+Skipping line 38379: expected 36 fields, saw 37
+Skipping line 38380: expected 36 fields, saw 37
+Skipping line 38381: expected 36 fields, saw 37
+Skipping line 38382: expected 36 fields, saw 37
+Skipping line 38383: expected 36 fields, saw 37
+Skipping line 38384: expected 36 fields, saw 37
+Skipping line 38385: expected 36 fields, saw 37
+Skipping line 38386: expected 36 fields, saw 37
+Skipping line 38387: expected 36 fields, saw 37
+Skipping line 38388: expected 36 fields, saw 37
+Skipping line 38389: expected 36 fields, saw 37
+Skipping line 38390: expected 36 fields, saw 37
+Skipping line 38391: expected 36 fields, saw 37
+Skipping line 38392: expected 36 fields, saw 37
+Skipping line 38393: expected 36 fields, saw 37
+Skipping line 38394: expected 36 fields, saw 37
+Skipping line 38395: expected 36 fields, saw 37
+Skipping line 38396: expected 36 fields, saw 37
+Skipping line 38397: expected 36 fields, saw 37
+Skipping line 38398: expected 36 fields, saw 37
+Skipping line 38399: expected 36 fields, saw 37
+Skipping line 38400: expected 36 fields, saw 37
+Skipping line 38401: expected 36 fields, saw 37
+Skipping line 38402: expected 36 fields, saw 37
+Skipping line 38403: expected 36 fields, saw 37
+Skipping line 38404: expected 36 fields, saw 37
+Skipping line 38405: expected 36 fields, saw 37
+Skipping line 38406: expected 36 fields, saw 37
+Skipping line 38407: expected 36 fields, saw 37
+Skipping line 38408: expected 36 fields, saw 37
+Skipping line 38409: expected 36 fields, saw 37
+Skipping line 38410: expected 36 fields, saw 37
+Skipping line 38411: expected 36 fields, saw 37
+Skipping line 38412: expected 36 fields, saw 37
+Skipping line 38413: expected 36 fields, saw 37
+Skipping line 38414: expected 36 fields, saw 37
+Skipping line 38415: expected 36 fields, saw 37
+Skipping line 38416: expected 36 fields, saw 37
+Skipping line 38417: expected 36 fields, saw 37
+Skipping line 38418: expected 36 fields, saw 37
+Skipping line 38419: expected 36 fields, saw 37
+Skipping line 38420: expected 36 fields, saw 37
+Skipping line 38421: expected 36 fields, saw 37
+Skipping line 38422: expected 36 fields, saw 37
+Skipping line 38423: expected 36 fields, saw 37
+Skipping line 38424: expected 36 fields, saw 37
+Skipping line 38425: expected 36 fields, saw 37
+Skipping line 38426: expected 36 fields, saw 37
+Skipping line 38427: expected 36 fields, saw 37
+Skipping line 38428: expected 36 fields, saw 37
+Skipping line 38429: expected 36 fields, saw 37
+Skipping line 38430: expected 36 fields, saw 37
+Skipping line 38431: expected 36 fields, saw 37
+Skipping line 38432: expected 36 fields, saw 37
+Skipping line 38433: expected 36 fields, saw 37
+Skipping line 38434: expected 36 fields, saw 37
+Skipping line 38435: expected 36 fields, saw 37
+Skipping line 38436: expected 36 fields, saw 37
+Skipping line 38437: expected 36 fields, saw 37
+Skipping line 38438: expected 36 fields, saw 37
+Skipping line 38439: expected 36 fields, saw 37
+Skipping line 38440: expected 36 fields, saw 37
+Skipping line 38441: expected 36 fields, saw 37
+Skipping line 38442: expected 36 fields, saw 37
+Skipping line 38443: expected 36 fields, saw 37
+Skipping line 38444: expected 36 fields, saw 37
+Skipping line 38445: expected 36 fields, saw 37
+Skipping line 38446: expected 36 fields, saw 37
+Skipping line 38447: expected 36 fields, saw 37
+Skipping line 38448: expected 36 fields, saw 37
+Skipping line 38449: expected 36 fields, saw 37
+Skipping line 38450: expected 36 fields, saw 37
+Skipping line 38451: expected 36 fields, saw 37
+Skipping line 38452: expected 36 fields, saw 37
+Skipping line 38453: expected 36 fields, saw 37
+Skipping line 38454: expected 36 fields, saw 37
+Skipping line 38455: expected 36 fields, saw 37
+Skipping line 38456: expected 36 fields, saw 37
+Skipping line 38457: expected 36 fields, saw 37
+Skipping line 38458: expected 36 fields, saw 37
+Skipping line 38459: expected 36 fields, saw 37
+Skipping line 38460: expected 36 fields, saw 37
+Skipping line 38461: expected 36 fields, saw 37
+Skipping line 38462: expected 36 fields, saw 37
+Skipping line 38463: expected 36 fields, saw 37
+Skipping line 38464: expected 36 fields, saw 37
+Skipping line 38465: expected 36 fields, saw 37
+Skipping line 38466: expected 36 fields, saw 37
+Skipping line 38467: expected 36 fields, saw 37
+Skipping line 38468: expected 36 fields, saw 37
+Skipping line 38469: expected 36 fields, saw 37
+Skipping line 38470: expected 36 fields, saw 37
+Skipping line 38471: expected 36 fields, saw 37
+Skipping line 38472: expected 36 fields, saw 37
+Skipping line 38473: expected 36 fields, saw 37
+Skipping line 38474: expected 36 fields, saw 37
+Skipping line 38475: expected 36 fields, saw 37
+Skipping line 38476: expected 36 fields, saw 37
+Skipping line 38477: expected 36 fields, saw 37
+Skipping line 38478: expected 36 fields, saw 37
+Skipping line 38479: expected 36 fields, saw 37
+Skipping line 38480: expected 36 fields, saw 37
+Skipping line 38481: expected 36 fields, saw 37
+Skipping line 38482: expected 36 fields, saw 37
+Skipping line 38483: expected 36 fields, saw 37
+Skipping line 38484: expected 36 fields, saw 37
+Skipping line 38485: expected 36 fields, saw 37
+Skipping line 38486: expected 36 fields, saw 37
+Skipping line 38487: expected 36 fields, saw 37
+Skipping line 38488: expected 36 fields, saw 37
+Skipping line 38489: expected 36 fields, saw 37
+Skipping line 38490: expected 36 fields, saw 37
+Skipping line 38491: expected 36 fields, saw 37
+Skipping line 38492: expected 36 fields, saw 37
+Skipping line 38493: expected 36 fields, saw 37
+Skipping line 38494: expected 36 fields, saw 37
+Skipping line 38495: expected 36 fields, saw 37
+Skipping line 38496: expected 36 fields, saw 37
+Skipping line 38497: expected 36 fields, saw 37
+Skipping line 38498: expected 36 fields, saw 37
+Skipping line 38499: expected 36 fields, saw 37
+Skipping line 38500: expected 36 fields, saw 37
+Skipping line 38501: expected 36 fields, saw 37
+Skipping line 38502: expected 36 fields, saw 37
+Skipping line 38503: expected 36 fields, saw 37
+Skipping line 38504: expected 36 fields, saw 37
+Skipping line 38505: expected 36 fields, saw 37
+Skipping line 38506: expected 36 fields, saw 37
+Skipping line 38507: expected 36 fields, saw 37
+Skipping line 38508: expected 36 fields, saw 37
+Skipping line 38509: expected 36 fields, saw 37
+Skipping line 38510: expected 36 fields, saw 37
+Skipping line 38511: expected 36 fields, saw 37
+Skipping line 38512: expected 36 fields, saw 37
+Skipping line 38513: expected 36 fields, saw 37
+Skipping line 38514: expected 36 fields, saw 37
+Skipping line 38515: expected 36 fields, saw 37
+Skipping line 38516: expected 36 fields, saw 37
+Skipping line 38517: expected 36 fields, saw 37
+Skipping line 38518: expected 36 fields, saw 37
+Skipping line 38519: expected 36 fields, saw 37
+Skipping line 38520: expected 36 fields, saw 37
+Skipping line 38521: expected 36 fields, saw 37
+Skipping line 38522: expected 36 fields, saw 37
+Skipping line 38523: expected 36 fields, saw 37
+Skipping line 38524: expected 36 fields, saw 37
+Skipping line 38525: expected 36 fields, saw 37
+Skipping line 38526: expected 36 fields, saw 37
+Skipping line 38527: expected 36 fields, saw 37
+Skipping line 38528: expected 36 fields, saw 37
+Skipping line 38529: expected 36 fields, saw 37
+Skipping line 38530: expected 36 fields, saw 37
+Skipping line 38531: expected 36 fields, saw 37
+Skipping line 38532: expected 36 fields, saw 37
+Skipping line 38533: expected 36 fields, saw 37
+Skipping line 38534: expected 36 fields, saw 37
+Skipping line 38535: expected 36 fields, saw 37
+Skipping line 38536: expected 36 fields, saw 37
+Skipping line 38537: expected 36 fields, saw 37
+Skipping line 38538: expected 36 fields, saw 37
+Skipping line 38539: expected 36 fields, saw 37
+Skipping line 38540: expected 36 fields, saw 37
+Skipping line 38541: expected 36 fields, saw 37
+Skipping line 38542: expected 36 fields, saw 37
+Skipping line 38543: expected 36 fields, saw 37
+Skipping line 38544: expected 36 fields, saw 37
+Skipping line 38545: expected 36 fields, saw 37
+Skipping line 38546: expected 36 fields, saw 37
+Skipping line 38547: expected 36 fields, saw 37
+Skipping line 38548: expected 36 fields, saw 37
+Skipping line 38549: expected 36 fields, saw 37
+Skipping line 38550: expected 36 fields, saw 37
+Skipping line 38551: expected 36 fields, saw 37
+Skipping line 38552: expected 36 fields, saw 37
+Skipping line 38553: expected 36 fields, saw 37
+Skipping line 38554: expected 36 fields, saw 37
+Skipping line 38555: expected 36 fields, saw 37
+Skipping line 38556: expected 36 fields, saw 37
+Skipping line 38557: expected 36 fields, saw 37
+Skipping line 38558: expected 36 fields, saw 37
+Skipping line 38559: expected 36 fields, saw 37
+Skipping line 38560: expected 36 fields, saw 37
+Skipping line 38561: expected 36 fields, saw 37
+Skipping line 38562: expected 36 fields, saw 37
+Skipping line 38563: expected 36 fields, saw 37
+Skipping line 38564: expected 36 fields, saw 37
+Skipping line 38565: expected 36 fields, saw 37
+Skipping line 38566: expected 36 fields, saw 37
+Skipping line 38567: expected 36 fields, saw 37
+Skipping line 38568: expected 36 fields, saw 37
+Skipping line 38569: expected 36 fields, saw 37
+Skipping line 38570: expected 36 fields, saw 37
+Skipping line 38571: expected 36 fields, saw 37
+Skipping line 38572: expected 36 fields, saw 37
+Skipping line 38573: expected 36 fields, saw 37
+Skipping line 38574: expected 36 fields, saw 37
+Skipping line 38575: expected 36 fields, saw 37
+Skipping line 38576: expected 36 fields, saw 37
+Skipping line 38577: expected 36 fields, saw 37
+Skipping line 38578: expected 36 fields, saw 37
+Skipping line 38579: expected 36 fields, saw 37
+Skipping line 38580: expected 36 fields, saw 37
+Skipping line 38581: expected 36 fields, saw 37
+Skipping line 38582: expected 36 fields, saw 37
+Skipping line 38583: expected 36 fields, saw 37
+Skipping line 38584: expected 36 fields, saw 37
+Skipping line 38585: expected 36 fields, saw 37
+Skipping line 38586: expected 36 fields, saw 37
+Skipping line 38587: expected 36 fields, saw 37
+Skipping line 38588: expected 36 fields, saw 37
+Skipping line 38589: expected 36 fields, saw 37
+Skipping line 38590: expected 36 fields, saw 37
+Skipping line 38591: expected 36 fields, saw 37
+Skipping line 38592: expected 36 fields, saw 37
+Skipping line 38593: expected 36 fields, saw 37
+Skipping line 38594: expected 36 fields, saw 37
+Skipping line 38595: expected 36 fields, saw 37
+Skipping line 38596: expected 36 fields, saw 37
+Skipping line 38597: expected 36 fields, saw 37
+Skipping line 38598: expected 36 fields, saw 37
+Skipping line 38599: expected 36 fields, saw 37
+Skipping line 38600: expected 36 fields, saw 37
+Skipping line 38601: expected 36 fields, saw 37
+Skipping line 38602: expected 36 fields, saw 37
+Skipping line 38603: expected 36 fields, saw 37
+Skipping line 38604: expected 36 fields, saw 37
+Skipping line 38605: expected 36 fields, saw 37
+Skipping line 38606: expected 36 fields, saw 37
+Skipping line 38607: expected 36 fields, saw 37
+Skipping line 38608: expected 36 fields, saw 37
+Skipping line 38609: expected 36 fields, saw 37
+Skipping line 38610: expected 36 fields, saw 37
+Skipping line 38611: expected 36 fields, saw 37
+Skipping line 38612: expected 36 fields, saw 37
+Skipping line 38613: expected 36 fields, saw 37
+Skipping line 38614: expected 36 fields, saw 37
+Skipping line 38615: expected 36 fields, saw 37
+Skipping line 38616: expected 36 fields, saw 37
+Skipping line 38617: expected 36 fields, saw 37
+Skipping line 38618: expected 36 fields, saw 37
+Skipping line 38619: expected 36 fields, saw 37
+Skipping line 38620: expected 36 fields, saw 37
+Skipping line 38621: expected 36 fields, saw 37
+Skipping line 38622: expected 36 fields, saw 37
+Skipping line 38623: expected 36 fields, saw 37
+Skipping line 38624: expected 36 fields, saw 37
+Skipping line 38625: expected 36 fields, saw 37
+Skipping line 38626: expected 36 fields, saw 37
+Skipping line 38627: expected 36 fields, saw 37
+Skipping line 38628: expected 36 fields, saw 37
+Skipping line 38629: expected 36 fields, saw 37
+Skipping line 38630: expected 36 fields, saw 37
+Skipping line 38631: expected 36 fields, saw 37
+Skipping line 38632: expected 36 fields, saw 37
+Skipping line 38633: expected 36 fields, saw 37
+Skipping line 38634: expected 36 fields, saw 37
+Skipping line 38635: expected 36 fields, saw 37
+Skipping line 38636: expected 36 fields, saw 37
+Skipping line 38637: expected 36 fields, saw 37
+Skipping line 38638: expected 36 fields, saw 37
+Skipping line 38639: expected 36 fields, saw 37
+Skipping line 38640: expected 36 fields, saw 37
+Skipping line 38641: expected 36 fields, saw 37
+Skipping line 38642: expected 36 fields, saw 37
+Skipping line 38643: expected 36 fields, saw 37
+Skipping line 38644: expected 36 fields, saw 37
+Skipping line 38645: expected 36 fields, saw 37
+Skipping line 38646: expected 36 fields, saw 37
+Skipping line 38647: expected 36 fields, saw 37
+Skipping line 38648: expected 36 fields, saw 37
+Skipping line 38649: expected 36 fields, saw 37
+Skipping line 38650: expected 36 fields, saw 37
+Skipping line 38651: expected 36 fields, saw 37
+Skipping line 38652: expected 36 fields, saw 37
+Skipping line 38653: expected 36 fields, saw 37
+Skipping line 38654: expected 36 fields, saw 37
+
+C:\Users\dfthd\Anaconda3\envs\python2\lib\site-packages\IPython\core\interactiveshell.py:2723: DtypeWarning: Columns (9,10) have mixed types. Specify dtype option on import or set low_memory=False.
+  interactivity=interactivity, compiler=compiler, result=result)
+&lt;/pre&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;/div&gt;
+&lt;div class="cell border-box-sizing text_cell rendered"&gt;
+&lt;div class="prompt input_prompt"&gt;
+&lt;/div&gt;
+&lt;div class="inner_cell"&gt;
+&lt;div class="text_cell_render border-box-sizing rendered_html"&gt;
+&lt;p&gt;It looks like some of the rows of the csv file have extra columns (i.e., they have 37 columns when we only have 36 column names. Because there are multiple missing values, it's not possible to determine what the extra columns represent. Just by eyeballing things, it looks like about ~500 of the 100,000 cases are problematic.&lt;/p&gt;
+&lt;p&gt;Our two options are to either ignore these cases, or try and read the xml file, which may or may not pay off. My recommendation is that we just move forward and try and get some initial analysis done before backtracking later if we want to.&lt;/p&gt;
+
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="cell border-box-sizing text_cell rendered"&gt;
+&lt;div class="prompt input_prompt"&gt;
+&lt;/div&gt;
+&lt;div class="inner_cell"&gt;
+&lt;div class="text_cell_render border-box-sizing rendered_html"&gt;
+&lt;p&gt;Here are the first 3 artifacts in the data:&lt;/p&gt;
+
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="cell border-box-sizing code_cell rendered"&gt;
+&lt;div class="input"&gt;
+&lt;div class="prompt input_prompt"&gt;In [15]:&lt;/div&gt;
+&lt;div class="inner_cell"&gt;
+    &lt;div class="input_area"&gt;
+&lt;div class=" highlight hl-ipython2"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;data&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;head&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;n&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;3&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;div class="output_wrapper"&gt;
+&lt;div class="output"&gt;
+
+
+&lt;div class="output_area"&gt;&lt;div class="prompt output_prompt"&gt;Out[15]:&lt;/div&gt;
+
+&lt;div class="output_html rendered_html output_subarea output_execute_result"&gt;
+&lt;div&gt;
+&lt;table border="1" class="dataframe"&gt;
+  &lt;thead&gt;
+    &lt;tr style="text-align: right;"&gt;
+      &lt;th&gt;&lt;/th&gt;
+      &lt;th&gt;artifactNumber&lt;/th&gt;
+      &lt;th&gt;ObjectName&lt;/th&gt;
+      &lt;th&gt;GeneralDescription&lt;/th&gt;
+      &lt;th&gt;model&lt;/th&gt;
+      &lt;th&gt;SerialNumber&lt;/th&gt;
+      &lt;th&gt;Manufacturer&lt;/th&gt;
+      &lt;th&gt;ManuCountry&lt;/th&gt;
+      &lt;th&gt;ManuProvince&lt;/th&gt;
+      &lt;th&gt;ManuCity&lt;/th&gt;
+      &lt;th&gt;BeginDate&lt;/th&gt;
+      &lt;th&gt;EndDate&lt;/th&gt;
+      &lt;th&gt;date_qualifier&lt;/th&gt;
+      &lt;th&gt;patent&lt;/th&gt;
+      &lt;th&gt;NumberOfComponents&lt;/th&gt;
+      &lt;th&gt;ArtifactFinish&lt;/th&gt;
+      &lt;th&gt;ContextCanada&lt;/th&gt;
+      &lt;th&gt;ContextFunction&lt;/th&gt;
+      &lt;th&gt;ContextTechnical&lt;/th&gt;
+      &lt;th&gt;group1&lt;/th&gt;
+      &lt;th&gt;category1&lt;/th&gt;
+      &lt;th&gt;subcategory1&lt;/th&gt;
+      &lt;th&gt;group2&lt;/th&gt;
+      &lt;th&gt;category2&lt;/th&gt;
+      &lt;th&gt;subcategory2&lt;/th&gt;
+      &lt;th&gt;group3&lt;/th&gt;
+      &lt;th&gt;category3&lt;/th&gt;
+      &lt;th&gt;subcategory3&lt;/th&gt;
+      &lt;th&gt;material&lt;/th&gt;
+      &lt;th&gt;Length&lt;/th&gt;
+      &lt;th&gt;Width&lt;/th&gt;
+      &lt;th&gt;Height&lt;/th&gt;
+      &lt;th&gt;Thickness&lt;/th&gt;
+      &lt;th&gt;Weight&lt;/th&gt;
+      &lt;th&gt;Diameter&lt;/th&gt;
+      &lt;th&gt;image&lt;/th&gt;
+      &lt;th&gt;thumbnail&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;th&gt;0&lt;/th&gt;
+      &lt;td&gt;1966.0001.001&lt;/td&gt;
+      &lt;td&gt;Cover&lt;/td&gt;
+      &lt;td&gt;PAPER&lt;/td&gt;
+      &lt;td&gt;WESTERN CANADA AIRWAYS LTD.&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;Unknown&lt;/td&gt;
+      &lt;td&gt;Unknown&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;1927&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;1.0&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;AT THE TIME IT WAS THE WORLD'S MOST NORTHERNLY...&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;Aviation&lt;/td&gt;
+      &lt;td&gt;Commemorative&lt;/td&gt;
+      &lt;td&gt;Stamps &amp;amp; coins&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;paper&lt;/td&gt;
+      &lt;td&gt;4.5 cm&lt;/td&gt;
+      &lt;td&gt;2.6 cm&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;http://source.techno-science.ca/artifacts-arte...&lt;/td&gt;
+      &lt;td&gt;http://source.techno-science.ca/artifacts-arte...&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;th&gt;1&lt;/th&gt;
+      &lt;td&gt;1966.0002.001&lt;/td&gt;
+      &lt;td&gt;Stamp, postage&lt;/td&gt;
+      &lt;td&gt;PAPER&lt;/td&gt;
+      &lt;td&gt;WESTERN CANADA AIRWAYS LTD.&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;Unknown&lt;/td&gt;
+      &lt;td&gt;Unknown&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;1927&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;1.0&lt;/td&gt;
+      &lt;td&gt;PINK &amp;amp; BLACK ON WHITE&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;Aviation&lt;/td&gt;
+      &lt;td&gt;Commemorative&lt;/td&gt;
+      &lt;td&gt;Stamps &amp;amp; coins&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;paper&lt;/td&gt;
+      &lt;td&gt;3.8 cm&lt;/td&gt;
+      &lt;td&gt;2.7 cm&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;http://source.techno-science.ca/artifacts-arte...&lt;/td&gt;
+      &lt;td&gt;http://source.techno-science.ca/artifacts-arte...&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;th&gt;2&lt;/th&gt;
+      &lt;td&gt;1966.0003.001&lt;/td&gt;
+      &lt;td&gt;Stamp, postage&lt;/td&gt;
+      &lt;td&gt;PAPER&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;Unknown&lt;/td&gt;
+      &lt;td&gt;Unknown&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;1932&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;1.0&lt;/td&gt;
+      &lt;td&gt;DARK &amp;amp; PALE BLUE ON WHITE&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;Aviation&lt;/td&gt;
+      &lt;td&gt;Commemorative&lt;/td&gt;
+      &lt;td&gt;Stamps &amp;amp; coins&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;paper&lt;/td&gt;
+      &lt;td&gt;12.8 cm&lt;/td&gt;
+      &lt;td&gt;8.4 cm&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;http://source.techno-science.ca/artifacts-arte...&lt;/td&gt;
+      &lt;td&gt;http://source.techno-science.ca/artifacts-arte...&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;/div&gt;
+
+&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;/div&gt;
+&lt;div class="cell border-box-sizing text_cell rendered"&gt;
+&lt;div class="prompt input_prompt"&gt;
+&lt;/div&gt;
+&lt;div class="inner_cell"&gt;
+&lt;div class="text_cell_render border-box-sizing rendered_html"&gt;
+&lt;p&gt;And here are some cases which have too many columns:&lt;/p&gt;
+
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="cell border-box-sizing code_cell rendered"&gt;
+&lt;div class="input"&gt;
+&lt;div class="prompt input_prompt"&gt;In [9]:&lt;/div&gt;
+&lt;div class="inner_cell"&gt;
+    &lt;div class="input_area"&gt;
+&lt;div class=" highlight hl-ipython2"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;debug&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;pd&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;read_csv&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;"cstmc-CSV-en.csv"&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;header&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="bp"&gt;None&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;delimiter&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;"|"&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;error_bad_lines&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="bp"&gt;False&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;skiprows&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;37899&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;nrows&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;3&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;debug&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;div class="output_wrapper"&gt;
+&lt;div class="output"&gt;
+
+
+&lt;div class="output_area"&gt;&lt;div class="prompt output_prompt"&gt;Out[9]:&lt;/div&gt;
+
+&lt;div class="output_html rendered_html output_subarea output_execute_result"&gt;
+&lt;div&gt;
+&lt;table border="1" class="dataframe"&gt;
+  &lt;thead&gt;
+    &lt;tr style="text-align: right;"&gt;
+      &lt;th&gt;&lt;/th&gt;
+      &lt;th&gt;0&lt;/th&gt;
+      &lt;th&gt;1&lt;/th&gt;
+      &lt;th&gt;2&lt;/th&gt;
+      &lt;th&gt;3&lt;/th&gt;
+      &lt;th&gt;4&lt;/th&gt;
+      &lt;th&gt;5&lt;/th&gt;
+      &lt;th&gt;6&lt;/th&gt;
+      &lt;th&gt;7&lt;/th&gt;
+      &lt;th&gt;8&lt;/th&gt;
+      &lt;th&gt;9&lt;/th&gt;
+      &lt;th&gt;10&lt;/th&gt;
+      &lt;th&gt;11&lt;/th&gt;
+      &lt;th&gt;12&lt;/th&gt;
+      &lt;th&gt;13&lt;/th&gt;
+      &lt;th&gt;14&lt;/th&gt;
+      &lt;th&gt;15&lt;/th&gt;
+      &lt;th&gt;16&lt;/th&gt;
+      &lt;th&gt;17&lt;/th&gt;
+      &lt;th&gt;18&lt;/th&gt;
+      &lt;th&gt;19&lt;/th&gt;
+      &lt;th&gt;20&lt;/th&gt;
+      &lt;th&gt;21&lt;/th&gt;
+      &lt;th&gt;22&lt;/th&gt;
+      &lt;th&gt;23&lt;/th&gt;
+      &lt;th&gt;24&lt;/th&gt;
+      &lt;th&gt;25&lt;/th&gt;
+      &lt;th&gt;26&lt;/th&gt;
+      &lt;th&gt;27&lt;/th&gt;
+      &lt;th&gt;28&lt;/th&gt;
+      &lt;th&gt;29&lt;/th&gt;
+      &lt;th&gt;30&lt;/th&gt;
+      &lt;th&gt;31&lt;/th&gt;
+      &lt;th&gt;32&lt;/th&gt;
+      &lt;th&gt;33&lt;/th&gt;
+      &lt;th&gt;34&lt;/th&gt;
+      &lt;th&gt;35&lt;/th&gt;
+      &lt;th&gt;36&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;th&gt;0&lt;/th&gt;
+      &lt;td&gt;1984.1214.001&lt;/td&gt;
+      &lt;td&gt;Engine, airplane&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;LTC1K-4A/LYCOMING T53&lt;/td&gt;
+      &lt;td&gt;LE09281X&lt;/td&gt;
+      &lt;td&gt;Avco Lycoming Div.&lt;/td&gt;
+      &lt;td&gt;United States of America&lt;/td&gt;
+      &lt;td&gt;Connecticut&lt;/td&gt;
+      &lt;td&gt;Stratford&lt;/td&gt;
+      &lt;td&gt;1969&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;circa&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;1&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;Converts heat into mechanical power&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;Aviation&lt;/td&gt;
+      &lt;td&gt;Motive power&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;http://source.techno-science.ca/artifacts-arte...&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;th&gt;1&lt;/th&gt;
+      &lt;td&gt;1984.1215.001&lt;/td&gt;
+      &lt;td&gt;Engine, airplane&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;LTC1K-4A/LYCOMING T53&lt;/td&gt;
+      &lt;td&gt;LE09285X&lt;/td&gt;
+      &lt;td&gt;Avco Lycoming Div.&lt;/td&gt;
+      &lt;td&gt;United States of America&lt;/td&gt;
+      &lt;td&gt;Connecticut&lt;/td&gt;
+      &lt;td&gt;Stratford&lt;/td&gt;
+      &lt;td&gt;1969&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;circa&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;1&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;Converts heat into mechanical power&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;Aviation&lt;/td&gt;
+      &lt;td&gt;Motive power&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;http://source.techno-science.ca/artifacts-arte...&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;th&gt;2&lt;/th&gt;
+      &lt;td&gt;1984.1216.001&lt;/td&gt;
+      &lt;td&gt;Propeller&lt;/td&gt;
+      &lt;td&gt;Glass - Fibre&lt;/td&gt;
+      &lt;td&gt;HAMILTON STANDARD&lt;/td&gt;
+      &lt;td&gt;337-339-330-325&lt;/td&gt;
+      &lt;td&gt;Hamilton Standard Propeller Div., United Aircr...&lt;/td&gt;
+      &lt;td&gt;United States of America&lt;/td&gt;
+      &lt;td&gt;Connecticut&lt;/td&gt;
+      &lt;td&gt;East hartford&lt;/td&gt;
+      &lt;td&gt;1969&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;circa&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;1&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;Aircraft propeller&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;Aviation&lt;/td&gt;
+      &lt;td&gt;Aircraft parts&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;glass;fibre&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;http://source.techno-science.ca/artifacts-arte...&lt;/td&gt;
+      &lt;td&gt;http://source.techno-science.ca/artifacts-arte...&lt;/td&gt;
+      &lt;td&gt;http://source.techno-science.ca/artifacts-arte...&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;/div&gt;
+
+&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;/div&gt;
+&lt;div class="cell border-box-sizing text_cell rendered"&gt;
+&lt;div class="prompt input_prompt"&gt;
+&lt;/div&gt;
+&lt;div class="inner_cell"&gt;
+&lt;div class="text_cell_render border-box-sizing rendered_html"&gt;
+&lt;h3 id="Recoding-dimensions-into-actual-units"&gt;Recoding dimensions into actual units&lt;a class="anchor-link" href="http://bryans.im/posts/the-average-thing/#Recoding-dimensions-into-actual-units"&gt;¶&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;The first thing we're going to do is to do convert all the dimensions, which have mixed units (e.g., 16cm and 10m or whatever) into one common unit. To do this, we're going to use regular expressions and loop through the dimension columns.&lt;/p&gt;
+&lt;p&gt;The other thing that we might want to do is decide what artifacts to actually use. It looks like some of the artifacts are things like documents and paper, and others are really big things like engines.&lt;/p&gt;
+
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="cell border-box-sizing text_cell rendered"&gt;
+&lt;div class="prompt input_prompt"&gt;
+&lt;/div&gt;
+&lt;div class="inner_cell"&gt;
+&lt;div class="text_cell_render border-box-sizing rendered_html"&gt;
+&lt;h4 id="Dealing-with-missing-data"&gt;Dealing with missing data&lt;a class="anchor-link" href="http://bryans.im/posts/the-average-thing/#Dealing-with-missing-data"&gt;¶&lt;/a&gt;&lt;/h4&gt;&lt;p&gt;As you can see from the example cases above, lots of data is missing or unavailable, which is probably to be expected given that not all columns are necessarily relevant to each artifact. However, this forces us to make a decision when trying to summarize data: How do we decide whether to include or exclude artifacts?&lt;/p&gt;
+
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="cell border-box-sizing text_cell rendered"&gt;
+&lt;div class="prompt input_prompt"&gt;
+&lt;/div&gt;
+&lt;div class="inner_cell"&gt;
+&lt;div class="text_cell_render border-box-sizing rendered_html"&gt;
+&lt;p&gt;For example, the code below subsets data depending on whether or not any of the measurements of their physical dimensions (weight, height, etc.) are missing:&lt;/p&gt;
+
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="cell border-box-sizing code_cell rendered"&gt;
+&lt;div class="input"&gt;
+&lt;div class="prompt input_prompt"&gt;In [19]:&lt;/div&gt;
+&lt;div class="inner_cell"&gt;
+    &lt;div class="input_area"&gt;
+&lt;div class=" highlight hl-ipython2"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;datasub1&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;data&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;loc&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;data&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;'Length'&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;isnull&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="bp"&gt;False&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;span class="n"&gt;datasub2&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;datasub1&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;loc&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;datasub1&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;'Width'&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;isnull&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="bp"&gt;False&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;span class="n"&gt;datasub3&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;datasub2&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;loc&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;datasub2&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;'Height'&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;isnull&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="bp"&gt;False&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;span class="n"&gt;datasub4&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;datasub3&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;loc&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;datasub3&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;'Weight'&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;isnull&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="bp"&gt;False&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;/div&gt;
+&lt;div class="cell border-box-sizing text_cell rendered"&gt;
+&lt;div class="prompt input_prompt"&gt;
+&lt;/div&gt;
+&lt;div class="inner_cell"&gt;
+&lt;div class="text_cell_render border-box-sizing rendered_html"&gt;
+&lt;p&gt;Running the code below will list the problem cases with our regex - some have typos in them, others have European style decimal places (thanks Canada!)&lt;/p&gt;
+
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="cell border-box-sizing code_cell rendered"&gt;
+&lt;div class="input"&gt;
+&lt;div class="prompt input_prompt"&gt;In [20]:&lt;/div&gt;
+&lt;div class="inner_cell"&gt;
+    &lt;div class="input_area"&gt;
+&lt;div class=" highlight hl-ipython2"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;subdata&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;datasub3&lt;/span&gt;
+&lt;span class="n"&gt;subdata&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;subdata&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;reset_index&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;drop&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="bp"&gt;True&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="n"&gt;x&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;
+&lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;line&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="n"&gt;subdata&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;'Length'&lt;/span&gt;&lt;span class="p"&gt;]:&lt;/span&gt;
+    &lt;span class="k"&gt;try&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+        &lt;span class="n"&gt;re&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;search&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;r'(\d*\.\d*) .*'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;line&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;group&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="k"&gt;except&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+        &lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="n"&gt;subdata&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;loc&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;'Length'&lt;/span&gt;&lt;span class="p"&gt;]]&lt;/span&gt;
+    &lt;span class="n"&gt;x&lt;/span&gt; &lt;span class="o"&gt;+=&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;div class="output_wrapper"&gt;
+&lt;div class="output"&gt;
+
+
+&lt;div class="output_area"&gt;&lt;div class="prompt"&gt;&lt;/div&gt;
+&lt;div class="output_subarea output_stream output_stdout output_text"&gt;
+&lt;pre&gt;Length    610 cm
+Name: 429, dtype: object
+Length    12 cm
+Name: 1688, dtype: object
+Length    210 cm
+Name: 3243, dtype: object
+Length    254,9 cm
+Name: 13917, dtype: object
+Length    12,7 cm
+Name: 15236, dtype: object
+Length    12,7 cm
+Name: 15237, dtype: object
+Length    71.0\t cm
+Name: 16754, dtype: object
+Length    81.0\t cm
+Name: 16755, dtype: object
+Length    61,5 cm
+Name: 24115, dtype: object
+Length    61,5 cm
+Name: 24116, dtype: object
+Length    61,5 cm
+Name: 24117, dtype: object
+Length    61,5 cm
+Name: 24118, dtype: object
+Length    42.3\t cm
+Name: 25531, dtype: object
+Length    59,5 cm
+Name: 27023, dtype: object
+Length    58,0 cm
+Name: 27034, dtype: object
+Length    176.O cm
+Name: 28103, dtype: object
+Length    157,5 cm
+Name: 28626, dtype: object
+Length    18,5 cm
+Name: 29077, dtype: object
+Length    2,4 cm
+Name: 29235, dtype: object
+Length    19,5 cm
+Name: 29533, dtype: object
+Length    32,0 cm
+Name: 29562, dtype: object
+Length     cm
+Name: 29752, dtype: object
+Length    21,0 cm
+Name: 29847, dtype: object
+Length    30 cm
+Name: 29891, dtype: object
+Length    58 cm
+Name: 29905, dtype: object
+Length    5200 cm
+Name: 30119, dtype: object
+Length    172,0 cm
+Name: 30146, dtype: object
+Length    26.,0 cm
+Name: 30256, dtype: object
+Length    26.,0 cm
+Name: 30258, dtype: object
+Length    43,7 cm
+Name: 30277, dtype: object
+Length    200,0 cm
+Name: 30305, dtype: object
+Length    41,5 cm
+Name: 30330, dtype: object
+Length    180,0 cm
+Name: 30374, dtype: object
+Length    150 cm
+Name: 31944, dtype: object
+Length    41,5 cm
+Name: 31997, dtype: object
+Length    200 cm
+Name: 32106, dtype: object
+Length    24 cm
+Name: 32441, dtype: object
+Length    190 cm
+Name: 32633, dtype: object
+Length    229 cm
+Name: 32638, dtype: object
+Length    236 cm
+Name: 32639, dtype: object
+&lt;/pre&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;/div&gt;
+&lt;div class="cell border-box-sizing text_cell rendered"&gt;
+&lt;div class="prompt input_prompt"&gt;
+&lt;/div&gt;
+&lt;div class="inner_cell"&gt;
+&lt;div class="text_cell_render border-box-sizing rendered_html"&gt;
+&lt;p&gt;Let's first sub out the commas for decimal places and remove the '\t' characters.&lt;/p&gt;
+
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="cell border-box-sizing code_cell rendered"&gt;
+&lt;div class="input"&gt;
+&lt;div class="prompt input_prompt"&gt;In [32]:&lt;/div&gt;
+&lt;div class="inner_cell"&gt;
+    &lt;div class="input_area"&gt;
+&lt;div class=" highlight hl-ipython2"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;subdata&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;'Length'&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;re&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;sub&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;','&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;'.'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;x&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="n"&gt;subdata&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;'Length'&lt;/span&gt;&lt;span class="p"&gt;]]&lt;/span&gt;
+&lt;span class="n"&gt;subdata&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;'Length'&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;re&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;sub&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;'&lt;/span&gt;&lt;span class="se"&gt;\t&lt;/span&gt;&lt;span class="s1"&gt;'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;''&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;x&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="n"&gt;subdata&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;'Length'&lt;/span&gt;&lt;span class="p"&gt;]]&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;/div&gt;
+&lt;div class="cell border-box-sizing text_cell rendered"&gt;
+&lt;div class="prompt input_prompt"&gt;
+&lt;/div&gt;
+&lt;div class="inner_cell"&gt;
+&lt;div class="text_cell_render border-box-sizing rendered_html"&gt;
+&lt;p&gt;AS IT HAPPENS, you can achieve the above using Pandas' built-in string methods, because I am a moron. Below, we use these methods on the "Length" dimension to replace the commas, extract the digits, extract the units, and then replace the units with the numbers to multiply the digits by (i.e., cm = 1, m = 100).&lt;/p&gt;
+
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="cell border-box-sizing code_cell rendered"&gt;
+&lt;div class="input"&gt;
+&lt;div class="prompt input_prompt"&gt;In [33]:&lt;/div&gt;
+&lt;div class="inner_cell"&gt;
+    &lt;div class="input_area"&gt;
+&lt;div class=" highlight hl-ipython2"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;artifactlengths&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;data&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;'Length'&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;str&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;extract&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;r'(\d*.\d*)'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;expand&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="bp"&gt;False&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;artifactlengths&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;artifactlengths&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;str&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;replace&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;','&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;'.'&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;artifactlengthmultipliers&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;data&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;'Length'&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;str&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;extract&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;r'.* ([a-zA-Z]*)'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;expand&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="bp"&gt;False&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;/div&gt;
+&lt;div class="cell border-box-sizing text_cell rendered"&gt;
+&lt;div class="prompt input_prompt"&gt;
+&lt;/div&gt;
+&lt;div class="inner_cell"&gt;
+&lt;div class="text_cell_render border-box-sizing rendered_html"&gt;
+&lt;p&gt;Doing this, we've created a vector (i.e., a Pandas series) of floats, and a separate vector of strings that have the units. For the next step, we want to first replace cm and CM with 1, and m and M with 100, and look for the person who used inches and shoot them.&lt;/p&gt;
+
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="cell border-box-sizing code_cell rendered"&gt;
+&lt;div class="input"&gt;
+&lt;div class="prompt input_prompt"&gt;In [34]:&lt;/div&gt;
+&lt;div class="inner_cell"&gt;
+    &lt;div class="input_area"&gt;
+&lt;div class=" highlight hl-ipython2"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;artifactlengthmultipliers&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;unique&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;div class="output_wrapper"&gt;
+&lt;div class="output"&gt;
+
+
+&lt;div class="output_area"&gt;&lt;div class="prompt output_prompt"&gt;Out[34]:&lt;/div&gt;
+
+
+&lt;div class="output_text output_subarea output_execute_result"&gt;
+&lt;pre&gt;array(['cm', nan, 'M', 'in', 'CM', 'm'], dtype=object)&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;/div&gt;
+
+&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;/div&gt;
+&lt;div class="cell border-box-sizing text_cell rendered"&gt;
+&lt;div class="prompt input_prompt"&gt;
+&lt;/div&gt;
+&lt;div class="inner_cell"&gt;
+&lt;div class="text_cell_render border-box-sizing rendered_html"&gt;
+&lt;p&gt;We create a dictionary to use with the .replace method:&lt;/p&gt;
+
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="cell border-box-sizing code_cell rendered"&gt;
+&lt;div class="input"&gt;
+&lt;div class="prompt input_prompt"&gt;In [35]:&lt;/div&gt;
+&lt;div class="inner_cell"&gt;
+    &lt;div class="input_area"&gt;
+&lt;div class=" highlight hl-ipython2"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;unitreplacement&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="s2"&gt;"cm"&lt;/span&gt; &lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; 
+    &lt;span class="s2"&gt;"CM"&lt;/span&gt; &lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="s2"&gt;"m"&lt;/span&gt; &lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;100&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="s2"&gt;"M"&lt;/span&gt; &lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;100&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="s2"&gt;"in"&lt;/span&gt; &lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mf"&gt;2.54&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="s2"&gt;"kg"&lt;/span&gt; &lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="s2"&gt;"KG"&lt;/span&gt; &lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="s2"&gt;"gm"&lt;/span&gt; &lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="mo"&gt;001&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="s2"&gt;"tons"&lt;/span&gt; &lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;1000&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="s2"&gt;"lbs"&lt;/span&gt; &lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="mi"&gt;453&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;span class="n"&gt;artifactlengthmultipliersNUM&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;artifactlengthmultipliers&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;replace&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;unitreplacement&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;/div&gt;
+&lt;div class="cell border-box-sizing text_cell rendered"&gt;
+&lt;div class="prompt input_prompt"&gt;
+&lt;/div&gt;
+&lt;div class="inner_cell"&gt;
+&lt;div class="text_cell_render border-box-sizing rendered_html"&gt;
+&lt;p&gt;And then we multiple our numbers by our multipliers, and now we can use the data to find out the average length of all artifacts:&lt;/p&gt;
+
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="cell border-box-sizing code_cell rendered"&gt;
+&lt;div class="input"&gt;
+&lt;div class="prompt input_prompt"&gt;In [36]:&lt;/div&gt;
+&lt;div class="inner_cell"&gt;
+    &lt;div class="input_area"&gt;
+&lt;div class=" highlight hl-ipython2"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;#We have to coerce because our series contains missing values that cannot be typed&lt;/span&gt;
+&lt;span class="n"&gt;artifactlengthincm&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;pd&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;to_numeric&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;artifactlengths&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;errors&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s1"&gt;'coerce'&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="n"&gt;artifactlengthmultipliersNUM&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;/div&gt;
+&lt;div class="cell border-box-sizing code_cell rendered"&gt;
+&lt;div class="input"&gt;
+&lt;div class="prompt input_prompt"&gt;In [37]:&lt;/div&gt;
+&lt;div class="inner_cell"&gt;
+    &lt;div class="input_area"&gt;
+&lt;div class=" highlight hl-ipython2"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;artifactlengthincm&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;mean&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;div class="output_wrapper"&gt;
+&lt;div class="output"&gt;
+
+
+&lt;div class="output_area"&gt;&lt;div class="prompt output_prompt"&gt;Out[37]:&lt;/div&gt;
+
+
+&lt;div class="output_text output_subarea output_execute_result"&gt;
+&lt;pre&gt;44.711496657068245&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;/div&gt;
+
+&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;/div&gt;
+&lt;div class="cell border-box-sizing text_cell rendered"&gt;
+&lt;div class="prompt input_prompt"&gt;
+&lt;/div&gt;
+&lt;div class="inner_cell"&gt;
+&lt;div class="text_cell_render border-box-sizing rendered_html"&gt;
+&lt;h4 id="Functions-to-extract-digits-and-units:"&gt;Functions to extract digits and units:&lt;a class="anchor-link" href="http://bryans.im/posts/the-average-thing/#Functions-to-extract-digits-and-units:"&gt;¶&lt;/a&gt;&lt;/h4&gt;&lt;p&gt;Now that we've done this once with length, we can write some functions to do the above easily with the rest of the dimensions. We also have a function that will take a list of dimensions, and "numberize" all of them.&lt;/p&gt;
+
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="cell border-box-sizing code_cell rendered"&gt;
+&lt;div class="input"&gt;
+&lt;div class="prompt input_prompt"&gt;In [38]:&lt;/div&gt;
+&lt;div class="inner_cell"&gt;
+    &lt;div class="input_area"&gt;
+&lt;div class=" highlight hl-ipython2"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;#These are the above as functions to run on our other dimensions&lt;/span&gt;
+&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;extract_digits&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;series&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="n"&gt;lengths&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;series&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;str&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;extract&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;r'(\d*.\d*)'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;expand&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="bp"&gt;False&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="n"&gt;lengths&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;lengths&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;str&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;replace&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;','&lt;/span&gt; &lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;'.'&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;pd&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;to_numeric&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;lengths&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;errors&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s1"&gt;'coerce'&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;extract_multipliers&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;series&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="n"&gt;multipliers&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;series&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;str&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;extract&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;r'.* ([a-zA-Z]*)'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;expand&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="bp"&gt;False&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="n"&gt;unitreplacement&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="s2"&gt;"cm"&lt;/span&gt; &lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; 
+    &lt;span class="s2"&gt;"CM"&lt;/span&gt; &lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="s2"&gt;"m"&lt;/span&gt; &lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;100&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="s2"&gt;"M"&lt;/span&gt; &lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;100&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="s2"&gt;"in"&lt;/span&gt; &lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mf"&gt;2.54&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="s2"&gt;"kg"&lt;/span&gt; &lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="s2"&gt;"KG"&lt;/span&gt; &lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="s2"&gt;"gm"&lt;/span&gt; &lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="mo"&gt;001&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="s2"&gt;"tons"&lt;/span&gt; &lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;1000&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="s2"&gt;"lbs"&lt;/span&gt; &lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="mi"&gt;453&lt;/span&gt;
+    &lt;span class="p"&gt;}&lt;/span&gt;
+    &lt;span class="n"&gt;multipliers&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;multipliers&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;replace&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;unitreplacement&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;pd&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;to_numeric&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;multipliers&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;errors&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s1"&gt;'coerce'&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;numberize_dimensions&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;listofdimensions&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;data&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;dimension&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="n"&gt;listofdimensions&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+        &lt;span class="n"&gt;data&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;dimension&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="s2"&gt;"INT"&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;extract_digits&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;data&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;dimension&lt;/span&gt;&lt;span class="p"&gt;])&lt;/span&gt;
+        &lt;span class="n"&gt;data&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;dimension&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="s2"&gt;"MULT"&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;extract_multipliers&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;data&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;dimension&lt;/span&gt;&lt;span class="p"&gt;])&lt;/span&gt;
+        &lt;span class="n"&gt;data&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;dimension&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="s2"&gt;"NUM"&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;data&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;dimension&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="s2"&gt;"INT"&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="n"&gt;data&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;dimension&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="s2"&gt;"MULT"&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;/div&gt;
+&lt;div class="cell border-box-sizing code_cell rendered"&gt;
+&lt;div class="input"&gt;
+&lt;div class="prompt input_prompt"&gt;In [126]:&lt;/div&gt;
+&lt;div class="inner_cell"&gt;
+    &lt;div class="input_area"&gt;
+&lt;div class=" highlight hl-ipython2"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;#This was some hacky debugging when I manually did a binary search-type thing to find out which row numbers were messed up&lt;/span&gt;
+&lt;span class="c1"&gt;#pd.to_numeric(artifactlengths[96050:96100])&lt;/span&gt;
+&lt;span class="c1"&gt;#artifactlengths[96050:96100]&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;/div&gt;
+&lt;div class="cell border-box-sizing text_cell rendered"&gt;
+&lt;div class="prompt input_prompt"&gt;
+&lt;/div&gt;
+&lt;div class="inner_cell"&gt;
+&lt;div class="text_cell_render border-box-sizing rendered_html"&gt;
+&lt;h4 id="Rest-of-the-dimensions"&gt;Rest of the dimensions&lt;a class="anchor-link" href="http://bryans.im/posts/the-average-thing/#Rest-of-the-dimensions"&gt;¶&lt;/a&gt;&lt;/h4&gt;&lt;p&gt;From the above, the average length of all the artifacts in the collection is 44.7cm. Let's find out what the average is for all the other dimensions:&lt;/p&gt;
+
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="cell border-box-sizing code_cell rendered"&gt;
+&lt;div class="input"&gt;
+&lt;div class="prompt input_prompt"&gt;In [39]:&lt;/div&gt;
+&lt;div class="inner_cell"&gt;
+    &lt;div class="input_area"&gt;
+&lt;div class=" highlight hl-ipython2"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;data&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;'HeightINT'&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;extract_digits&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;data&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;'Height'&lt;/span&gt;&lt;span class="p"&gt;])&lt;/span&gt;
+&lt;span class="n"&gt;data&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;'HeightMULTI'&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;extract_multipliers&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;data&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;'Height'&lt;/span&gt;&lt;span class="p"&gt;])&lt;/span&gt;
+&lt;span class="n"&gt;data&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;'HeightNUM'&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;data&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;'HeightINT'&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="n"&gt;data&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;'HeightMULTI'&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;span class="n"&gt;data&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;'HeightNUM'&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;mean&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;div class="output_wrapper"&gt;
+&lt;div class="output"&gt;
+
+
+&lt;div class="output_area"&gt;&lt;div class="prompt output_prompt"&gt;Out[39]:&lt;/div&gt;
+
+
+&lt;div class="output_text output_subarea output_execute_result"&gt;
+&lt;pre&gt;25.884008993874833&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;/div&gt;
+
+&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;/div&gt;
+&lt;div class="cell border-box-sizing text_cell rendered"&gt;
+&lt;div class="prompt input_prompt"&gt;
+&lt;/div&gt;
+&lt;div class="inner_cell"&gt;
+&lt;div class="text_cell_render border-box-sizing rendered_html"&gt;
+&lt;p&gt;The average height is 25.88cm&lt;/p&gt;
+
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="cell border-box-sizing code_cell rendered"&gt;
+&lt;div class="input"&gt;
+&lt;div class="prompt input_prompt"&gt;In [40]:&lt;/div&gt;
+&lt;div class="inner_cell"&gt;
+    &lt;div class="input_area"&gt;
+&lt;div class=" highlight hl-ipython2"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;data&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;'WidthINT'&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;extract_digits&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;data&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;'Width'&lt;/span&gt;&lt;span class="p"&gt;])&lt;/span&gt;
+&lt;span class="n"&gt;data&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;'WidthMULTI'&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;extract_multipliers&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;data&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;'Width'&lt;/span&gt;&lt;span class="p"&gt;])&lt;/span&gt;
+&lt;span class="n"&gt;data&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;'WidthNUM'&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;data&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;'WidthINT'&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="n"&gt;data&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;'WidthMULTI'&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;span class="n"&gt;data&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;'WidthNUM'&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;mean&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;div class="output_wrapper"&gt;
+&lt;div class="output"&gt;
+
+
+&lt;div class="output_area"&gt;&lt;div class="prompt output_prompt"&gt;Out[40]:&lt;/div&gt;
+
+
+&lt;div class="output_text output_subarea output_execute_result"&gt;
+&lt;pre&gt;24.15538627441159&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;/div&gt;
+
+&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;/div&gt;
+&lt;div class="cell border-box-sizing text_cell rendered"&gt;
+&lt;div class="prompt input_prompt"&gt;
+&lt;/div&gt;
+&lt;div class="inner_cell"&gt;
+&lt;div class="text_cell_render border-box-sizing rendered_html"&gt;
+&lt;p&gt;The average width is 24.16 cm.&lt;/p&gt;
+
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="cell border-box-sizing text_cell rendered"&gt;
+&lt;div class="prompt input_prompt"&gt;
+&lt;/div&gt;
+&lt;div class="inner_cell"&gt;
+&lt;div class="text_cell_render border-box-sizing rendered_html"&gt;
+&lt;p&gt;Now, we work on weight. Given that the units for weights range from gm to tons, let's go with kg as the unit we'll use, and assume that tons refer to metric tons. There's also a 'cm' there. Something is wrong.&lt;/p&gt;
+
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="cell border-box-sizing code_cell rendered"&gt;
+&lt;div class="input"&gt;
+&lt;div class="prompt input_prompt"&gt;In [42]:&lt;/div&gt;
+&lt;div class="inner_cell"&gt;
+    &lt;div class="input_area"&gt;
+&lt;div class=" highlight hl-ipython2"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;data&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;'Weight'&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;str&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;extract&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;'.* (.*)'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;expand&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="bp"&gt;False&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;unique&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;div class="output_wrapper"&gt;
+&lt;div class="output"&gt;
+
+
+&lt;div class="output_area"&gt;&lt;div class="prompt output_prompt"&gt;Out[42]:&lt;/div&gt;
+
+
+&lt;div class="output_text output_subarea output_execute_result"&gt;
+&lt;pre&gt;array([nan, 'kg', 'cm', 'tons', 'gm', 'lb'], dtype=object)&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;/div&gt;
+
+&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;/div&gt;
+&lt;div class="cell border-box-sizing text_cell rendered"&gt;
+&lt;div class="prompt input_prompt"&gt;
+&lt;/div&gt;
+&lt;div class="inner_cell"&gt;
+&lt;div class="text_cell_render border-box-sizing rendered_html"&gt;
+&lt;p&gt;Below, we extract the indices of cases with "cm" in the weight. There are 13 cases, and some of them look like a misalignment of the columns, but it's impossible to tell which way they are misaligned.&lt;/p&gt;
+
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="cell border-box-sizing code_cell rendered"&gt;
+&lt;div class="input"&gt;
+&lt;div class="prompt input_prompt"&gt;In [44]:&lt;/div&gt;
+&lt;div class="inner_cell"&gt;
+    &lt;div class="input_area"&gt;
+&lt;div class=" highlight hl-ipython2"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;cmtest&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;data&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;'Weight'&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;str&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;extract&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;'(.* cm)'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;expand&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="bp"&gt;False&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;data&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;cmtest&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;isnull&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="bp"&gt;False&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;div class="output_wrapper"&gt;
+&lt;div class="output"&gt;
+
+
+&lt;div class="output_area"&gt;&lt;div class="prompt output_prompt"&gt;Out[44]:&lt;/div&gt;
+
+&lt;div class="output_html rendered_html output_subarea output_execute_result"&gt;
+&lt;div&gt;
+&lt;table border="1" class="dataframe"&gt;
+  &lt;thead&gt;
+    &lt;tr style="text-align: right;"&gt;
+      &lt;th&gt;&lt;/th&gt;
+      &lt;th&gt;artifactNumber&lt;/th&gt;
+      &lt;th&gt;ObjectName&lt;/th&gt;
+      &lt;th&gt;GeneralDescription&lt;/th&gt;
+      &lt;th&gt;model&lt;/th&gt;
+      &lt;th&gt;SerialNumber&lt;/th&gt;
+      &lt;th&gt;Manufacturer&lt;/th&gt;
+      &lt;th&gt;ManuCountry&lt;/th&gt;
+      &lt;th&gt;ManuProvince&lt;/th&gt;
+      &lt;th&gt;ManuCity&lt;/th&gt;
+      &lt;th&gt;BeginDate&lt;/th&gt;
+      &lt;th&gt;EndDate&lt;/th&gt;
+      &lt;th&gt;date_qualifier&lt;/th&gt;
+      &lt;th&gt;patent&lt;/th&gt;
+      &lt;th&gt;NumberOfComponents&lt;/th&gt;
+      &lt;th&gt;ArtifactFinish&lt;/th&gt;
+      &lt;th&gt;ContextCanada&lt;/th&gt;
+      &lt;th&gt;ContextFunction&lt;/th&gt;
+      &lt;th&gt;ContextTechnical&lt;/th&gt;
+      &lt;th&gt;group1&lt;/th&gt;
+      &lt;th&gt;category1&lt;/th&gt;
+      &lt;th&gt;...&lt;/th&gt;
+      &lt;th&gt;category2&lt;/th&gt;
+      &lt;th&gt;subcategory2&lt;/th&gt;
+      &lt;th&gt;group3&lt;/th&gt;
+      &lt;th&gt;category3&lt;/th&gt;
+      &lt;th&gt;subcategory3&lt;/th&gt;
+      &lt;th&gt;material&lt;/th&gt;
+      &lt;th&gt;Length&lt;/th&gt;
+      &lt;th&gt;Width&lt;/th&gt;
+      &lt;th&gt;Height&lt;/th&gt;
+      &lt;th&gt;Thickness&lt;/th&gt;
+      &lt;th&gt;Weight&lt;/th&gt;
+      &lt;th&gt;Diameter&lt;/th&gt;
+      &lt;th&gt;image&lt;/th&gt;
+      &lt;th&gt;thumbnail&lt;/th&gt;
+      &lt;th&gt;HeightINT&lt;/th&gt;
+      &lt;th&gt;HeightMULTI&lt;/th&gt;
+      &lt;th&gt;HeightNUM&lt;/th&gt;
+      &lt;th&gt;WidthINT&lt;/th&gt;
+      &lt;th&gt;WidthMULTI&lt;/th&gt;
+      &lt;th&gt;WidthNUM&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;th&gt;1934&lt;/th&gt;
+      &lt;td&gt;1966.0971.001&lt;/td&gt;
+      &lt;td&gt;Photograph&lt;/td&gt;
+      &lt;td&gt;photograph paper; wood frame; glass; paper &amp;amp; c...&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;JARMAN, FRANK LTD.&lt;/td&gt;
+      &lt;td&gt;Canada&lt;/td&gt;
+      &lt;td&gt;Ontario&lt;/td&gt;
+      &lt;td&gt;Ottawa&lt;/td&gt;
+      &lt;td&gt;1941&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;1.0&lt;/td&gt;
+      &lt;td&gt;b + w photograph; black frame&lt;/td&gt;
+      &lt;td&gt;presented by Frank Learman to Ralph Bell, Dire...&lt;/td&gt;
+      &lt;td&gt;display&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;Aviation&lt;/td&gt;
+      &lt;td&gt;Archives&lt;/td&gt;
+      &lt;td&gt;...&lt;/td&gt;
+      &lt;td&gt;Archives&lt;/td&gt;
+      &lt;td&gt;Personal&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;paper-&amp;gt;cardboard;wood-&amp;gt;;glass-&amp;gt;;metal-&amp;gt;steel&lt;/td&gt;
+      &lt;td&gt;49.8 cm&lt;/td&gt;
+      &lt;td&gt;38.8 cm&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;1.9 cm&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;http://source.techno-science.ca/artifacts-arte...&lt;/td&gt;
+      &lt;td&gt;http://source.techno-science.ca/artifacts-arte...&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;38.8&lt;/td&gt;
+      &lt;td&gt;1.0&lt;/td&gt;
+      &lt;td&gt;38.8&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;th&gt;1941&lt;/th&gt;
+      &lt;td&gt;1966.0978.001&lt;/td&gt;
+      &lt;td&gt;Photograph&lt;/td&gt;
+      &lt;td&gt;photograph paper; glass; plastic frame; steel ...&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;Royal Canadian Air Force&lt;/td&gt;
+      &lt;td&gt;Canada&lt;/td&gt;
+      &lt;td&gt;Ontario&lt;/td&gt;
+      &lt;td&gt;Ottawa&lt;/td&gt;
+      &lt;td&gt;1927&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;circa&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;1.0&lt;/td&gt;
+      &lt;td&gt;b + w photograph; caption in white ink; mounte...&lt;/td&gt;
+      &lt;td&gt;RCAF Station Ottawa (later Rockcliffe) was the...&lt;/td&gt;
+      &lt;td&gt;taken as part of aerial photography survey for...&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;Aviation&lt;/td&gt;
+      &lt;td&gt;Archives&lt;/td&gt;
+      &lt;td&gt;...&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;paper-&amp;gt;;glass-&amp;gt;;synthetic-&amp;gt;plastic;metal-&amp;gt;steel&lt;/td&gt;
+      &lt;td&gt;45.3 cm&lt;/td&gt;
+      &lt;td&gt;40.0 cm&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;2.3 cm&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;http://source.techno-science.ca/artifacts-arte...&lt;/td&gt;
+      &lt;td&gt;http://source.techno-science.ca/artifacts-arte...&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;40.0&lt;/td&gt;
+      &lt;td&gt;1.0&lt;/td&gt;
+      &lt;td&gt;40.0&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;th&gt;52400&lt;/th&gt;
+      &lt;td&gt;1989.0488.001&lt;/td&gt;
+      &lt;td&gt;Calculator, air navigation&lt;/td&gt;
+      &lt;td&gt;plastic; metal swivel at centre - possibly alu...&lt;/td&gt;
+      &lt;td&gt;B-24D&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;Consolidated Aircraft Corp.&lt;/td&gt;
+      &lt;td&gt;United States of America&lt;/td&gt;
+      &lt;td&gt;California&lt;/td&gt;
+      &lt;td&gt;San diego&lt;/td&gt;
+      &lt;td&gt;1941&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;after&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;2.0&lt;/td&gt;
+      &lt;td&gt;white with black detail; pale yellow rotating ...&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;used to determine gross weight &amp;amp; fore &amp;amp; aft ce...&lt;/td&gt;
+      &lt;td&gt;especially useful on bombers because of varyin...&lt;/td&gt;
+      &lt;td&gt;Aviation&lt;/td&gt;
+      &lt;td&gt;Navigation instruments &amp;amp; equipment&lt;/td&gt;
+      &lt;td&gt;...&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;synthetic-&amp;gt;plastic;metal-&amp;gt;aluminum - possible&lt;/td&gt;
+      &lt;td&gt;28.0 cm&lt;/td&gt;
+      &lt;td&gt;25.2 cm&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;1.0 cm&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;http://source.techno-science.ca/artifacts-arte...&lt;/td&gt;
+      &lt;td&gt;http://source.techno-science.ca/artifacts-arte...&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;25.2&lt;/td&gt;
+      &lt;td&gt;1.0&lt;/td&gt;
+      &lt;td&gt;25.2&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;th&gt;56710&lt;/th&gt;
+      &lt;td&gt;1991.0773.001&lt;/td&gt;
+      &lt;td&gt;Calculator, air navigation&lt;/td&gt;
+      &lt;td&gt;plastic; metal swivel at centre - possibly alu...&lt;/td&gt;
+      &lt;td&gt;28-5MC&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;Consolidated Vultee Aircraft Corp.&lt;/td&gt;
+      &lt;td&gt;United States of America&lt;/td&gt;
+      &lt;td&gt;California&lt;/td&gt;
+      &lt;td&gt;San diego&lt;/td&gt;
+      &lt;td&gt;1953&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;circa&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;2.0&lt;/td&gt;
+      &lt;td&gt;white with black detail; pale yellow rotating ...&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;used to determine gross weight &amp;amp; fore &amp;amp; aft ce...&lt;/td&gt;
+      &lt;td&gt;useful on cargo planes because of varying fuel...&lt;/td&gt;
+      &lt;td&gt;Aviation&lt;/td&gt;
+      &lt;td&gt;Navigation instruments &amp;amp; equipment&lt;/td&gt;
+      &lt;td&gt;...&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;synthetic-&amp;gt;plastic;metal-&amp;gt;aluminum - possible&lt;/td&gt;
+      &lt;td&gt;28.6 cm&lt;/td&gt;
+      &lt;td&gt;25.5 cm&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;1.0 cm&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;http://source.techno-science.ca/artifacts-arte...&lt;/td&gt;
+      &lt;td&gt;http://source.techno-science.ca/artifacts-arte...&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;25.5&lt;/td&gt;
+      &lt;td&gt;1.0&lt;/td&gt;
+      &lt;td&gt;25.5&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;th&gt;56729&lt;/th&gt;
+      &lt;td&gt;1991.0788.001&lt;/td&gt;
+      &lt;td&gt;Print&lt;/td&gt;
+      &lt;td&gt;paper; glass; aluminum frame &amp;amp; wire; steel con...&lt;/td&gt;
+      &lt;td&gt;Augsberg Raid&lt;/td&gt;
+      &lt;td&gt;130/500&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;England&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;Lincolnshire&lt;/td&gt;
+      &lt;td&gt;1986&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;1.0&lt;/td&gt;
+      &lt;td&gt;colour image; predom. grey-blue; grey matte; g...&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;display; to commemorate a raid by RAF Lancaste...&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;Aviation&lt;/td&gt;
+      &lt;td&gt;Commemorative&lt;/td&gt;
+      &lt;td&gt;...&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;paper-&amp;gt;;glass-&amp;gt;;metal-&amp;gt;aluminum;metal-&amp;gt;steel&lt;/td&gt;
+      &lt;td&gt;71.5 cm&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;2.3 cm&lt;/td&gt;
+      &lt;td&gt;55.7 cm&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;http://source.techno-science.ca/artifacts-arte...&lt;/td&gt;
+      &lt;td&gt;http://source.techno-science.ca/artifacts-arte...&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;th&gt;65632&lt;/th&gt;
+      &lt;td&gt;1994.0626.001&lt;/td&gt;
+      &lt;td&gt;Print&lt;/td&gt;
+      &lt;td&gt;paper print mounted on wooden board; laminated...&lt;/td&gt;
+      &lt;td&gt;Critical Approach&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;VINH, CHARLES&lt;/td&gt;
+      &lt;td&gt;Canada&lt;/td&gt;
+      &lt;td&gt;Québec&lt;/td&gt;
+      &lt;td&gt;Montréal&lt;/td&gt;
+      &lt;td&gt;1991&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;after&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;1.0&lt;/td&gt;
+      &lt;td&gt;colour image included predom. yellow &amp;amp; red air...&lt;/td&gt;
+      &lt;td&gt;PAINTING BY CANADIAN ARTIST CHARLES VINH DEPIC...&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;Aviation&lt;/td&gt;
+      &lt;td&gt;Commemorative&lt;/td&gt;
+      &lt;td&gt;...&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;paper-&amp;gt;;wood-&amp;gt;;metal-&amp;gt;steel&lt;/td&gt;
+      &lt;td&gt;51.1 cm&lt;/td&gt;
+      &lt;td&gt;41.0 cm&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;1.0 cm&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;http://source.techno-science.ca/artifacts-arte...&lt;/td&gt;
+      &lt;td&gt;http://source.techno-science.ca/artifacts-arte...&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;41.0&lt;/td&gt;
+      &lt;td&gt;1.0&lt;/td&gt;
+      &lt;td&gt;41.0&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;th&gt;73825&lt;/th&gt;
+      &lt;td&gt;1996.0625.002&lt;/td&gt;
+      &lt;td&gt;Stamp, postage&lt;/td&gt;
+      &lt;td&gt;PAPER STAMPS/ CARDBOARD ENVELOPES &amp;amp; FOLDERS/ P...&lt;/td&gt;
+      &lt;td&gt;HISTORIC LAND VEHICLES&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;Unknown&lt;/td&gt;
+      &lt;td&gt;Unknown&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;2.0&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;...&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;paper-&amp;gt;cardboard;synthetic&lt;/td&gt;
+      &lt;td&gt;19.4 cm&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;1.2 cm&lt;/td&gt;
+      &lt;td&gt;11.8 cm&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;http://source.techno-science.ca/artifacts-arte...&lt;/td&gt;
+      &lt;td&gt;http://source.techno-science.ca/artifacts-arte...&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;th&gt;75062&lt;/th&gt;
+      &lt;td&gt;1997.0162.003&lt;/td&gt;
+      &lt;td&gt;Standard, mass&lt;/td&gt;
+      &lt;td&gt;BOX: WOOD WITH METAL HARDWARE AND FELT PADDING...&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;OERTLING, L.&lt;/td&gt;
+      &lt;td&gt;England&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;London&lt;/td&gt;
+      &lt;td&gt;1912&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;18.0&lt;/td&gt;
+      &lt;td&gt;WEIGHTS: LACQUERED BRASS/ BOX STAINED AND VARN...&lt;/td&gt;
+      &lt;td&gt;THE BRITISH AVOIRDUPOIS WEIGHTS BECAME LEGAL I...&lt;/td&gt;
+      &lt;td&gt;USED TO BALANCE QUANTITIES ON A SCALE TO DETER...&lt;/td&gt;
+      &lt;td&gt;THE AVOIRDUPOIS POUNDBECAME THE IMPERIAL STAND...&lt;/td&gt;
+      &lt;td&gt;Metrology&lt;/td&gt;
+      &lt;td&gt;Mass/weight&lt;/td&gt;
+      &lt;td&gt;...&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;wood-&amp;gt;;metal-&amp;gt;brass;fibre-&amp;gt;felt&lt;/td&gt;
+      &lt;td&gt;43.8 cm&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;21.3 cm&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;23.0 cm&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;http://source.techno-science.ca/artifacts-arte...&lt;/td&gt;
+      &lt;td&gt;http://source.techno-science.ca/artifacts-arte...&lt;/td&gt;
+      &lt;td&gt;21.3&lt;/td&gt;
+      &lt;td&gt;1.0&lt;/td&gt;
+      &lt;td&gt;21.3&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;th&gt;86470&lt;/th&gt;
+      &lt;td&gt;2002.0430.001&lt;/td&gt;
+      &lt;td&gt;Drawing&lt;/td&gt;
+      &lt;td&gt;paper; glass; aluminum frame &amp;amp; plate; steel ha...&lt;/td&gt;
+      &lt;td&gt;Douglas DC-9&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;2002&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;1.0&lt;/td&gt;
+      &lt;td&gt;black, white &amp;amp; red drawing; grey marble patter...&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;display; commemorate Air Canada Douglas DC-9&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;Aviation&lt;/td&gt;
+      &lt;td&gt;Commemorative&lt;/td&gt;
+      &lt;td&gt;...&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;paper-&amp;gt;cardboard;glass-&amp;gt;;metal-&amp;gt;aluminum;metal...&lt;/td&gt;
+      &lt;td&gt;62.0 cm&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;2.3 cm&lt;/td&gt;
+      &lt;td&gt;46.5 cm&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;http://source.techno-science.ca/artifacts-arte...&lt;/td&gt;
+      &lt;td&gt;http://source.techno-science.ca/artifacts-arte...&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;th&gt;90206&lt;/th&gt;
+      &lt;td&gt;2004.0013.005&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;LEATHER CASE HAS METAL CLOSURES; CORDOROY LINING&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;MARKED "T.M. REG. CAN. PAT. OFF."&lt;/td&gt;
+      &lt;td&gt;8.0&lt;/td&gt;
+      &lt;td&gt;RED-BROWN SMOOTH LEATHER&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;...&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;skin-&amp;gt;leather;metal-&amp;gt;;fibre-&amp;gt;cotton&lt;/td&gt;
+      &lt;td&gt;14.7 cm&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;6.4 cm&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;4.2 cm&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;http://source.techno-science.ca/artifacts-arte...&lt;/td&gt;
+      &lt;td&gt;http://source.techno-science.ca/artifacts-arte...&lt;/td&gt;
+      &lt;td&gt;6.4&lt;/td&gt;
+      &lt;td&gt;1.0&lt;/td&gt;
+      &lt;td&gt;6.4&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;th&gt;90207&lt;/th&gt;
+      &lt;td&gt;2004.0013.006&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;LEATHER CASE HAS METAL CLOSURES; CORDOROY LINING&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;8.0&lt;/td&gt;
+      &lt;td&gt;RED-BROWN SMOOTH LEATHER&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;...&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;skin-&amp;gt;leather;metal-&amp;gt;;fibre-&amp;gt;cotton&lt;/td&gt;
+      &lt;td&gt;14.7 cm&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;16.5 cm&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;8.5 cm&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;http://source.techno-science.ca/artifacts-arte...&lt;/td&gt;
+      &lt;td&gt;http://source.techno-science.ca/artifacts-arte...&lt;/td&gt;
+      &lt;td&gt;16.5&lt;/td&gt;
+      &lt;td&gt;1.0&lt;/td&gt;
+      &lt;td&gt;16.5&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;th&gt;90416&lt;/th&gt;
+      &lt;td&gt;2004.0129.001&lt;/td&gt;
+      &lt;td&gt;Painting&lt;/td&gt;
+      &lt;td&gt;paper; glass; cloth matte; wood frame; cardboa...&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;1980&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;1.0&lt;/td&gt;
+      &lt;td&gt;hand painted colour image&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;display&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;Aviation&lt;/td&gt;
+      &lt;td&gt;Commemorative&lt;/td&gt;
+      &lt;td&gt;...&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;paper-&amp;gt;cardboard;glass-&amp;gt;;fibre-&amp;gt;;wood-&amp;gt;;metal-...&lt;/td&gt;
+      &lt;td&gt;44.0 cm&lt;/td&gt;
+      &lt;td&gt;40.0 cm&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;2.5 cm&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;http://source.techno-science.ca/artifacts-arte...&lt;/td&gt;
+      &lt;td&gt;http://source.techno-science.ca/artifacts-arte...&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;40.0&lt;/td&gt;
+      &lt;td&gt;1.0&lt;/td&gt;
+      &lt;td&gt;40.0&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;th&gt;90742&lt;/th&gt;
+      &lt;td&gt;2004.0305.015&lt;/td&gt;
+      &lt;td&gt;Box&lt;/td&gt;
+      &lt;td&gt;paper&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;Metro Packaging Co. Ltd.&lt;/td&gt;
+      &lt;td&gt;Canada&lt;/td&gt;
+      &lt;td&gt;Ontario&lt;/td&gt;
+      &lt;td&gt;Toronto&lt;/td&gt;
+      &lt;td&gt;2002&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;circa&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;15.0&lt;/td&gt;
+      &lt;td&gt;Unbleached cardboard box has black and light b...&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;To contain and protect the contents when not i...&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;...&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;paper-&amp;gt;cardboard&lt;/td&gt;
+      &lt;td&gt;49.0 cm&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;54.0 cm&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;37.0 cm&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;http://source.techno-science.ca/artifacts-arte...&lt;/td&gt;
+      &lt;td&gt;http://source.techno-science.ca/artifacts-arte...&lt;/td&gt;
+      &lt;td&gt;54.0&lt;/td&gt;
+      &lt;td&gt;1.0&lt;/td&gt;
+      &lt;td&gt;54.0&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+      &lt;td&gt;NaN&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;13 rows × 42 columns&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;/div&gt;
+
+&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;/div&gt;
+&lt;div class="cell border-box-sizing text_cell rendered"&gt;
+&lt;div class="prompt input_prompt"&gt;
+&lt;/div&gt;
+&lt;div class="inner_cell"&gt;
+&lt;div class="text_cell_render border-box-sizing rendered_html"&gt;
+&lt;p&gt;Let's set those cases to NaN, and just ignore them for now:&lt;/p&gt;
+
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="cell border-box-sizing code_cell rendered"&gt;
+&lt;div class="input"&gt;
+&lt;div class="prompt input_prompt"&gt;In [45]:&lt;/div&gt;
+&lt;div class="inner_cell"&gt;
+    &lt;div class="input_area"&gt;
+&lt;div class=" highlight hl-ipython2"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;data&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;loc&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;cmtest&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;isnull&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="bp"&gt;False&lt;/span&gt;&lt;span class="p"&gt;,[&lt;/span&gt;&lt;span class="s1"&gt;'Weight'&lt;/span&gt;&lt;span class="p"&gt;]]&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="bp"&gt;None&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;/div&gt;
+&lt;div class="cell border-box-sizing code_cell rendered"&gt;
+&lt;div class="input"&gt;
+&lt;div class="prompt input_prompt"&gt;In [48]:&lt;/div&gt;
+&lt;div class="inner_cell"&gt;
+    &lt;div class="input_area"&gt;
+&lt;div class=" highlight hl-ipython2"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;data&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;'WeightINT'&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;extract_digits&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;data&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;'Weight'&lt;/span&gt;&lt;span class="p"&gt;])&lt;/span&gt;
+&lt;span class="n"&gt;data&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;'WeightMULT'&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;extract_multipliers&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;data&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;'Weight'&lt;/span&gt;&lt;span class="p"&gt;])&lt;/span&gt;
+&lt;span class="n"&gt;data&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;'WeightNUM'&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;data&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;'WeightINT'&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="n"&gt;data&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;'WeightMULT'&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;span class="n"&gt;data&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;'WeightNUM'&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;mean&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;div class="output_wrapper"&gt;
+&lt;div class="output"&gt;
+
+
+&lt;div class="output_area"&gt;&lt;div class="prompt output_prompt"&gt;Out[48]:&lt;/div&gt;
+
+
+&lt;div class="output_text output_subarea output_execute_result"&gt;
+&lt;pre&gt;1058.8799535602088&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;/div&gt;
+
+&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;/div&gt;
+&lt;div class="cell border-box-sizing text_cell rendered"&gt;
+&lt;div class="prompt input_prompt"&gt;
+&lt;/div&gt;
+&lt;div class="inner_cell"&gt;
+&lt;div class="text_cell_render border-box-sizing rendered_html"&gt;
+&lt;p&gt;The average weight is 1 ton, which may be a problem if we want to fabricate this. This doesn't seem to jive with our findings for the measurements though, so we're going to take a closer look at that next.&lt;/p&gt;
+
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+</description><guid>http://bryans.im/posts/the-average-thing/</guid><pubDate>Mon, 02 May 2016 02:06:22 GMT</pubDate></item></channel></rss>
