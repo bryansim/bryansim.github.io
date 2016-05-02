@@ -65,12 +65,12 @@
 
 
 <div class="postindex">
-    <article class="h-entry post-text"><header><h1 class="p-name entry-title"><a href="../../posts/the-average-thing/" class="u-url">The Average Thing #1</a></h1>
+    <article class="h-entry post-text"><header><h1 class="p-name entry-title"><a href="../../posts/the-average-thing-1/" class="u-url">The Average Thing #1</a></h1>
         <div class="metadata">
             <p class="byline author vcard"><span class="byline-name fn">
                 Bryan Sim
             </span></p>
-            <p class="dateline"><a href="../../posts/the-average-thing/" rel="bookmark"><time class="published dt-published" datetime="2016-05-01T23:05:33-04:00" title="2016-05-01 23:05">2016-05-01 23:05</time></a></p>
+            <p class="dateline"><a href="../../posts/the-average-thing-1/" rel="bookmark"><time class="published dt-published" datetime="2016-05-01T23:05:33-04:00" title="2016-05-01 23:05">2016-05-01 23:05</time></a></p>
         </div>
     </header><div class="e-content entry-content">
     <div tabindex="-1" id="notebook" class="border-box-sizing">
@@ -81,7 +81,7 @@
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="The-Average-Thing">The Average Thing<a class="anchor-link" href="../../posts/the-average-thing/#The-Average-Thing">¶</a>
+<h2 id="The-Average-Thing">The Average Thing<a class="anchor-link" href="../../posts/the-average-thing-1/#The-Average-Thing">¶</a>
 </h2>
 <p>The Canada Science and Technology Museums Corporation hosts a repository of all the artifacts in its collection here: (<a href="http://techno-science.ca/en/data.php">http://techno-science.ca/en/data.php</a>). Let's do something interesting with it.</p>
 
@@ -93,7 +93,7 @@
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="Reading-and-cleaning-data">Reading and cleaning data<a class="anchor-link" href="../../posts/the-average-thing/#Reading-and-cleaning-data">¶</a>
+<h3 id="Reading-and-cleaning-data">Reading and cleaning data<a class="anchor-link" href="../../posts/the-average-thing-1/#Reading-and-cleaning-data">¶</a>
 </h3>
 <p>The data come in either a .csv or .xml format. Let's first try reading the .csv file, because Pandas has native support for that. First, we import all the packages that we might need (e.g., regex), and tell Pandas not to truncate the columns like it usually does.</p>
 
@@ -562,7 +562,7 @@
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="Recoding-dimensions-into-actual-units">Recoding dimensions into actual units<a class="anchor-link" href="../../posts/the-average-thing/#Recoding-dimensions-into-actual-units">¶</a>
+<h3 id="Recoding-dimensions-into-actual-units">Recoding dimensions into actual units<a class="anchor-link" href="../../posts/the-average-thing-1/#Recoding-dimensions-into-actual-units">¶</a>
 </h3>
 <p>The first thing we're going to do is to do convert all the dimensions, which have mixed units (e.g., 16cm and 10m or whatever) into one common unit. To do this, we're going to use regular expressions and loop through the dimension columns.</p>
 <p>The other thing that we might want to do is decide what artifacts to actually use. It looks like some of the artifacts are things like documents and paper, and others are really big things like engines.</p>
@@ -575,7 +575,7 @@
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h4 id="Dealing-with-missing-data">Dealing with missing data<a class="anchor-link" href="../../posts/the-average-thing/#Dealing-with-missing-data">¶</a>
+<h4 id="Dealing-with-missing-data">Dealing with missing data<a class="anchor-link" href="../../posts/the-average-thing-1/#Dealing-with-missing-data">¶</a>
 </h4>
 <p>As you can see from the example cases above, lots of data is missing or unavailable, which is probably to be expected given that not all columns are necessarily relevant to each artifact. However, this forces us to make a decision when trying to summarize data: How do we decide whether to include or exclude artifacts?</p>
 
@@ -841,7 +841,7 @@
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h4 id="Functions-to-extract-digits-and-units:">Functions to extract digits and units:<a class="anchor-link" href="../../posts/the-average-thing/#Functions-to-extract-digits-and-units:">¶</a>
+<h4 id="Functions-to-extract-digits-and-units:">Functions to extract digits and units:<a class="anchor-link" href="../../posts/the-average-thing-1/#Functions-to-extract-digits-and-units:">¶</a>
 </h4>
 <p>Now that we've done this once with length, we can write some functions to do the above easily with the rest of the dimensions. We also have a function that will take a list of dimensions, and "numberize" all of them.</p>
 
@@ -908,7 +908,7 @@
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h4 id="Rest-of-the-dimensions">Rest of the dimensions<a class="anchor-link" href="../../posts/the-average-thing/#Rest-of-the-dimensions">¶</a>
+<h4 id="Rest-of-the-dimensions">Rest of the dimensions<a class="anchor-link" href="../../posts/the-average-thing-1/#Rest-of-the-dimensions">¶</a>
 </h4>
 <p>From the above, the average length of all the artifacts in the collection is 44.7cm. Let's find out what the average is for all the other dimensions:</p>
 
