@@ -71,7 +71,7 @@
             <p class="byline author vcard"><span class="byline-name fn">
                 Bryan Sim
             </span></p>
-            <p class="dateline"><a href="posts/mousetracker-data-1/" rel="bookmark"><time class="published dt-published" datetime="2016-05-02T15:16:24-04:00" title="2016-05-02 15:16">2016-05-02 15:16</time></a></p>
+            <p class="dateline"><a href="posts/mousetracker-data-1/" rel="bookmark"><time class="published dt-published" datetime="2016-05-02T15:24:22-04:00" title="2016-05-02 15:24">2016-05-02 15:24</time></a></p>
         </div>
     </header><div class="e-content entry-content">
     <div tabindex="-1" id="notebook" class="border-box-sizing">
@@ -158,7 +158,7 @@
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In [135]:</div>
+<div class="prompt input_prompt">In [1]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
@@ -172,7 +172,7 @@
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In [24]:</div>
+<div class="prompt input_prompt">In [2]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span></span><span class="n">data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">"mousetrackercorrected.csv"</span><span class="p">)</span>
@@ -188,7 +188,7 @@
 
 
 <div class="output_area">
-<div class="prompt output_prompt">Out[24]:</div>
+<div class="prompt output_prompt">Out[2]:</div>
 
 
 <div class="output_text output_subarea output_execute_result">
@@ -232,7 +232,7 @@
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In [39]:</div>
+<div class="prompt input_prompt">In [3]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span></span><span class="n">data</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">:</span><span class="mi">19</span><span class="p">]</span>
@@ -247,7 +247,7 @@
 
 
 <div class="output_area">
-<div class="prompt output_prompt">Out[39]:</div>
+<div class="prompt output_prompt">Out[3]:</div>
 
 <div class="output_html rendered_html output_subarea output_execute_result">
 <div>
@@ -400,7 +400,7 @@
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In [183]:</div>
+<div class="prompt input_prompt">In [4]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span></span><span class="n">data</span><span class="p">[</span><span class="s1">'MD'</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">data</span><span class="p">[</span><span class="s1">'MD_1'</span><span class="p">]</span><span class="o">.</span><span class="n">isnull</span><span class="p">()</span> <span class="o">==</span> <span class="bp">False</span><span class="p">,</span> <span class="p">[</span><span class="s1">'MD_1'</span><span class="p">]]</span>
@@ -415,7 +415,7 @@
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In [184]:</div>
+<div class="prompt input_prompt">In [5]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span></span><span class="n">data</span><span class="p">[</span><span class="s1">'AUC'</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">data</span><span class="p">[</span><span class="s1">'AUC_1'</span><span class="p">]</span><span class="o">.</span><span class="n">isnull</span><span class="p">()</span> <span class="o">==</span> <span class="bp">False</span><span class="p">,</span> <span class="p">[</span><span class="s1">'AUC_1'</span><span class="p">]]</span>
@@ -441,7 +441,7 @@
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In [185]:</div>
+<div class="prompt input_prompt">In [6]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span></span><span class="n">data</span><span class="p">[</span><span class="s1">'AUC'</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
@@ -456,7 +456,7 @@
 
 
 <div class="output_area">
-<div class="prompt output_prompt">Out[185]:</div>
+<div class="prompt output_prompt">Out[6]:</div>
 
 
 <div class="output_text output_subarea output_execute_result">
@@ -471,7 +471,7 @@
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In [186]:</div>
+<div class="prompt input_prompt">In [7]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span></span><span class="n">data</span><span class="p">[</span><span class="s1">'MD'</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
@@ -486,7 +486,7 @@
 
 
 <div class="output_area">
-<div class="prompt output_prompt">Out[186]:</div>
+<div class="prompt output_prompt">Out[7]:</div>
 
 
 <div class="output_text output_subarea output_execute_result">
@@ -533,7 +533,7 @@
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In [188]:</div>
+<div class="prompt input_prompt">In [8]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span></span><span class="n">sodata</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">data</span><span class="p">[</span><span class="s1">'code'</span><span class="p">]</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">extract</span><span class="p">(</span><span class="s1">r'(so)'</span><span class="p">,</span> <span class="n">expand</span> <span class="o">=</span> <span class="bp">False</span><span class="p">)</span><span class="o">.</span><span class="n">isnull</span><span class="p">()</span> <span class="o">==</span> <span class="bp">False</span><span class="p">]</span>
@@ -548,7 +548,7 @@
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In [189]:</div>
+<div class="prompt input_prompt">In [9]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span></span><span class="k">print</span> <span class="n">sodata</span><span class="p">[</span><span class="s1">'MD'</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
@@ -580,7 +580,7 @@
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In [190]:</div>
+<div class="prompt input_prompt">In [10]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span></span><span class="k">print</span> <span class="n">sodata</span><span class="p">[</span><span class="s1">'AUC'</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
@@ -622,7 +622,7 @@
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In [191]:</div>
+<div class="prompt input_prompt">In [11]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span></span><span class="k">print</span> <span class="n">sodata</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">sodata</span><span class="p">[</span><span class="s1">'error'</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">][</span><span class="s1">'MD'</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
@@ -660,7 +660,7 @@
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In [192]:</div>
+<div class="prompt input_prompt">In [12]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span></span><span class="k">print</span> <span class="n">sodata</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">sodata</span><span class="p">[</span><span class="s1">'error'</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">][</span><span class="s1">'AUC'</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
@@ -755,7 +755,7 @@
   </div>
 
     </div>
-    </article><article class="h-entry post-text"><header><h1 class="p-name entry-title"><a href="posts/the-average-thing/" class="u-url">The Average Thing</a></h1>
+    </article><article class="h-entry post-text"><header><h1 class="p-name entry-title"><a href="posts/the-average-thing/" class="u-url">The Average Thing #1</a></h1>
         <div class="metadata">
             <p class="byline author vcard"><span class="byline-name fn">
                 Bryan Sim
