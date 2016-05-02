@@ -1,4 +1,0 @@
-Sitemap: http://bryans.im/sitemapindex.xml
-
-User-Agent: *
-Host: bryans.im
