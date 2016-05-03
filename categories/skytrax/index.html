@@ -2,41 +2,17 @@
 <html prefix="og: http://ogp.me/ns# article: http://ogp.me/ns/article# " lang="en">
 <head>
 <meta charset="utf-8">
-<base href="https://bryansim.github.io/posts/skytrax-data-1/">
+<base href="https://bryansim.github.io/categories/skytrax/">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Skytrax Data #1 | Bryan Sim</title>
+<title>Posts about skytrax | Bryan Sim</title>
 <link href="../../assets/css/all-nocdn.css" rel="stylesheet" type="text/css">
 <link href="../../assets/css/ipython.min.css" rel="stylesheet" type="text/css">
 <link href="../../assets/css/nikola_ipython.css" rel="stylesheet" type="text/css">
 <meta content="#5670d4" name="theme-color">
-<link rel="alternate" type="application/rss+xml" title="RSS" href="../../rss.xml">
-<link rel="canonical" href="https://bryansim.github.io/posts/skytrax-data-1/">
+<link rel="alternate" type="application/rss+xml" title="RSS for tag skytrax (en)" href="../skytrax.xml">
+<link rel="canonical" href="https://bryansim.github.io/categories/skytrax/">
 <link rel="icon" href="http://bryans.im/favicon.ico" sizes="16x16">
-<!--[if lt IE 9]><script src="../../assets/js/html5.js"></script><![endif]--><meta name="author" content="Bryan Sim">
-<link rel="prev" href="../mousetracker-data-1/" title="Mousetracker Data #1" type="text/html">
-<meta property="og:site_name" content="Bryan Sim">
-<meta property="og:title" content="Skytrax Data #1">
-<meta property="og:url" content="https://bryansim.github.io/posts/skytrax-data-1/">
-<meta property="og:description" content="In [10]:
-
-    
-%matplotlib inline
-
-
-
-
-
-
-
-
-
-
-
-
-Skytrax ratings¶Following up on this (http://www.quangn.com/exploring-reviews-of-airline-services/) investigation into Skytrax ratings, which are a collec">
-<meta property="og:type" content="article">
-<meta property="article:published_time" content="2016-05-02T22:03:36-04:00">
-<meta property="article:tag" content="skytrax">
+<!--[if lt IE 9]><script src="../../assets/js/html5.js"></script><![endif]-->
 </head>
 <body>
 <a href="#content" class="sr-only sr-only-focusable">Skip to main content</a>
@@ -61,13 +37,13 @@ Skytrax ratings¶Following up on this (http://www.quangn.com/exploring-reviews-o
         <div class="collapse navbar-collapse" id="bs-navbar" aria-expanded="false">
             <ul class="nav navbar-nav">
 <li>
-<a href="../../categories/mediocre-museum">Mediocre Museum</a>
+<a href="../mediocre-museum">Mediocre Museum</a>
                 </li>
 <li>
-<a href="../../categories/mousetracker">Mousetracker</a>
+<a href="../mousetracker">Mousetracker</a>
                 </li>
 <li>
-<a href="../../categories/skytrax">Skytrax</a>
+<a href="../skytrax">Skytrax</a>
                 </li>
 <li>
 <a href="../../archive.html">Archive</a>
@@ -78,13 +54,7 @@ Skytrax ratings¶Following up on this (http://www.quangn.com/exploring-reviews-o
                 
             </li>
 </ul>
-<ul class="nav navbar-nav navbar-right">
-<li>
-    <a href="index.ipynb" id="sourcelink">Source</a>
-    </li>
-
-                
-            </ul>
+<ul class="nav navbar-nav navbar-right"></ul>
 </div>
 <!-- /.navbar-collapse -->
     </div>
@@ -95,20 +65,17 @@ Skytrax ratings¶Following up on this (http://www.quangn.com/exploring-reviews-o
         <div class="row">
             
             
-<article class="post-text h-entry hentry postpage" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title" itemprop="headline name"><a href="." class="u-url">Skytrax Data #1</a></h1>
 
+
+<div class="postindex">
+    <article class="h-entry post-text"><header><h1 class="p-name entry-title"><a href="../../posts/skytrax-data-1/" class="u-url">Skytrax Data #1</a></h1>
         <div class="metadata">
             <p class="byline author vcard"><span class="byline-name fn">
-                    Bryan Sim
+                Bryan Sim
             </span></p>
-            <p class="dateline"><a href="." rel="bookmark"><time class="published dt-published" datetime="2016-05-02T22:03:36-04:00" itemprop="datePublished" title="2016-05-02 22:03">2016-05-02 22:03</time></a></p>
-            
-        <p class="sourceline"><a href="index.ipynb" id="sourcelink">Source</a></p>
-
+            <p class="dateline"><a href="../../posts/skytrax-data-1/" rel="bookmark"><time class="published dt-published" datetime="2016-05-02T22:03:36-04:00" title="2016-05-02 22:03">2016-05-02 22:03</time></a></p>
         </div>
-        
-
-    </header><div class="e-content entry-content" itemprop="articleBody text">
+    </header><div class="e-content entry-content">
     <div tabindex="-1" id="notebook" class="border-box-sizing">
     <div class="container" id="notebook-container">
 
@@ -130,7 +97,7 @@ Skytrax ratings¶Following up on this (http://www.quangn.com/exploring-reviews-o
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Skytrax-ratings">Skytrax ratings<a class="anchor-link" href="#Skytrax-ratings">¶</a>
+<h2 id="Skytrax-ratings">Skytrax ratings<a class="anchor-link" href="../../posts/skytrax-data-1/#Skytrax-ratings">¶</a>
 </h2>
 <p>Following up on this (<a href="http://www.quangn.com/exploring-reviews-of-airline-services/">http://www.quangn.com/exploring-reviews-of-airline-services/</a>) investigation into Skytrax ratings, which are a collection of ratings by made by airline passengers, I wanted to answer some interesting questions I had of my own.</p>
 <p>Specifically, what I was interested in is the relative contribution of each of the different metrics (e.g., ground staff, seat comfort, value) to (a) a passenger's overall rating of the airline, and (b) their decision to recommend the airline to another person. Consequently, which criteria should airlines focus on to improve customers' overall perceptions of them (the equivalent of model lift in logit regression)?</p>
@@ -213,7 +180,7 @@ Skytrax ratings¶Following up on this (http://www.quangn.com/exploring-reviews-o
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Ratings-by-airline">Ratings by airline<a class="anchor-link" href="#Ratings-by-airline">¶</a>
+<h2 id="Ratings-by-airline">Ratings by airline<a class="anchor-link" href="../../posts/skytrax-data-1/#Ratings-by-airline">¶</a>
 </h2>
 <p>The first thing I was interested in doing was a sanity check to just make sure that I was looking at the same data that the original blog post analyzed (<a href="http://www.quangn.com/exploring-reviews-of-airline-services/">http://www.quangn.com/exploring-reviews-of-airline-services/</a>).</p>
 <p>This was the case, although it appears that the original author of that post took only airlines where there were more than 100 ratings, which is what I happened to do.</p>
@@ -336,7 +303,7 @@ Skytrax ratings¶Following up on this (http://www.quangn.com/exploring-reviews-o
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Ratings-by-aircraft-type">Ratings by aircraft type<a class="anchor-link" href="#Ratings-by-aircraft-type">¶</a>
+<h2 id="Ratings-by-aircraft-type">Ratings by aircraft type<a class="anchor-link" href="../../posts/skytrax-data-1/#Ratings-by-aircraft-type">¶</a>
 </h2>
 <p>The next thing I wanted to do was to see if ratings differed as a function of what aircraft the passenger took.</p>
 
@@ -529,7 +496,7 @@ Skytrax ratings¶Following up on this (http://www.quangn.com/exploring-reviews-o
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="Boeing-vs.-Airbus">Boeing vs. Airbus<a class="anchor-link" href="#Boeing-vs.-Airbus">¶</a>
+<h3 id="Boeing-vs.-Airbus">Boeing vs. Airbus<a class="anchor-link" href="../../posts/skytrax-data-1/#Boeing-vs.-Airbus">¶</a>
 </h3>
 <p>Just for fun, let's compare the average ratings of Boeing vs. Airbus aircraft. We can use regex to select the different rows:</p>
 
@@ -591,7 +558,7 @@ dtype: float64
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Ratings-by-cabin-type">Ratings by cabin type<a class="anchor-link" href="#Ratings-by-cabin-type">¶</a>
+<h2 id="Ratings-by-cabin-type">Ratings by cabin type<a class="anchor-link" href="../../posts/skytrax-data-1/#Ratings-by-cabin-type">¶</a>
 </h2>
 <p>Finally, let's take a look at whether the flying experience is different for the top 1% than it is for the rest of us. As an aside, if you go on Youtube and listen to air traffic controller recordings at JFK, the ATC uses "Top 1%" as a colloquialism for private jets. We go through the same process to import the data:</p>
 
@@ -1026,16 +993,16 @@ dtype: float64
   </div>
 
     </div>
-    <aside class="postpromonav"><nav><ul itemprop="keywords" class="tags">
-<li><a class="tag p-category" href="../../categories/skytrax/" rel="tag">skytrax</a></li>
-        </ul>
-<ul class="pager hidden-print">
-<li class="previous">
-                <a href="../mousetracker-data-1/" rel="prev" title="Mousetracker Data #1">Previous post</a>
-            </li>
-        </ul></nav></aside><script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"> </script><script type="text/x-mathjax-config">
+    </article>
+</div>
+
+
+
+
+
+            <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"> </script><script type="text/x-mathjax-config">
             MathJax.Hub.Config({tex2jax: {inlineMath: [['$latex ','$'], ['\\(','\\)']]}});
-            </script></article>
+            </script>
 </div>
         <!--End of body content-->
 
