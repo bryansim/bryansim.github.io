@@ -2,18 +2,18 @@
 <html prefix="og: http://ogp.me/ns# article: http://ogp.me/ns/article# " lang="en">
 <head>
 <meta charset="utf-8">
-<base href="https://bryansim.github.io/">
+<base href="https://bryansim.github.io/blog/">
 <meta name="description" content="This is my blog!">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Bryan Sim</title>
-<link href="assets/css/all-nocdn.css" rel="stylesheet" type="text/css">
-<link href="assets/css/ipython.min.css" rel="stylesheet" type="text/css">
-<link href="assets/css/nikola_ipython.css" rel="stylesheet" type="text/css">
+<link href="../assets/css/all-nocdn.css" rel="stylesheet" type="text/css">
+<link href="../assets/css/ipython.min.css" rel="stylesheet" type="text/css">
+<link href="../assets/css/nikola_ipython.css" rel="stylesheet" type="text/css">
 <meta content="#5670d4" name="theme-color">
-<link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml">
-<link rel="canonical" href="https://bryansim.github.io/">
+<link rel="alternate" type="application/rss+xml" title="RSS" href="../rss.xml">
+<link rel="canonical" href="https://bryansim.github.io/blog/">
 <link rel="icon" href="http://bryans.im/favicon.ico" sizes="16x16">
-<!--[if lt IE 9]><script src="assets/js/html5.js"></script><![endif]--><link rel="prefetch" href="posts/skytrax-data-1/" type="text/html">
+<!--[if lt IE 9]><script src="../assets/js/html5.js"></script><![endif]-->
 </head>
 <body>
 <a href="#content" class="sr-only sr-only-focusable">Skip to main content</a>
@@ -38,16 +38,16 @@
         <div class="collapse navbar-collapse" id="bs-navbar" aria-expanded="false">
             <ul class="nav navbar-nav">
 <li>
-<a href="categories/mediocre-museum">Mediocre Museum</a>
+<a href="../categories/mediocre-museum">Mediocre Museum</a>
                 </li>
 <li>
-<a href="categories/mousetracker">Mousetracker</a>
+<a href="../categories/mousetracker">Mousetracker</a>
                 </li>
 <li>
-<a href="categories/skytrax">Skytrax</a>
+<a href="../categories/skytrax">Skytrax</a>
                 </li>
 <li>
-<a href="archive.html">Archive</a>
+<a href="../archive.html">Archive</a>
                 </li>
 <li>
 <a href="http://linkedin.com/in/bryansim">LinkedIn</a>
@@ -69,12 +69,12 @@
 
     
 <div class="postindex">
-    <article class="h-entry post-text"><header><h1 class="p-name entry-title"><a href="posts/skytrax-data-1/" class="u-url">Skytrax Data #1</a></h1>
+    <article class="h-entry post-text"><header><h1 class="p-name entry-title"><a href="../posts/skytrax-data-1/" class="u-url">Skytrax Data #1</a></h1>
         <div class="metadata">
             <p class="byline author vcard"><span class="byline-name fn">
                 Bryan Sim
             </span></p>
-            <p class="dateline"><a href="posts/skytrax-data-1/" rel="bookmark"><time class="published dt-published" datetime="2016-05-02T22:03:36-04:00" title="2016-05-02 22:03">2016-05-02 22:03</time></a></p>
+            <p class="dateline"><a href="../posts/skytrax-data-1/" rel="bookmark"><time class="published dt-published" datetime="2016-05-02T22:03:36-04:00" title="2016-05-02 22:03">2016-05-02 22:03</time></a></p>
         </div>
     </header><div class="e-content entry-content">
     <div tabindex="-1" id="notebook" class="border-box-sizing">
@@ -98,7 +98,7 @@
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Skytrax-ratings">Skytrax ratings<a class="anchor-link" href="posts/skytrax-data-1/#Skytrax-ratings">¶</a>
+<h2 id="Skytrax-ratings">Skytrax ratings<a class="anchor-link" href="../posts/skytrax-data-1/#Skytrax-ratings">¶</a>
 </h2>
 <p>Following up on this (<a href="http://www.quangn.com/exploring-reviews-of-airline-services/">http://www.quangn.com/exploring-reviews-of-airline-services/</a>) investigation into Skytrax ratings, which are a collection of ratings by made by airline passengers, I wanted to answer some interesting questions I had of my own.</p>
 <p>Specifically, what I was interested in is the relative contribution of each of the different metrics (e.g., ground staff, seat comfort, value) to (a) a passenger's overall rating of the airline, and (b) their decision to recommend the airline to another person. Consequently, which criteria should airlines focus on to improve customers' overall perceptions of them (the equivalent of model lift in logit regression)?</p>
@@ -181,7 +181,7 @@
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Ratings-by-airline">Ratings by airline<a class="anchor-link" href="posts/skytrax-data-1/#Ratings-by-airline">¶</a>
+<h2 id="Ratings-by-airline">Ratings by airline<a class="anchor-link" href="../posts/skytrax-data-1/#Ratings-by-airline">¶</a>
 </h2>
 <p>The first thing I was interested in doing was a sanity check to just make sure that I was looking at the same data that the original blog post analyzed (<a href="http://www.quangn.com/exploring-reviews-of-airline-services/">http://www.quangn.com/exploring-reviews-of-airline-services/</a>).</p>
 <p>This was the case, although it appears that the original author of that post took only airlines where there were more than 100 ratings, which is what I happened to do.</p>
@@ -304,7 +304,7 @@
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Ratings-by-aircraft-type">Ratings by aircraft type<a class="anchor-link" href="posts/skytrax-data-1/#Ratings-by-aircraft-type">¶</a>
+<h2 id="Ratings-by-aircraft-type">Ratings by aircraft type<a class="anchor-link" href="../posts/skytrax-data-1/#Ratings-by-aircraft-type">¶</a>
 </h2>
 <p>The next thing I wanted to do was to see if ratings differed as a function of what aircraft the passenger took.</p>
 
@@ -497,7 +497,7 @@
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="Boeing-vs.-Airbus">Boeing vs. Airbus<a class="anchor-link" href="posts/skytrax-data-1/#Boeing-vs.-Airbus">¶</a>
+<h3 id="Boeing-vs.-Airbus">Boeing vs. Airbus<a class="anchor-link" href="../posts/skytrax-data-1/#Boeing-vs.-Airbus">¶</a>
 </h3>
 <p>Just for fun, let's compare the average ratings of Boeing vs. Airbus aircraft. We can use regex to select the different rows:</p>
 
@@ -559,7 +559,7 @@ dtype: float64
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Ratings-by-cabin-type">Ratings by cabin type<a class="anchor-link" href="posts/skytrax-data-1/#Ratings-by-cabin-type">¶</a>
+<h2 id="Ratings-by-cabin-type">Ratings by cabin type<a class="anchor-link" href="../posts/skytrax-data-1/#Ratings-by-cabin-type">¶</a>
 </h2>
 <p>Finally, let's take a look at whether the flying experience is different for the top 1% than it is for the rest of us. As an aside, if you go on Youtube and listen to air traffic controller recordings at JFK, the ATC uses "Top 1%" as a colloquialism for private jets. We go through the same process to import the data:</p>
 
@@ -994,12 +994,12 @@ dtype: float64
   </div>
 
     </div>
-    </article><article class="h-entry post-text"><header><h1 class="p-name entry-title"><a href="posts/mousetracker-data-1/" class="u-url">Mousetracker Data #1</a></h1>
+    </article><article class="h-entry post-text"><header><h1 class="p-name entry-title"><a href="../posts/mousetracker-data-1/" class="u-url">Mousetracker Data #1</a></h1>
         <div class="metadata">
             <p class="byline author vcard"><span class="byline-name fn">
                 Bryan Sim
             </span></p>
-            <p class="dateline"><a href="posts/mousetracker-data-1/" rel="bookmark"><time class="published dt-published" datetime="2016-05-02T15:24:22-04:00" title="2016-05-02 15:24">2016-05-02 15:24</time></a></p>
+            <p class="dateline"><a href="../posts/mousetracker-data-1/" rel="bookmark"><time class="published dt-published" datetime="2016-05-02T15:24:22-04:00" title="2016-05-02 15:24">2016-05-02 15:24</time></a></p>
         </div>
     </header><div class="e-content entry-content">
     <div tabindex="-1" id="notebook" class="border-box-sizing">
@@ -1010,7 +1010,7 @@ dtype: float64
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Overview">Overview<a class="anchor-link" href="posts/mousetracker-data-1/#Overview">¶</a>
+<h2 id="Overview">Overview<a class="anchor-link" href="../posts/mousetracker-data-1/#Overview">¶</a>
 </h2>
 <p>I'm going to be looking at some pilot data that some colleagues and I collected using Jon Freeman's Mousetracker (<a href="http://www.mousetracker.org/">http://www.mousetracker.org/</a>). As the name suggests, mousetracker is a program designed to track participants' mouse movements. In social psychology, researchers use it to track participants' implicit decision making processes. Originally, it was developed to study how individuals categorize faces. An example of the paradigm would be a participant having to choose whether a face is male or female, like so: <img src="http://static1.squarespace.com/static/54612594e4b09fab6f870891/546efb6ae4b0923225b792c7/546efb6ce4b0a19016ccac11/1416559468408/p.jpg?format=2500w" alt="mousetracker image here"></p>
 <p>The researcher could then vary the degree to which the face has stereotypically male features, or stereotypically female features, and track not just <em>what</em> participants are categorizing the faces as, but also, <em>how</em> they reach those decisions, by tracking the paths and time course of the mouse movements.</p>
@@ -1023,7 +1023,7 @@ dtype: float64
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Current-project">Current project<a class="anchor-link" href="posts/mousetracker-data-1/#Current-project">¶</a>
+<h2 id="Current-project">Current project<a class="anchor-link" href="../posts/mousetracker-data-1/#Current-project">¶</a>
 </h2>
 <p>Anyway, some friends and I are currently working on distinguishing how individuals allocate resources in the context of a relationship. We hypothesize that at any given time, individuals are concerned with:</p>
 <ol>
@@ -1075,7 +1075,7 @@ dtype: float64
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="The-data">The data<a class="anchor-link" href="posts/mousetracker-data-1/#The-data">¶</a>
+<h2 id="The-data">The data<a class="anchor-link" href="../posts/mousetracker-data-1/#The-data">¶</a>
 </h2>
 <p>The data come in a person-period dataset. This is a "long" format where each participant has multiple rows that represent each trial of the experiment (there were 60 or so trials). However, each row also contains multiple columns each representing a bin of average locations the participant's mouse pointer was during that time span. There are ~100 such bins.</p>
 <p>In other words, each participant made 60 choices, and their mouse positions were averaged into ~100 time points per trial.</p>
@@ -1307,7 +1307,7 @@ dtype: float64
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="Descriptives">Descriptives<a class="anchor-link" href="posts/mousetracker-data-1/#Descriptives">¶</a>
+<h3 id="Descriptives">Descriptives<a class="anchor-link" href="../posts/mousetracker-data-1/#Descriptives">¶</a>
 </h3>
 <p>In the above data, what we're going to be first doing is finding the mean of participants' reaction time (RT), maximum deviation (MD), and aure under curve (AUC). The latter two measures are measures of how much participants were "attracted" to the other option despite selecting the option that they did.</p>
 <p>There are two columns for each (e.g., MD_1 and MD_2 depending on which option participants chose). These end up being redundant with one another, and we'll have to combine them.</p>
@@ -1360,7 +1360,7 @@ dtype: float64
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h4 id="Mean-MD-and-AUC">Mean MD and AUC<a class="anchor-link" href="posts/mousetracker-data-1/#Mean-MD-and-AUC">¶</a>
+<h4 id="Mean-MD-and-AUC">Mean MD and AUC<a class="anchor-link" href="../posts/mousetracker-data-1/#Mean-MD-and-AUC">¶</a>
 </h4>
 <p>Now, we can use the .mean() method to get the mean of the above.</p>
 
@@ -1432,7 +1432,7 @@ dtype: float64
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h4 id="Means-by-choice-type">Means by choice type<a class="anchor-link" href="posts/mousetracker-data-1/#Means-by-choice-type">¶</a>
+<h4 id="Means-by-choice-type">Means by choice type<a class="anchor-link" href="../posts/mousetracker-data-1/#Means-by-choice-type">¶</a>
 </h4>
 <p>The next thing we want to do is see whether participants differed depending on what the type of choice was (e.g., self vs. other etc.) Eventually, we will have a 3x2 table of means:</p>
 <table>
@@ -1683,12 +1683,12 @@ dtype: float64
   </div>
 
     </div>
-    </article><article class="h-entry post-text"><header><h1 class="p-name entry-title"><a href="posts/the-average-thing-1/" class="u-url">The Average Thing #1</a></h1>
+    </article><article class="h-entry post-text"><header><h1 class="p-name entry-title"><a href="../posts/the-average-thing-1/" class="u-url">The Average Thing #1</a></h1>
         <div class="metadata">
             <p class="byline author vcard"><span class="byline-name fn">
                 Bryan Sim
             </span></p>
-            <p class="dateline"><a href="posts/the-average-thing-1/" rel="bookmark"><time class="published dt-published" datetime="2016-05-01T23:05:33-04:00" title="2016-05-01 23:05">2016-05-01 23:05</time></a></p>
+            <p class="dateline"><a href="../posts/the-average-thing-1/" rel="bookmark"><time class="published dt-published" datetime="2016-05-01T23:05:33-04:00" title="2016-05-01 23:05">2016-05-01 23:05</time></a></p>
         </div>
     </header><div class="e-content entry-content">
     <div tabindex="-1" id="notebook" class="border-box-sizing">
@@ -1699,7 +1699,7 @@ dtype: float64
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="The-Average-Thing">The Average Thing<a class="anchor-link" href="posts/the-average-thing-1/#The-Average-Thing">¶</a>
+<h2 id="The-Average-Thing">The Average Thing<a class="anchor-link" href="../posts/the-average-thing-1/#The-Average-Thing">¶</a>
 </h2>
 <p>The Canada Science and Technology Museums Corporation hosts a repository of all the artifacts in its collection here: (<a href="http://techno-science.ca/en/data.php">http://techno-science.ca/en/data.php</a>). Let's do something interesting with it.</p>
 
@@ -1711,7 +1711,7 @@ dtype: float64
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="Reading-and-cleaning-data">Reading and cleaning data<a class="anchor-link" href="posts/the-average-thing-1/#Reading-and-cleaning-data">¶</a>
+<h3 id="Reading-and-cleaning-data">Reading and cleaning data<a class="anchor-link" href="../posts/the-average-thing-1/#Reading-and-cleaning-data">¶</a>
 </h3>
 <p>The data come in either a .csv or .xml format. Let's first try reading the .csv file, because Pandas has native support for that. First, we import all the packages that we might need (e.g., regex), and tell Pandas not to truncate the columns like it usually does.</p>
 
@@ -2180,7 +2180,7 @@ dtype: float64
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="Recoding-dimensions-into-actual-units">Recoding dimensions into actual units<a class="anchor-link" href="posts/the-average-thing-1/#Recoding-dimensions-into-actual-units">¶</a>
+<h3 id="Recoding-dimensions-into-actual-units">Recoding dimensions into actual units<a class="anchor-link" href="../posts/the-average-thing-1/#Recoding-dimensions-into-actual-units">¶</a>
 </h3>
 <p>The first thing we're going to do is to do convert all the dimensions, which have mixed units (e.g., 16cm and 10m or whatever) into one common unit. To do this, we're going to use regular expressions and loop through the dimension columns.</p>
 <p>The other thing that we might want to do is decide what artifacts to actually use. It looks like some of the artifacts are things like documents and paper, and others are really big things like engines.</p>
@@ -2193,7 +2193,7 @@ dtype: float64
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h4 id="Dealing-with-missing-data">Dealing with missing data<a class="anchor-link" href="posts/the-average-thing-1/#Dealing-with-missing-data">¶</a>
+<h4 id="Dealing-with-missing-data">Dealing with missing data<a class="anchor-link" href="../posts/the-average-thing-1/#Dealing-with-missing-data">¶</a>
 </h4>
 <p>As you can see from the example cases above, lots of data is missing or unavailable, which is probably to be expected given that not all columns are necessarily relevant to each artifact. However, this forces us to make a decision when trying to summarize data: How do we decide whether to include or exclude artifacts?</p>
 
@@ -2459,7 +2459,7 @@ dtype: float64
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h4 id="Functions-to-extract-digits-and-units:">Functions to extract digits and units:<a class="anchor-link" href="posts/the-average-thing-1/#Functions-to-extract-digits-and-units:">¶</a>
+<h4 id="Functions-to-extract-digits-and-units:">Functions to extract digits and units:<a class="anchor-link" href="../posts/the-average-thing-1/#Functions-to-extract-digits-and-units:">¶</a>
 </h4>
 <p>Now that we've done this once with length, we can write some functions to do the above easily with the rest of the dimensions. We also have a function that will take a list of dimensions, and "numberize" all of them.</p>
 
@@ -2526,7 +2526,7 @@ dtype: float64
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h4 id="Rest-of-the-dimensions">Rest of the dimensions<a class="anchor-link" href="posts/the-average-thing-1/#Rest-of-the-dimensions">¶</a>
+<h4 id="Rest-of-the-dimensions">Rest of the dimensions<a class="anchor-link" href="../posts/the-average-thing-1/#Rest-of-the-dimensions">¶</a>
 </h4>
 <p>From the above, the average length of all the artifacts in the collection is 44.7cm. Let's find out what the average is for all the other dimensions:</p>
 
@@ -2952,7 +2952,7 @@ dtype: float64
 </div>
 
 
-            <script src="assets/js/all-nocdn.js"></script><script>$('a.image-reference:not(.islink) img:not(.islink)').parent().colorbox({rel:"gal",maxWidth:"100%",maxHeight:"100%",scalePhotos:true});</script><!-- fancy dates --><script>
+            <script src="../assets/js/all-nocdn.js"></script><script>$('a.image-reference:not(.islink) img:not(.islink)').parent().colorbox({rel:"gal",maxWidth:"100%",maxHeight:"100%",scalePhotos:true});</script><!-- fancy dates --><script>
     moment.locale("en");
     fancydates(0, "YYYY-MM-DD HH:mm");
     </script><!-- end fancy dates -->
