@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<?xml-stylesheet type="text/xsl" href="assets/xml/rss.xsl" media="all"?><rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/"><channel><title>Bryan Sim</title><link>https://bryansim.github.io/</link><description>This is my blog!</description><atom:link type="application/rss+xml" rel="self" href="https://bryansim.github.io/rss.xml"></atom:link><language>en</language><lastBuildDate>Tue, 03 May 2016 02:02:01 GMT</lastBuildDate><generator>https://getnikola.com/</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>Skytrax #1</title><link>https://bryansim.github.io/posts/skytrax-1/</link><dc:creator>Bryan Sim</dc:creator><description>&lt;div tabindex="-1" id="notebook" class="border-box-sizing"&gt;
+<?xml-stylesheet type="text/xsl" href="assets/xml/rss.xsl" media="all"?><rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:dc="http://purl.org/dc/elements/1.1/" version="2.0"><channel><title>Bryan Sim</title><link>https://bryansim.github.io/</link><description>This is my blog!</description><atom:link type="application/rss+xml" rel="self" href="https://bryansim.github.io/rss.xml"></atom:link><language>en</language><lastBuildDate>Tue, 03 May 2016 02:03:42 GMT</lastBuildDate><generator>https://getnikola.com/</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>Skytrax Data #1</title><link>https://bryansim.github.io/posts/skytrax-data-1/</link><dc:creator>Bryan Sim</dc:creator><description>&lt;div tabindex="-1" id="notebook" class="border-box-sizing"&gt;
     &lt;div class="container" id="notebook-container"&gt;
 
 &lt;div class="cell border-box-sizing code_cell rendered"&gt;
@@ -20,7 +20,7 @@
 &lt;/div&gt;
 &lt;div class="inner_cell"&gt;
 &lt;div class="text_cell_render border-box-sizing rendered_html"&gt;
-&lt;h2 id="Skytrax-ratings"&gt;Skytrax ratings&lt;a class="anchor-link" href="https://bryansim.github.io/posts/skytrax-1/#Skytrax-ratings"&gt;¶&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Following up on this (&lt;a href="http://www.quangn.com/exploring-reviews-of-airline-services/"&gt;http://www.quangn.com/exploring-reviews-of-airline-services/&lt;/a&gt;) investigation into Skytrax ratings, which are a collection of ratings by made by airline passengers, I wanted to answer some interesting questions I had of my own.&lt;/p&gt;
+&lt;h2 id="Skytrax-ratings"&gt;Skytrax ratings&lt;a class="anchor-link" href="https://bryansim.github.io/posts/skytrax-data-1/#Skytrax-ratings"&gt;¶&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Following up on this (&lt;a href="http://www.quangn.com/exploring-reviews-of-airline-services/"&gt;http://www.quangn.com/exploring-reviews-of-airline-services/&lt;/a&gt;) investigation into Skytrax ratings, which are a collection of ratings by made by airline passengers, I wanted to answer some interesting questions I had of my own.&lt;/p&gt;
 &lt;p&gt;Specifically, what I was interested in is the relative contribution of each of the different metrics (e.g., ground staff, seat comfort, value) to (a) a passenger's overall rating of the airline, and (b) their decision to recommend the airline to another person. Consequently, which criteria should airlines focus on to improve customers' overall perceptions of them (the equivalent of model lift in logit regression)?&lt;/p&gt;
 &lt;p&gt;Along the way, I thought I'd sate my own curiousity about the following:&lt;/p&gt;
 &lt;ol&gt;
@@ -101,7 +101,7 @@
 &lt;/div&gt;
 &lt;div class="inner_cell"&gt;
 &lt;div class="text_cell_render border-box-sizing rendered_html"&gt;
-&lt;h2 id="Ratings-by-airline"&gt;Ratings by airline&lt;a class="anchor-link" href="https://bryansim.github.io/posts/skytrax-1/#Ratings-by-airline"&gt;¶&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;The first thing I was interested in doing was a sanity check to just make sure that I was looking at the same data that the original blog post analyzed (&lt;a href="http://www.quangn.com/exploring-reviews-of-airline-services/"&gt;http://www.quangn.com/exploring-reviews-of-airline-services/&lt;/a&gt;).&lt;/p&gt;
+&lt;h2 id="Ratings-by-airline"&gt;Ratings by airline&lt;a class="anchor-link" href="https://bryansim.github.io/posts/skytrax-data-1/#Ratings-by-airline"&gt;¶&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;The first thing I was interested in doing was a sanity check to just make sure that I was looking at the same data that the original blog post analyzed (&lt;a href="http://www.quangn.com/exploring-reviews-of-airline-services/"&gt;http://www.quangn.com/exploring-reviews-of-airline-services/&lt;/a&gt;).&lt;/p&gt;
 &lt;p&gt;This was the case, although it appears that the original author of that post took only airlines where there were more than 100 ratings, which is what I happened to do.&lt;/p&gt;
 &lt;p&gt;First, we select the average rating of each airline, as long as that airline has more than 100 ratings. 100 is arbitrary, but if an airline has only a few ratings, the average rating is likely to be extremely variable across samples:&lt;/p&gt;
 
@@ -220,7 +220,7 @@
 &lt;/div&gt;
 &lt;div class="inner_cell"&gt;
 &lt;div class="text_cell_render border-box-sizing rendered_html"&gt;
-&lt;h2 id="Ratings-by-aircraft-type"&gt;Ratings by aircraft type&lt;a class="anchor-link" href="https://bryansim.github.io/posts/skytrax-1/#Ratings-by-aircraft-type"&gt;¶&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;The next thing I wanted to do was to see if ratings differed as a function of what aircraft the passenger took.&lt;/p&gt;
+&lt;h2 id="Ratings-by-aircraft-type"&gt;Ratings by aircraft type&lt;a class="anchor-link" href="https://bryansim.github.io/posts/skytrax-data-1/#Ratings-by-aircraft-type"&gt;¶&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;The next thing I wanted to do was to see if ratings differed as a function of what aircraft the passenger took.&lt;/p&gt;
 
 &lt;/div&gt;
 &lt;/div&gt;
@@ -412,7 +412,7 @@
 &lt;/div&gt;
 &lt;div class="inner_cell"&gt;
 &lt;div class="text_cell_render border-box-sizing rendered_html"&gt;
-&lt;h3 id="Boeing-vs.-Airbus"&gt;Boeing vs. Airbus&lt;a class="anchor-link" href="https://bryansim.github.io/posts/skytrax-1/#Boeing-vs.-Airbus"&gt;¶&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;Just for fun, let's compare the average ratings of Boeing vs. Airbus aircraft. We can use regex to select the different rows:&lt;/p&gt;
+&lt;h3 id="Boeing-vs.-Airbus"&gt;Boeing vs. Airbus&lt;a class="anchor-link" href="https://bryansim.github.io/posts/skytrax-data-1/#Boeing-vs.-Airbus"&gt;¶&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;Just for fun, let's compare the average ratings of Boeing vs. Airbus aircraft. We can use regex to select the different rows:&lt;/p&gt;
 
 &lt;/div&gt;
 &lt;/div&gt;
@@ -471,7 +471,7 @@ dtype: float64
 &lt;/div&gt;
 &lt;div class="inner_cell"&gt;
 &lt;div class="text_cell_render border-box-sizing rendered_html"&gt;
-&lt;h2 id="Ratings-by-cabin-type"&gt;Ratings by cabin type&lt;a class="anchor-link" href="https://bryansim.github.io/posts/skytrax-1/#Ratings-by-cabin-type"&gt;¶&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Finally, let's take a look at whether the flying experience is different for the top 1% than it is for the rest of us. As an aside, if you go on Youtube and listen to air traffic controller recordings at JFK, the ATC uses "Top 1%" as a colloquialism for private jets. We go through the same process to import the data:&lt;/p&gt;
+&lt;h2 id="Ratings-by-cabin-type"&gt;Ratings by cabin type&lt;a class="anchor-link" href="https://bryansim.github.io/posts/skytrax-data-1/#Ratings-by-cabin-type"&gt;¶&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Finally, let's take a look at whether the flying experience is different for the top 1% than it is for the rest of us. As an aside, if you go on Youtube and listen to air traffic controller recordings at JFK, the ATC uses "Top 1%" as a colloquialism for private jets. We go through the same process to import the data:&lt;/p&gt;
 
 &lt;/div&gt;
 &lt;/div&gt;
@@ -904,7 +904,7 @@ dtype: float64
 &lt;/div&gt;
     &lt;/div&gt;
   &lt;/div&gt;
-</description><category>skytrax</category><guid>https://bryansim.github.io/posts/skytrax-1/</guid><pubDate>Tue, 03 May 2016 02:00:49 GMT</pubDate></item><item><title>Mousetracker Data #1</title><link>https://bryansim.github.io/posts/mousetracker-data-1/</link><dc:creator>Bryan Sim</dc:creator><description>&lt;div tabindex="-1" id="notebook" class="border-box-sizing"&gt;
+</description><guid>https://bryansim.github.io/posts/skytrax-data-1/</guid><pubDate>Tue, 03 May 2016 02:03:36 GMT</pubDate></item><item><title>Mousetracker Data #1</title><link>https://bryansim.github.io/posts/mousetracker-data-1/</link><dc:creator>Bryan Sim</dc:creator><description>&lt;div tabindex="-1" id="notebook" class="border-box-sizing"&gt;
     &lt;div class="container" id="notebook-container"&gt;
 
 &lt;div class="cell border-box-sizing text_cell rendered"&gt;

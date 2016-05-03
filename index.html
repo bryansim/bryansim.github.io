@@ -13,7 +13,7 @@
 <link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml">
 <link rel="canonical" href="https://bryansim.github.io/">
 <link rel="icon" href="http://bryans.im/favicon.ico" sizes="16x16">
-<!--[if lt IE 9]><script src="assets/js/html5.js"></script><![endif]--><link rel="prefetch" href="posts/skytrax-1/" type="text/html">
+<!--[if lt IE 9]><script src="assets/js/html5.js"></script><![endif]--><link rel="prefetch" href="posts/skytrax-data-1/" type="text/html">
 </head>
 <body>
 <a href="#content" class="sr-only sr-only-focusable">Skip to main content</a>
@@ -69,12 +69,12 @@
 
     
 <div class="postindex">
-    <article class="h-entry post-text"><header><h1 class="p-name entry-title"><a href="posts/skytrax-1/" class="u-url">Skytrax #1</a></h1>
+    <article class="h-entry post-text"><header><h1 class="p-name entry-title"><a href="posts/skytrax-data-1/" class="u-url">Skytrax Data #1</a></h1>
         <div class="metadata">
             <p class="byline author vcard"><span class="byline-name fn">
                 Bryan Sim
             </span></p>
-            <p class="dateline"><a href="posts/skytrax-1/" rel="bookmark"><time class="published dt-published" datetime="2016-05-02T22:00:49-04:00" title="2016-05-02 22:00">2016-05-02 22:00</time></a></p>
+            <p class="dateline"><a href="posts/skytrax-data-1/" rel="bookmark"><time class="published dt-published" datetime="2016-05-02T22:03:36-04:00" title="2016-05-02 22:03">2016-05-02 22:03</time></a></p>
         </div>
     </header><div class="e-content entry-content">
     <div tabindex="-1" id="notebook" class="border-box-sizing">
@@ -98,7 +98,7 @@
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Skytrax-ratings">Skytrax ratings<a class="anchor-link" href="posts/skytrax-1/#Skytrax-ratings">¶</a>
+<h2 id="Skytrax-ratings">Skytrax ratings<a class="anchor-link" href="posts/skytrax-data-1/#Skytrax-ratings">¶</a>
 </h2>
 <p>Following up on this (<a href="http://www.quangn.com/exploring-reviews-of-airline-services/">http://www.quangn.com/exploring-reviews-of-airline-services/</a>) investigation into Skytrax ratings, which are a collection of ratings by made by airline passengers, I wanted to answer some interesting questions I had of my own.</p>
 <p>Specifically, what I was interested in is the relative contribution of each of the different metrics (e.g., ground staff, seat comfort, value) to (a) a passenger's overall rating of the airline, and (b) their decision to recommend the airline to another person. Consequently, which criteria should airlines focus on to improve customers' overall perceptions of them (the equivalent of model lift in logit regression)?</p>
@@ -181,7 +181,7 @@
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Ratings-by-airline">Ratings by airline<a class="anchor-link" href="posts/skytrax-1/#Ratings-by-airline">¶</a>
+<h2 id="Ratings-by-airline">Ratings by airline<a class="anchor-link" href="posts/skytrax-data-1/#Ratings-by-airline">¶</a>
 </h2>
 <p>The first thing I was interested in doing was a sanity check to just make sure that I was looking at the same data that the original blog post analyzed (<a href="http://www.quangn.com/exploring-reviews-of-airline-services/">http://www.quangn.com/exploring-reviews-of-airline-services/</a>).</p>
 <p>This was the case, although it appears that the original author of that post took only airlines where there were more than 100 ratings, which is what I happened to do.</p>
@@ -304,7 +304,7 @@
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Ratings-by-aircraft-type">Ratings by aircraft type<a class="anchor-link" href="posts/skytrax-1/#Ratings-by-aircraft-type">¶</a>
+<h2 id="Ratings-by-aircraft-type">Ratings by aircraft type<a class="anchor-link" href="posts/skytrax-data-1/#Ratings-by-aircraft-type">¶</a>
 </h2>
 <p>The next thing I wanted to do was to see if ratings differed as a function of what aircraft the passenger took.</p>
 
@@ -497,7 +497,7 @@
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="Boeing-vs.-Airbus">Boeing vs. Airbus<a class="anchor-link" href="posts/skytrax-1/#Boeing-vs.-Airbus">¶</a>
+<h3 id="Boeing-vs.-Airbus">Boeing vs. Airbus<a class="anchor-link" href="posts/skytrax-data-1/#Boeing-vs.-Airbus">¶</a>
 </h3>
 <p>Just for fun, let's compare the average ratings of Boeing vs. Airbus aircraft. We can use regex to select the different rows:</p>
 
@@ -559,7 +559,7 @@ dtype: float64
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Ratings-by-cabin-type">Ratings by cabin type<a class="anchor-link" href="posts/skytrax-1/#Ratings-by-cabin-type">¶</a>
+<h2 id="Ratings-by-cabin-type">Ratings by cabin type<a class="anchor-link" href="posts/skytrax-data-1/#Ratings-by-cabin-type">¶</a>
 </h2>
 <p>Finally, let's take a look at whether the flying experience is different for the top 1% than it is for the rest of us. As an aside, if you go on Youtube and listen to air traffic controller recordings at JFK, the ATC uses "Top 1%" as a colloquialism for private jets. We go through the same process to import the data:</p>
 
