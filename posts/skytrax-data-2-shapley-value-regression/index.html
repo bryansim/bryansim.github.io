@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html prefix="og: http://ogp.me/ns# article: http://ogp.me/ns/article# " lang="en">
+<head>
+<meta charset="utf-8">
+<base href="https://bryansim.github.io/posts/skytrax-data-2-shapley-value-regression/">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Skytrax Data #2: Shapley Value Regression | Bryan Sim</title>
+<link href="../../assets/css/all-nocdn.css" rel="stylesheet" type="text/css">
+<link href="../../assets/css/ipython.min.css" rel="stylesheet" type="text/css">
+<link href="../../assets/css/nikola_ipython.css" rel="stylesheet" type="text/css">
+<meta content="#5670d4" name="theme-color">
+<link rel="alternate" type="application/rss+xml" title="RSS" href="../../rss.xml">
+<link rel="canonical" href="https://bryansim.github.io/posts/skytrax-data-2-shapley-value-regression/">
+<link rel="icon" href="http://bryans.im/favicon.ico" sizes="16x16">
+<!--[if lt IE 9]><script src="../../assets/js/html5.js"></script><![endif]--><meta name="author" content="Bryan Sim">
+<link rel="prev" href="../the-average-thing-2/" title="The Average Thing #2" type="text/html">
+<meta property="og:site_name" content="Bryan Sim">
+<meta property="og:title" content="Skytrax Data #2: Shapley Value Regression">
+<meta property="og:url" content="https://bryansim.github.io/posts/skytrax-data-2-shapley-value-regression/">
+<meta property="og:description" content='Shapley Value Regression¶When we have many variables predicting an outcome, how do we know which is the most "important"? In a multiple regression context, one might think, intuitively, that if you th'>
+<meta property="og:type" content="article">
+<meta property="article:published_time" content="2016-05-05T19:51:29-04:00">
+<meta property="article:tag" content="skytrax">
+</head>
+<body>
+<a href="#content" class="sr-only sr-only-focusable">Skip to main content</a>
+
+<!-- Menubar -->
+
+<nav class="navbar navbar-inverse navbar-static-top"><div class="container">
+<!-- This keeps the margins nice -->
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-navbar" aria-controls="bs-navbar" aria-expanded="false">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="https://bryansim.github.io/">
+
+                <span id="blog-title">Bryan Sim</span>
+            </a>
+        </div>
+<!-- /.navbar-header -->
+        <div class="collapse navbar-collapse" id="bs-navbar" aria-expanded="false">
+            <ul class="nav navbar-nav">
+<li>
+<a href="../../categories/mediocre-museum">Mediocre Museum</a>
+                </li>
+<li>
+<a href="../../categories/mousetracker">Mousetracker</a>
+                </li>
+<li>
+<a href="../../categories/skytrax">Skytrax</a>
+                </li>
+<li>
+<a href="../../archive.html">Archive</a>
+                </li>
+<li>
+<a href="http://linkedin.com/in/bryansim">LinkedIn</a>
+
+                
+            </li>
+</ul>
+<ul class="nav navbar-nav navbar-right"></ul>
+</div>
+<!-- /.navbar-collapse -->
+    </div>
+<!-- /.container -->
+</nav><!-- End of Menubar --><div class="container" id="content" role="main">
+    <div class="body-content">
+        <!--Body content-->
+        <div class="row">
+            
+            
+<article class="post-text h-entry hentry postpage" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title" itemprop="headline name"><a href="." class="u-url">Skytrax Data #2: Shapley Value Regression</a></h1>
+
+        <div class="metadata">
+            <p class="byline author vcard"><span class="byline-name fn">
+                    Bryan Sim
+            </span></p>
+            <p class="dateline"><a href="." rel="bookmark"><time class="published dt-published" datetime="2016-05-05T19:51:29-04:00" itemprop="datePublished" title="2016-05-05 19:51">2016-05-05 19:51</time></a></p>
+            
+
+        </div>
+        
+
+    </header><div class="e-content entry-content" itemprop="articleBody text">
+    <div tabindex="-1" id="notebook" class="border-box-sizing">
+    <div class="container" id="notebook-container">
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Shapley-Value-Regression">Shapley Value Regression<a class="anchor-link" href="#Shapley-Value-Regression">¶</a>
+</h2>
+<p>When we have many variables predicting an outcome, how do we know which is the most "important"? In a multiple regression context, one might think, intuitively, that if you threw all the predictors into the same model, the one with the largest coefficient woud be the most important predictor.</p>
+<p>If all the predictors were perfectly orthogonal (i.e., completely uncorrelated), this would be true, as the coefficients would not change as a function of which predictors were included/excluded in the model.</p>
+<p>However, in most applications (perhaps even the vast majority of real-world cases), predictors are correlated with one another. This results in overlap in the variance that each predictor explains, and confounds simple interpretation of coefficients and R<sup>2</sup> statistics <em>with regard to</em> judging how important one predictor is over another. One consequence of predictors being correlated, for example, is that the order in which predictors are entered into the model affects the degree to which they increase R<sup>2</sup>.</p>
+<p>One solution to this problem is, when dealing with multiple predictors, to iterate over all possible orderings of the predictors, and obtain the <em>average</em> importance of each predictor. This procedure is known as Shapley value regression, and is detailed <a href="http://www.r-bloggers.com/the-relative-importance-of-predictors-let-the-games-begin/">here</a>.</p>
+<p>The R package relaimpo does this, but I wanted to work out an analog in Python.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [2]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">itertools</span>
+
+<span class="k">class</span> <span class="nc">fit</span><span class="p">:</span>
+    <span class="sd">'''</span>
+<span class="sd">    This creates an instance of the class OLS with attributes coefficients, fitted_values, residuals, and rsquared </span>
+<span class="sd">    '''</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">outcome</span><span class="p">,</span> <span class="n">predictors</span><span class="p">):</span>
+        <span class="c1">#We do the following so we can call them as attributes</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">outcome</span> <span class="o">=</span> <span class="n">outcome</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">predictors</span> <span class="o">=</span> <span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="n">value</span> <span class="k">for</span> <span class="p">(</span><span class="n">key</span><span class="p">,</span><span class="n">value</span><span class="p">)</span> <span class="ow">in</span> <span class="p">[(</span><span class="n">x</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">predictors</span><span class="p">]}</span>
+        <span class="c1">#Create some dictionaries with all the predictors as keys, and empty lists as values</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">resultsrsquared</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:[]</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">predictors</span><span class="p">}</span> 
+        <span class="bp">self</span><span class="o">.</span><span class="n">resultscoefficients</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:[]</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">predictors</span><span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">results</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:[]</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">predictors</span><span class="p">}</span>
+        <span class="c1">#The above is preferred over dict.fromkeys(list,default) as the default value is shared among all keys, so appending an object</span>
+        <span class="c1">#will append it to all keys.</span>
+        <span class="c1">#See: http://stackoverflow.com/questions/23397153/append-value-to-one-list-in-dictionary-appends-value-to-all-lists-in-dictionary</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">iterate</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">outcome</span><span class="p">,</span> <span class="n">predictors</span><span class="p">)</span>
+    
+    <span class="sd">'''</span>
+<span class="sd">    The method below returns the coefficients from a least-squares regression.</span>
+<span class="sd">    '''</span>    
+    <span class="k">def</span> <span class="nf">ols</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span> <span class="c1">#Y is an nx1 vector, X is an nxp matrix</span>
+        <span class="n">X_transpose</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+        <span class="n">X_transpose_X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">X_transpose</span><span class="p">,</span> <span class="n">X</span><span class="p">)</span>
+        <span class="n">X_inverse</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="n">X_transpose_X</span><span class="p">)</span>
+        <span class="n">X_transpose_Y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">X_transpose</span><span class="p">,</span> <span class="n">Y</span><span class="p">)</span>
+               
+        <span class="bp">self</span><span class="o">.</span><span class="n">coefficients</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">X_inverse</span><span class="p">,</span> <span class="n">X_transpose_Y</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">intercept</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">coefficients</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">coefficientslist</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">coefficients</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span> <span class="c1">#Change type to list</span>
+        
+        <span class="sd">'''</span>
+<span class="sd">        The lines below are for calculating R^2.</span>
+<span class="sd">        '''</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fitted_values</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">coefficients</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">residuals</span> <span class="o">=</span> <span class="n">Y</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">fitted_values</span>        
+        
+        <span class="c1">#SStotal</span>
+        <span class="n">yty</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">Y</span><span class="p">),</span><span class="n">Y</span><span class="p">)</span>
+        <span class="n">j</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">Y</span><span class="p">),</span><span class="nb">len</span><span class="p">(</span><span class="n">Y</span><span class="p">)))</span>
+        <span class="n">ytj</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">Y</span><span class="p">),</span> <span class="n">j</span><span class="p">)</span>
+        <span class="n">ytj</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">ytj</span><span class="p">,</span><span class="n">Y</span><span class="p">)</span><span class="o">/</span><span class="nb">len</span><span class="p">(</span><span class="n">Y</span><span class="p">)</span>
+        <span class="n">sst</span> <span class="o">=</span> <span class="n">yty</span> <span class="o">-</span> <span class="n">ytj</span>
+        <span class="c1">#SSerror</span>
+        <span class="n">sse</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">residuals</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">residuals</span><span class="p">)</span>
+        <span class="c1">#SSregression</span>
+        <span class="n">ssr</span> <span class="o">=</span> <span class="n">sst</span> <span class="o">-</span> <span class="n">sse</span>
+        <span class="c1">#rsquared</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rsquared</span> <span class="o">=</span> <span class="n">ssr</span><span class="o">/</span><span class="n">sst</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">coefficientslist</span>
+        
+    <span class="k">def</span> <span class="nf">iterate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">data</span><span class="p">,</span> <span class="n">outcome</span><span class="p">,</span> <span class="n">predictors</span><span class="p">):</span>
+        <span class="c1">#Create dataset where we remove missing values listwise</span>
+        <span class="c1">#SOMETHING IS WRONG WITH HOW YOU ARE SELECTING COLUMNS</span>
+        <span class="n">Y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">'{0}'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">outcome</span><span class="p">)])</span>
+        
+        <span class="k">print</span> <span class="s2">"Total cases: {0}"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">Y</span><span class="p">))</span>
+        
+        <span class="n">all_data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">column_stack</span><span class="p">((</span><span class="n">Y</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">Y</span><span class="p">),</span> <span class="mi">1</span><span class="p">))))</span>
+        <span class="k">for</span> <span class="n">bs</span> <span class="ow">in</span> <span class="n">predictors</span><span class="p">:</span>
+            <span class="n">all_data</span> <span class="o">=</span>  <span class="n">np</span><span class="o">.</span><span class="n">column_stack</span><span class="p">((</span><span class="n">all_data</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">bs</span><span class="p">])))</span>
+        <span class="n">all_data</span> <span class="o">=</span> <span class="n">all_data</span><span class="p">[</span><span class="o">~</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">all_data</span><span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)]</span>
+        <span class="n">Y</span> <span class="o">=</span> <span class="n">all_data</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">C</span> <span class="o">=</span> <span class="n">all_data</span><span class="p">[:,</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">X</span> <span class="o">=</span> <span class="n">all_data</span><span class="p">[:,</span><span class="mi">2</span><span class="p">:]</span>
+        
+        <span class="k">print</span> <span class="s2">"Cases after listwise deletion: {0}"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">Y</span><span class="p">))</span>   
+        
+        <span class="sd">'''</span>
+<span class="sd">        Iterate through all predictors and return the average coefficient for all combinations of predictors</span>
+<span class="sd">        '''</span>
+        <span class="k">for</span> <span class="n">predictor</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">predictors</span><span class="p">)):</span> <span class="c1">#for each predictor, let's find the average for 1 to n predictors</span>
+        
+            <span class="n">otherpredictors</span> <span class="o">=</span> <span class="p">[</span><span class="n">oth</span> <span class="k">for</span> <span class="n">oth</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">predictors</span><span class="p">))</span> <span class="k">if</span> <span class="n">oth</span> <span class="o">!=</span> <span class="n">predictor</span><span class="p">]</span> <span class="c1">#list of other predictors</span>
+            <span class="n">dictionaryofcoefficients</span> <span class="o">=</span> <span class="p">{</span><span class="n">n</span><span class="p">:[]</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">predictors</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">)}</span> <span class="c1"># +1 to reflect 1 to n predictors rather than 0 to n-1</span>
+            <span class="n">dictionaryofrsquared</span> <span class="o">=</span> <span class="p">{</span><span class="n">n</span><span class="p">:[]</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">predictors</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">)}</span>
+            
+            <span class="n">Xpredictor</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">column_stack</span><span class="p">((</span><span class="n">C</span><span class="p">,</span><span class="n">X</span><span class="p">[:,</span><span class="n">predictor</span><span class="p">]))</span>
+
+            <span class="k">for</span> <span class="n">npred</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">predictors</span><span class="p">)):</span> <span class="c1">#from 1 to n-1 other predictors</span>
+                <span class="n">ordering</span> <span class="o">=</span> <span class="n">itertools</span><span class="o">.</span><span class="n">combinations</span><span class="p">(</span><span class="n">otherpredictors</span><span class="p">,</span> <span class="n">npred</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">comb</span> <span class="ow">in</span> <span class="n">ordering</span><span class="p">:</span>
+                    <span class="c1">#do ols for y and our subset of X</span>
+                    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">comb</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                        <span class="n">dictionaryofcoefficients</span><span class="p">[</span><span class="n">npred</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ols</span><span class="p">(</span><span class="n">Y</span><span class="p">,</span> <span class="n">Xpredictor</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span> 
+                        <span class="n">dictionaryofrsquared</span><span class="p">[</span><span class="n">npred</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rsquared</span><span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">Xsub</span> <span class="o">=</span> <span class="n">X</span><span class="p">[:,</span><span class="nb">list</span><span class="p">(</span><span class="n">comb</span><span class="p">)]</span> <span class="c1">#the other predictors are in this matrix</span>
+                        <span class="n">Xsub</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">column_stack</span><span class="p">((</span><span class="n">Xpredictor</span><span class="p">,</span><span class="n">Xsub</span><span class="p">))</span> <span class="c1">#combine them</span>
+                        <span class="n">dictionaryofcoefficients</span><span class="p">[</span><span class="n">npred</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ols</span><span class="p">(</span><span class="n">Y</span><span class="p">,</span> <span class="n">Xsub</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span> 
+                        <span class="n">dictionaryofrsquared</span><span class="p">[</span><span class="n">npred</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rsquared</span><span class="p">)</span>
+            
+            <span class="n">dictionaryofrsquared</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">predictors</span><span class="p">))</span> <span class="c1">#because the model with all predictors always has the same R squared</span>
+            
+            <span class="k">for</span> <span class="n">k</span><span class="p">,</span><span class="n">v</span> <span class="ow">in</span> <span class="n">dictionaryofcoefficients</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
+                <span class="n">dictionaryofcoefficients</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">dictionaryofcoefficients</span><span class="p">[</span><span class="n">k</span><span class="p">])</span><span class="o">/</span><span class="nb">len</span><span class="p">(</span><span class="n">dictionaryofcoefficients</span><span class="p">[</span><span class="n">k</span><span class="p">])</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">resultscoefficients</span><span class="p">[</span><span class="n">predictors</span><span class="p">[</span><span class="n">predictor</span><span class="p">]]</span> <span class="o">=</span> <span class="n">dictionaryofcoefficients</span>
+            
+            <span class="k">for</span> <span class="n">k</span><span class="p">,</span><span class="n">v</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">dictionaryofrsquared</span><span class="o">.</span><span class="n">iteritems</span><span class="p">(),</span> <span class="n">reverse</span> <span class="o">=</span> <span class="bp">True</span><span class="p">):</span>    
+                <span class="k">if</span> <span class="n">k</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="n">dictionaryofrsquared</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">dictionaryofrsquared</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="nb">sum</span><span class="p">(</span><span class="n">dictionaryofrsquared</span><span class="p">[</span><span class="n">k</span><span class="p">])</span><span class="o">/</span><span class="nb">len</span><span class="p">(</span><span class="n">dictionaryofrsquared</span><span class="p">[</span><span class="n">k</span><span class="p">]))</span> 
+                    <span class="c1">#- (sum(dictionaryofrsquared[k-1])/len(dictionaryofrsquared[k-1]))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">resultsrsquared</span><span class="p">[</span><span class="n">predictors</span><span class="p">[</span><span class="n">predictor</span><span class="p">]]</span> <span class="o">=</span> <span class="n">dictionaryofrsquared</span>
+            
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">resultsrsquared</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">v</span><span class="o">.</span><span class="n">values</span><span class="p">())</span><span class="o">/</span><span class="nb">len</span><span class="p">(</span><span class="n">v</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+             
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>As far as I can tell, this code does about 80% of what I want it to. It returns a list of what the average coefficient for each predictor is as a function of how many other predictors are in the model, and also returns the average R<sup>2</sup> of the model with N predictors in it. There's still more to do though:</p>
+<ol>
+<li>The code runs extremely slow, probably because of the weird nested for-loops I have in there.</li>
+<li>The method doesn't actually return the relative importance of each predictor. This has to do with the average change in R<sup>2</sup> that each predictor contributes when added to the model. Right now, it just returns the R<sup>2</sup> of the whole model.</li>
+</ol>
+<p>I'll be working on this in the coming days, but for now, as an example for what does (and does not) work, let's run this on the Skytrax data, and see what happens:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [3]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">psycopg2</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [6]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="c1">#get data from postgres database</span>
+<span class="n">connection</span> <span class="o">=</span> <span class="n">psycopg2</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="s2">"dbname = skytrax user=skytraxadmin password=skytraxadmin"</span><span class="p">)</span>
+<span class="n">cursor</span> <span class="o">=</span> <span class="n">connection</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
+<span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">"SELECT * from airline"</span><span class="p">)</span>
+<span class="n">testdata</span> <span class="o">=</span> <span class="n">cursor</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
+<span class="n">column_names</span> <span class="o">=</span> <span class="p">[</span><span class="n">desc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">desc</span> <span class="ow">in</span> <span class="n">cursor</span><span class="o">.</span><span class="n">description</span><span class="p">]</span>
+<span class="n">testdata</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">testdata</span><span class="p">)</span>
+<span class="n">testdata</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="n">column_names</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [8]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">Shapley</span>
+<span class="nb">reload</span><span class="p">(</span><span class="n">Shapley</span><span class="p">)</span>
+
+<span class="n">start</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+
+<span class="n">fit</span> <span class="o">=</span> <span class="n">Shapley</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">testdata</span><span class="p">,</span> <span class="s2">"overall_rating"</span><span class="p">,</span> <span class="p">[</span><span class="s1">'cabin_staff_rating'</span><span class="p">,</span> <span class="s1">'seat_comfort_rating'</span><span class="p">,</span> <span class="s1">'food_beverages_rating'</span><span class="p">,</span> \
+                                                    <span class="s1">'inflight_entertainment_rating'</span><span class="p">,</span> <span class="s1">'value_money_rating'</span><span class="p">])</span>
+
+<span class="k">print</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">Average coefficients with N other predictors in the model:</span><span class="se">\n</span><span class="s2">"</span>
+<span class="k">print</span> <span class="n">fit</span><span class="o">.</span><span class="n">resultscoefficients</span>
+<span class="k">print</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">Average Rsquared with N other predictors in the model:</span><span class="se">\n</span><span class="s2">"</span>
+<span class="k">print</span> <span class="n">fit</span><span class="o">.</span><span class="n">resultsrsquared</span>
+<span class="k">print</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">This crap took {0}s to run"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">start</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Total cases: 41396
+Cases after listwise deletion: 28341
+
+Average coefficients with N other predictors in the model:
+
+{'value_money_rating': {1: 1.8649063450094783, 2: 1.5144640753771565, 3: 1.2811039278852754, 4: 1.1094616213211062, 5: 0.97588253839017369}, 'cabin_staff_rating': {1: 1.7220375706163686, 2: 1.2423932090274965, 3: 0.96482096920203941, 4: 0.78336800727344302, 5: 0.66212106011664673}, 'food_beverages_rating': {1: 1.3824000680960342, 2: 0.74574656752576396, 3: 0.41993379259250335, 4: 0.25813695445838092, 5: 0.16598034625130431}, 'seat_comfort_rating': {1: 1.7279134729889485, 2: 1.103370681632768, 3: 0.76087228190797218, 4: 0.55735092810755438, 5: 0.42553696755928527}, 'inflight_entertainment_rating': {1: 0.81813312432369223, 2: 0.25077293584225169, 3: 0.10988060366414072, 4: 0.055685681377817153, 5: 0.031685430819348603}}
+
+Average Rsquared with N other predictors in the model:
+
+{'value_money_rating': {1: 0.70000482291020016, 2: 0.73437848675413542, 3: 0.75769834885876719, 4: 0.77509515934098283}, 'cabin_staff_rating': {1: 0.61108838008392297, 2: 0.68880734158425838, 3: 0.73593199899832795, 4: 0.76760232624119729}, 'food_beverages_rating': {1: 0.41976593597077677, 2: 0.60519081823348375, 3: 0.70695963415469354, 4: 0.7590299721429592}, 'seat_comfort_rating': {1: 0.52806397291997464, 2: 0.64985921373852684, 3: 0.71984029509356728, 4: 0.76190216873812322}, 'inflight_entertainment_rating': {1: 0.1814590593325032, 2: 0.5789830526105908, 3: 0.70255932748876526, 4: 0.75836033918843182}}
+
+This crap took 255.414000034s to run
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    </div>
+  </div>
+
+    </div>
+    <aside class="postpromonav"><nav><ul itemprop="keywords" class="tags">
+<li><a class="tag p-category" href="../../categories/skytrax/" rel="tag">skytrax</a></li>
+        </ul>
+<ul class="pager hidden-print">
+<li class="previous">
+                <a href="../the-average-thing-2/" rel="prev" title="The Average Thing #2">Previous post</a>
+            </li>
+        </ul></nav></aside><script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"> </script><script type="text/x-mathjax-config">
+            MathJax.Hub.Config({tex2jax: {inlineMath: [['$latex ','$'], ['\\(','\\)']]}});
+            </script></article>
+</div>
+        <!--End of body content-->
+
+        <footer id="footer">
+            Contents © 2016         <a href="mailto:bryan.sim@nyu.edu">Bryan Sim</a> - Powered by         <a href="https://getnikola.com" rel="nofollow">Nikola</a>         
+            
+        </footer>
+</div>
+</div>
+
+
+            <script src="../../assets/js/all-nocdn.js"></script><script>$('a.image-reference:not(.islink) img:not(.islink)').parent().colorbox({rel:"gal",maxWidth:"100%",maxHeight:"100%",scalePhotos:true});</script><!-- fancy dates --><script>
+    moment.locale("en");
+    fancydates(0, "YYYY-MM-DD HH:mm");
+    </script><!-- end fancy dates -->
+</body>
+</html>
