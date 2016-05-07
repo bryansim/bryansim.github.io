@@ -1,0 +1,1408 @@
+<!DOCTYPE html>
+<html prefix="og: http://ogp.me/ns# article: http://ogp.me/ns/article# " lang="en">
+<head>
+<meta charset="utf-8">
+<base href="https://bryansim.github.io/posts/the-average-thing-1/">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Average Thing #1 | Bryan Sim</title>
+<link href="../../assets/css/all-nocdn.css" rel="stylesheet" type="text/css">
+<link href="../../assets/css/ipython.min.css" rel="stylesheet" type="text/css">
+<link href="../../assets/css/nikola_ipython.css" rel="stylesheet" type="text/css">
+<meta content="#5670d4" name="theme-color">
+<link rel="alternate" type="application/rss+xml" title="RSS" href="../../rss.xml">
+<link rel="canonical" href="https://bryansim.github.io/posts/the-average-thing-1/">
+<link rel="icon" href="http://bryans.im/favicon.ico" sizes="16x16">
+<!--[if lt IE 9]><script src="../../assets/js/html5.js"></script><![endif]--><meta name="author" content="Bryan Sim">
+<link rel="prev" href="../skytrax-data-1/" title="Skytrax Data #1" type="text/html">
+<link rel="next" href="../the-average-thing-2/" title="The Average Thing #2" type="text/html">
+<meta property="og:site_name" content="Bryan Sim">
+<meta property="og:title" content="The Average Thing #1">
+<meta property="og:url" content="https://bryansim.github.io/posts/the-average-thing-1/">
+<meta property="og:description" content="The Average Thing¶The Canada Science and Technology Museums Corporation hosts a repository of all the artifacts in its collection here: (http://techno-science.ca/en/data.php). Let's do something inter">
+<meta property="og:type" content="article">
+<meta property="article:published_time" content="2016-05-03T22:10:13-04:00">
+<meta property="article:tag" content="mediocre museum">
+</head>
+<body>
+<a href="#content" class="sr-only sr-only-focusable">Skip to main content</a>
+
+<!-- Menubar -->
+
+<nav class="navbar navbar-inverse navbar-static-top"><div class="container">
+<!-- This keeps the margins nice -->
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-navbar" aria-controls="bs-navbar" aria-expanded="false">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="https://bryansim.github.io/">
+
+                <span id="blog-title">Bryan Sim</span>
+            </a>
+        </div>
+<!-- /.navbar-header -->
+        <div class="collapse navbar-collapse" id="bs-navbar" aria-expanded="false">
+            <ul class="nav navbar-nav">
+<li>
+<a href="../../categories/mediocre-museum">Mediocre Museum</a>
+                </li>
+<li>
+<a href="../../categories/mousetracker">Mousetracker</a>
+                </li>
+<li>
+<a href="../../categories/skytrax">Skytrax</a>
+                </li>
+<li>
+<a href="../../archive.html">Archive</a>
+                </li>
+<li>
+<a href="http://linkedin.com/in/bryansim">LinkedIn</a>
+
+                
+            </li>
+</ul>
+<ul class="nav navbar-nav navbar-right"></ul>
+</div>
+<!-- /.navbar-collapse -->
+    </div>
+<!-- /.container -->
+</nav><!-- End of Menubar --><div class="container" id="content" role="main">
+    <div class="body-content">
+        <!--Body content-->
+        <div class="row">
+            
+            
+<article class="post-text h-entry hentry postpage" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title" itemprop="headline name"><a href="." class="u-url">The Average Thing #1</a></h1>
+
+        <div class="metadata">
+            <p class="byline author vcard"><span class="byline-name fn">
+                    Bryan Sim
+            </span></p>
+            <p class="dateline"><a href="." rel="bookmark"><time class="published dt-published" datetime="2016-05-03T22:10:13-04:00" itemprop="datePublished" title="2016-05-03 22:10">2016-05-03 22:10</time></a></p>
+            
+
+        </div>
+        
+
+    </header><div class="e-content entry-content" itemprop="articleBody text">
+    <div tabindex="-1" id="notebook" class="border-box-sizing">
+    <div class="container" id="notebook-container">
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="The-Average-Thing">The Average Thing<a class="anchor-link" href="#The-Average-Thing">¶</a>
+</h2>
+<p>The Canada Science and Technology Museums Corporation hosts a repository of all the artifacts in its collection here: (<a href="http://techno-science.ca/en/data.php">http://techno-science.ca/en/data.php</a>). Let's do something interesting with it.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Reading-and-cleaning-data">Reading and cleaning data<a class="anchor-link" href="#Reading-and-cleaning-data">¶</a>
+</h3>
+<p>The data come in either a .csv or .xml format. Let's first try reading the .csv file, because Pandas has native support for that. First, we import all the packages that we might need (e.g., regex), and tell Pandas not to truncate the columns like it usually does.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [1]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">import</span> <span class="nn">csv</span>
+<span class="kn">import</span> <span class="nn">itertools</span>
+<span class="n">pd</span><span class="o">.</span><span class="n">get_option</span><span class="p">(</span><span class="s2">"display.max_columns"</span><span class="p">)</span>
+<span class="n">pd</span><span class="o">.</span><span class="n">set_option</span><span class="p">(</span><span class="s2">"display.max_columns"</span><span class="p">,</span> <span class="mi">40</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Now, we import the data to a datafram named "data", using Pandas' built-in method .read_csv, specifying the delimiter "|", and telling it not to break when it comes across a bad line, but instead show a bunch of warnings and still continue.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [2]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">"cstmc-CSV-en.csv"</span><span class="p">,</span> <span class="n">delimiter</span> <span class="o">=</span> <span class="s2">"|"</span><span class="p">,</span> <span class="n">error_bad_lines</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">warn_bad_lines</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt"></div>
+<div class="output_subarea output_stream output_stderr output_text">
+<pre>C:\Users\dfthd\Anaconda3\envs\python2\lib\site-packages\IPython\core\interactiveshell.py:2723: DtypeWarning: Columns (9,10) have mixed types. Specify dtype option on import or set low_memory=False.
+  interactivity=interactivity, compiler=compiler, result=result)
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>If you turn the warnings on, it looks like some of the rows of the csv file have extra columns (i.e., they have 37 columns when we only have 36 column names. Because there are multiple missing values, it's not possible to determine what the extra columns represent. Just by eyeballing things, it looks like about ~500 of the 100,000 cases are problematic.</p>
+<p>Our two options are to either ignore these cases, or try and read the xml file, which may or may not pay off. My recommendation is that we just move forward and try and get some initial analysis done before backtracking later if we want to.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Here are the first 3 artifacts in the data:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [3]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">data</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="n">n</span> <span class="o">=</span> <span class="mi">3</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt output_prompt">Out[3]:</div>
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<table border="1" class="dataframe">
+<thead><tr style="text-align: right;">
+<th></th>
+      <th>artifactNumber</th>
+      <th>ObjectName</th>
+      <th>GeneralDescription</th>
+      <th>model</th>
+      <th>SerialNumber</th>
+      <th>Manufacturer</th>
+      <th>ManuCountry</th>
+      <th>ManuProvince</th>
+      <th>ManuCity</th>
+      <th>BeginDate</th>
+      <th>EndDate</th>
+      <th>date_qualifier</th>
+      <th>patent</th>
+      <th>NumberOfComponents</th>
+      <th>ArtifactFinish</th>
+      <th>ContextCanada</th>
+      <th>ContextFunction</th>
+      <th>ContextTechnical</th>
+      <th>group1</th>
+      <th>category1</th>
+      <th>subcategory1</th>
+      <th>group2</th>
+      <th>category2</th>
+      <th>subcategory2</th>
+      <th>group3</th>
+      <th>category3</th>
+      <th>subcategory3</th>
+      <th>material</th>
+      <th>Length</th>
+      <th>Width</th>
+      <th>Height</th>
+      <th>Thickness</th>
+      <th>Weight</th>
+      <th>Diameter</th>
+      <th>image</th>
+      <th>thumbnail</th>
+    </tr></thead>
+<tbody>
+<tr>
+<th>0</th>
+      <td>1966.0001.001</td>
+      <td>Cover</td>
+      <td>PAPER</td>
+      <td>WESTERN CANADA AIRWAYS LTD.</td>
+      <td>NaN</td>
+      <td>Unknown</td>
+      <td>Unknown</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>1927</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>1.0</td>
+      <td>NaN</td>
+      <td>AT THE TIME IT WAS THE WORLD'S MOST NORTHERNLY...</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>Aviation</td>
+      <td>Commemorative</td>
+      <td>Stamps &amp; coins</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>paper</td>
+      <td>4.5 cm</td>
+      <td>2.6 cm</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>http://source.techno-science.ca/artifacts-arte...</td>
+      <td>http://source.techno-science.ca/artifacts-arte...</td>
+    </tr>
+<tr>
+<th>1</th>
+      <td>1966.0002.001</td>
+      <td>Stamp, postage</td>
+      <td>PAPER</td>
+      <td>WESTERN CANADA AIRWAYS LTD.</td>
+      <td>NaN</td>
+      <td>Unknown</td>
+      <td>Unknown</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>1927</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>1.0</td>
+      <td>PINK &amp; BLACK ON WHITE</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>Aviation</td>
+      <td>Commemorative</td>
+      <td>Stamps &amp; coins</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>paper</td>
+      <td>3.8 cm</td>
+      <td>2.7 cm</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>http://source.techno-science.ca/artifacts-arte...</td>
+      <td>http://source.techno-science.ca/artifacts-arte...</td>
+    </tr>
+<tr>
+<th>2</th>
+      <td>1966.0003.001</td>
+      <td>Stamp, postage</td>
+      <td>PAPER</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>Unknown</td>
+      <td>Unknown</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>1932</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>1.0</td>
+      <td>DARK &amp; PALE BLUE ON WHITE</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>Aviation</td>
+      <td>Commemorative</td>
+      <td>Stamps &amp; coins</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>paper</td>
+      <td>12.8 cm</td>
+      <td>8.4 cm</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>http://source.techno-science.ca/artifacts-arte...</td>
+      <td>http://source.techno-science.ca/artifacts-arte...</td>
+    </tr>
+</tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>And here are some cases which have too many columns:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [4]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">debug</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">"cstmc-CSV-en.csv"</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">delimiter</span> <span class="o">=</span> <span class="s2">"|"</span><span class="p">,</span> <span class="n">error_bad_lines</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">skiprows</span> <span class="o">=</span> <span class="mi">37899</span><span class="p">,</span> <span class="n">nrows</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+<span class="n">debug</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt output_prompt">Out[4]:</div>
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<table border="1" class="dataframe">
+<thead><tr style="text-align: right;">
+<th></th>
+      <th>0</th>
+      <th>1</th>
+      <th>2</th>
+      <th>3</th>
+      <th>4</th>
+      <th>5</th>
+      <th>6</th>
+      <th>7</th>
+      <th>8</th>
+      <th>9</th>
+      <th>10</th>
+      <th>11</th>
+      <th>12</th>
+      <th>13</th>
+      <th>14</th>
+      <th>15</th>
+      <th>16</th>
+      <th>17</th>
+      <th>18</th>
+      <th>19</th>
+      <th>20</th>
+      <th>21</th>
+      <th>22</th>
+      <th>23</th>
+      <th>24</th>
+      <th>25</th>
+      <th>26</th>
+      <th>27</th>
+      <th>28</th>
+      <th>29</th>
+      <th>30</th>
+      <th>31</th>
+      <th>32</th>
+      <th>33</th>
+      <th>34</th>
+      <th>35</th>
+      <th>36</th>
+    </tr></thead>
+<tbody>
+<tr>
+<th>0</th>
+      <td>1984.1214.001</td>
+      <td>Engine, airplane</td>
+      <td>NaN</td>
+      <td>LTC1K-4A/LYCOMING T53</td>
+      <td>LE09281X</td>
+      <td>Avco Lycoming Div.</td>
+      <td>United States of America</td>
+      <td>Connecticut</td>
+      <td>Stratford</td>
+      <td>1969</td>
+      <td>NaN</td>
+      <td>circa</td>
+      <td>NaN</td>
+      <td>1</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>Converts heat into mechanical power</td>
+      <td>NaN</td>
+      <td>Aviation</td>
+      <td>Motive power</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>http://source.techno-science.ca/artifacts-arte...</td>
+    </tr>
+<tr>
+<th>1</th>
+      <td>1984.1215.001</td>
+      <td>Engine, airplane</td>
+      <td>NaN</td>
+      <td>LTC1K-4A/LYCOMING T53</td>
+      <td>LE09285X</td>
+      <td>Avco Lycoming Div.</td>
+      <td>United States of America</td>
+      <td>Connecticut</td>
+      <td>Stratford</td>
+      <td>1969</td>
+      <td>NaN</td>
+      <td>circa</td>
+      <td>NaN</td>
+      <td>1</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>Converts heat into mechanical power</td>
+      <td>NaN</td>
+      <td>Aviation</td>
+      <td>Motive power</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>http://source.techno-science.ca/artifacts-arte...</td>
+    </tr>
+<tr>
+<th>2</th>
+      <td>1984.1216.001</td>
+      <td>Propeller</td>
+      <td>Glass - Fibre</td>
+      <td>HAMILTON STANDARD</td>
+      <td>337-339-330-325</td>
+      <td>Hamilton Standard Propeller Div., United Aircr...</td>
+      <td>United States of America</td>
+      <td>Connecticut</td>
+      <td>East hartford</td>
+      <td>1969</td>
+      <td>NaN</td>
+      <td>circa</td>
+      <td>NaN</td>
+      <td>1</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>Aircraft propeller</td>
+      <td>NaN</td>
+      <td>Aviation</td>
+      <td>Aircraft parts</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>glass;fibre</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>http://source.techno-science.ca/artifacts-arte...</td>
+      <td>http://source.techno-science.ca/artifacts-arte...</td>
+      <td>http://source.techno-science.ca/artifacts-arte...</td>
+    </tr>
+</tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Recoding-dimensions-into-actual-units">Recoding dimensions into actual units<a class="anchor-link" href="#Recoding-dimensions-into-actual-units">¶</a>
+</h3>
+<p>The first thing we're going to do is to do convert all the dimensions, which have mixed units (e.g., 16cm and 10m or whatever) into one common unit. To do this, we're going to use regular expressions and loop through the dimension columns.</p>
+<p>The other thing that we might want to do is decide what artifacts to actually use. It looks like some of the artifacts are things like documents and paper, and others are really big things like engines.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Dealing-with-missing-data">Dealing with missing data<a class="anchor-link" href="#Dealing-with-missing-data">¶</a>
+</h4>
+<p>As you can see from the example cases above, lots of data is missing or unavailable, which is probably to be expected given that not all columns are necessarily relevant to each artifact. However, this forces us to make a decision when trying to summarize data: How do we decide whether to include or exclude artifacts?</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>For example, the code below subsets data depending on whether or not any of the measurements of their physical dimensions (weight, height, etc.) are missing:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [5]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">datasub1</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">data</span><span class="p">[</span><span class="s1">'Length'</span><span class="p">]</span><span class="o">.</span><span class="n">isnull</span><span class="p">()</span> <span class="o">==</span> <span class="bp">False</span><span class="p">]</span>
+<span class="n">datasub2</span> <span class="o">=</span> <span class="n">datasub1</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">datasub1</span><span class="p">[</span><span class="s1">'Width'</span><span class="p">]</span><span class="o">.</span><span class="n">isnull</span><span class="p">()</span> <span class="o">==</span> <span class="bp">False</span><span class="p">]</span>
+<span class="n">datasub3</span> <span class="o">=</span> <span class="n">datasub2</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">datasub2</span><span class="p">[</span><span class="s1">'Height'</span><span class="p">]</span><span class="o">.</span><span class="n">isnull</span><span class="p">()</span> <span class="o">==</span> <span class="bp">False</span><span class="p">]</span>
+<span class="n">datasub4</span> <span class="o">=</span> <span class="n">datasub3</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">datasub3</span><span class="p">[</span><span class="s1">'Weight'</span><span class="p">]</span><span class="o">.</span><span class="n">isnull</span><span class="p">()</span> <span class="o">==</span> <span class="bp">False</span><span class="p">]</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Running the code below will list the problem cases with our regex - some have typos in them, others have European style decimal places (thanks Canada!)</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [6]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">subdata</span> <span class="o">=</span> <span class="n">datasub3</span>
+<span class="n">subdata</span> <span class="o">=</span> <span class="n">subdata</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span> <span class="o">=</span> <span class="bp">True</span><span class="p">)</span>
+
+<span class="n">x</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">badlines</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">subdata</span><span class="p">[</span><span class="s1">'Length'</span><span class="p">]:</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="s1">r'(\d*\.\d*) .*'</span><span class="p">,</span> <span class="n">line</span><span class="p">)</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="n">badlines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">subdata</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">x</span><span class="p">,</span> <span class="p">[</span><span class="s1">'Length'</span><span class="p">]][</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">x</span> <span class="o">+=</span><span class="mi">1</span>
+
+<span class="k">print</span> <span class="n">badlines</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>['610 cm', '12 cm', '210 cm', '254,9 cm', '12,7 cm', '12,7 cm', '71.0\t cm', '81.0\t cm', '61,5 cm', '61,5 cm', '61,5 cm', '61,5 cm', '42.3\t cm', '59,5 cm', '58,0 cm', '176.O cm', '157,5 cm', '18,5 cm', '2,4 cm', '19,5 cm', '32,0 cm', ' cm', '21,0 cm', '30 cm', '58 cm', '5200 cm', '172,0 cm', '26.,0 cm', '26.,0 cm', '43,7 cm', '200,0 cm', '41,5 cm', '180,0 cm', '150 cm', '41,5 cm', '200 cm', '24 cm', '190 cm', '229 cm', '236 cm']
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Let's first sub out the commas for decimal places and remove the '\t' characters.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [7]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">subdata</span><span class="p">[</span><span class="s1">'Length'</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s1">','</span><span class="p">,</span> <span class="s1">'.'</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">subdata</span><span class="p">[</span><span class="s1">'Length'</span><span class="p">]]</span>
+<span class="n">subdata</span><span class="p">[</span><span class="s1">'Length'</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s1">'</span><span class="se">\t</span><span class="s1">'</span><span class="p">,</span> <span class="s1">''</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">subdata</span><span class="p">[</span><span class="s1">'Length'</span><span class="p">]]</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>AS IT HAPPENS, you can achieve the above using Pandas' built-in string methods, because I am a moron. Below, we use these methods on the "Length" dimension to replace the commas, extract the digits, extract the units, and then replace the units with the numbers to multiply the digits by (i.e., cm = 1, m = 100).</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [8]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">artifactlengths</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">'Length'</span><span class="p">]</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">extract</span><span class="p">(</span><span class="s1">r'(\d*.\d*)'</span><span class="p">,</span> <span class="n">expand</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+<span class="n">artifactlengths</span> <span class="o">=</span> <span class="n">artifactlengths</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">','</span><span class="p">,</span> <span class="s1">'.'</span><span class="p">)</span>
+<span class="n">artifactlengthmultipliers</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">'Length'</span><span class="p">]</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">extract</span><span class="p">(</span><span class="s1">r'.* ([a-zA-Z]*)'</span><span class="p">,</span> <span class="n">expand</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Doing this, we've created a vector (i.e., a Pandas series) of floats, and a separate vector of strings that have the units. For the next step, we want to first replace cm and CM with 1, and m and M with 100, and look for the person who used inches and shoot them.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [9]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">artifactlengthmultipliers</span><span class="o">.</span><span class="n">unique</span><span class="p">()</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt output_prompt">Out[9]:</div>
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>array(['cm', nan, 'M', 'in', 'CM', 'm'], dtype=object)</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>We create a dictionary to use with the .replace method:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [10]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">unitreplacement</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">"mm"</span> <span class="p">:</span> <span class="o">.</span><span class="mi">1</span><span class="p">,</span>
+    <span class="s2">"MM"</span> <span class="p">:</span> <span class="o">.</span><span class="mi">1</span><span class="p">,</span>
+    <span class="s2">"cm"</span> <span class="p">:</span> <span class="mi">1</span><span class="p">,</span> 
+    <span class="s2">"CM"</span> <span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="s2">"m"</span> <span class="p">:</span> <span class="mi">100</span><span class="p">,</span>
+    <span class="s2">"M"</span> <span class="p">:</span> <span class="mi">100</span><span class="p">,</span>
+    <span class="s2">"in"</span> <span class="p">:</span> <span class="mf">2.54</span><span class="p">,</span>
+    <span class="s2">"kg"</span> <span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="s2">"KG"</span> <span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="s2">"gm"</span> <span class="p">:</span> <span class="o">.</span><span class="mo">001</span><span class="p">,</span>
+    <span class="s2">"tons"</span> <span class="p">:</span> <span class="mi">1000</span><span class="p">,</span>
+    <span class="s2">"lbs"</span> <span class="p">:</span> <span class="o">.</span><span class="mi">453</span>
+<span class="p">}</span>
+<span class="n">artifactlengthmultipliersNUM</span> <span class="o">=</span> <span class="n">artifactlengthmultipliers</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">unitreplacement</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>And then we multiple our numbers by our multipliers, and now we can use the data to find out the average length of all artifacts:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [11]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="c1">#We have to coerce because our series contains missing values that cannot be typed</span>
+<span class="n">artifactlengthincm</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_numeric</span><span class="p">(</span><span class="n">artifactlengths</span><span class="p">,</span> <span class="n">errors</span> <span class="o">=</span> <span class="s1">'coerce'</span><span class="p">)</span> <span class="o">*</span> <span class="n">artifactlengthmultipliersNUM</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [12]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="k">print</span> <span class="n">artifactlengthincm</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+<span class="k">print</span> <span class="n">artifactlengthincm</span><span class="o">.</span><span class="n">median</span><span class="p">()</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>44.7114966571
+22.8
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The average length is 44.71 cm, and the median is 22.8 cm.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Functions-to-extract-digits-and-units">Functions to extract digits and units<a class="anchor-link" href="#Functions-to-extract-digits-and-units">¶</a>
+</h4>
+<p>Now that we've done this once with length, we can write some functions to do the above easily with the rest of the dimensions. We also have a function that will take a list of dimensions, and "numberize" all of them.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [13]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="c1">#These are the above as functions to run on our other dimensions</span>
+<span class="k">def</span> <span class="nf">extract_digits</span><span class="p">(</span><span class="n">series</span><span class="p">):</span>
+    <span class="n">lengths</span> <span class="o">=</span> <span class="n">series</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">extract</span><span class="p">(</span><span class="s1">r'(\d*.\d*)'</span><span class="p">,</span> <span class="n">expand</span> <span class="o">=</span> <span class="bp">False</span><span class="p">)</span>
+    <span class="n">lengths</span> <span class="o">=</span> <span class="n">lengths</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">','</span> <span class="p">,</span> <span class="s1">'.'</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_numeric</span><span class="p">(</span><span class="n">lengths</span><span class="p">,</span> <span class="n">errors</span> <span class="o">=</span> <span class="s1">'coerce'</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">extract_multipliers</span><span class="p">(</span><span class="n">series</span><span class="p">):</span>
+    <span class="n">multipliers</span> <span class="o">=</span> <span class="n">series</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">extract</span><span class="p">(</span><span class="s1">r'.* ([a-zA-Z]*)'</span><span class="p">,</span> <span class="n">expand</span> <span class="o">=</span> <span class="bp">False</span><span class="p">)</span>
+    <span class="n">unitreplacement</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">"cm"</span> <span class="p">:</span> <span class="mi">1</span><span class="p">,</span> 
+    <span class="s2">"CM"</span> <span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="s2">"m"</span> <span class="p">:</span> <span class="mi">100</span><span class="p">,</span>
+    <span class="s2">"M"</span> <span class="p">:</span> <span class="mi">100</span><span class="p">,</span>
+    <span class="s2">"in"</span> <span class="p">:</span> <span class="mf">2.54</span><span class="p">,</span>
+    <span class="s2">"kg"</span> <span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="s2">"KG"</span> <span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="s2">"gm"</span> <span class="p">:</span> <span class="o">.</span><span class="mo">001</span><span class="p">,</span>
+    <span class="s2">"tons"</span> <span class="p">:</span> <span class="mi">1000</span><span class="p">,</span>
+    <span class="s2">"lbs"</span> <span class="p">:</span> <span class="o">.</span><span class="mi">453</span>
+    <span class="p">}</span>
+    <span class="n">multipliers</span> <span class="o">=</span> <span class="n">multipliers</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">unitreplacement</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_numeric</span><span class="p">(</span><span class="n">multipliers</span><span class="p">,</span> <span class="n">errors</span> <span class="o">=</span> <span class="s1">'coerce'</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">numberize_dimensions</span><span class="p">(</span><span class="n">listofdimensions</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">dimension</span> <span class="ow">in</span> <span class="n">listofdimensions</span><span class="p">:</span>
+        <span class="n">data</span><span class="p">[</span><span class="n">dimension</span> <span class="o">+</span> <span class="s2">"INT"</span><span class="p">]</span> <span class="o">=</span> <span class="n">extract_digits</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">dimension</span><span class="p">])</span>
+        <span class="n">data</span><span class="p">[</span><span class="n">dimension</span> <span class="o">+</span> <span class="s2">"MULT"</span><span class="p">]</span> <span class="o">=</span> <span class="n">extract_multipliers</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">dimension</span><span class="p">])</span>
+        <span class="n">data</span><span class="p">[</span><span class="n">dimension</span> <span class="o">+</span> <span class="s2">"NUM"</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">dimension</span> <span class="o">+</span> <span class="s2">"INT"</span><span class="p">]</span> <span class="o">+</span> <span class="n">data</span><span class="p">[</span><span class="n">dimension</span> <span class="o">+</span> <span class="s2">"MULT"</span><span class="p">]</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [14]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="c1">#This was some hacky debugging when I manually did a binary search-type thing to find out which row numbers were messed up</span>
+<span class="c1">#pd.to_numeric(artifactlengths[96050:96100])</span>
+<span class="c1">#artifactlengths[96050:96100]</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Rest-of-the-dimensions">Rest of the dimensions<a class="anchor-link" href="#Rest-of-the-dimensions">¶</a>
+</h4>
+<p>From the above, the average length of all the artifacts in the collection is 44.7cm. Let's find out what the average is for all the other dimensions:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [15]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">data</span><span class="p">[</span><span class="s1">'HeightINT'</span><span class="p">]</span> <span class="o">=</span> <span class="n">extract_digits</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">'Height'</span><span class="p">])</span>
+<span class="n">data</span><span class="p">[</span><span class="s1">'HeightMULTI'</span><span class="p">]</span> <span class="o">=</span> <span class="n">extract_multipliers</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">'Height'</span><span class="p">])</span>
+<span class="n">data</span><span class="p">[</span><span class="s1">'HeightNUM'</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">'HeightINT'</span><span class="p">]</span> <span class="o">*</span> <span class="n">data</span><span class="p">[</span><span class="s1">'HeightMULTI'</span><span class="p">]</span>
+<span class="k">print</span> <span class="n">data</span><span class="p">[</span><span class="s1">'HeightNUM'</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+<span class="k">print</span> <span class="n">data</span><span class="p">[</span><span class="s1">'HeightNUM'</span><span class="p">]</span><span class="o">.</span><span class="n">median</span><span class="p">()</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>25.8840089939
+9.4
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The average height is 25.88 cm and the median is 9.4 cm.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [16]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">data</span><span class="p">[</span><span class="s1">'WidthINT'</span><span class="p">]</span> <span class="o">=</span> <span class="n">extract_digits</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">'Width'</span><span class="p">])</span>
+<span class="n">data</span><span class="p">[</span><span class="s1">'WidthMULTI'</span><span class="p">]</span> <span class="o">=</span> <span class="n">extract_multipliers</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">'Width'</span><span class="p">])</span>
+<span class="n">data</span><span class="p">[</span><span class="s1">'WidthNUM'</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">'WidthINT'</span><span class="p">]</span> <span class="o">*</span> <span class="n">data</span><span class="p">[</span><span class="s1">'WidthMULTI'</span><span class="p">]</span>
+<span class="k">print</span> <span class="n">data</span><span class="p">[</span><span class="s1">'WidthNUM'</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+<span class="k">print</span> <span class="n">data</span><span class="p">[</span><span class="s1">'WidthNUM'</span><span class="p">]</span><span class="o">.</span><span class="n">median</span><span class="p">()</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>24.1553862744
+12.0
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The average width is 24.16 cm and the median is 12 cm.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Now, we work on weight. Given that the units for weights range from gm to tons, let's go with kg as the unit we'll use, and assume that tons refer to metric tons. There's also a 'cm' there. Something is wrong.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [17]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">data</span><span class="p">[</span><span class="s1">'Weight'</span><span class="p">]</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">extract</span><span class="p">(</span><span class="s1">'.* (.*)'</span><span class="p">,</span> <span class="n">expand</span> <span class="o">=</span> <span class="bp">False</span><span class="p">)</span><span class="o">.</span><span class="n">unique</span><span class="p">()</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt output_prompt">Out[17]:</div>
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>array([nan, 'kg', 'cm', 'tons', 'gm', 'lb'], dtype=object)</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Below, we extract the indices of cases with "cm" in the weight. There are 13 cases, and some of them look like a misalignment of the columns, but it's impossible to tell which way they are misaligned.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [18]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">cmtest</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">'Weight'</span><span class="p">]</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">extract</span><span class="p">(</span><span class="s1">'(.* cm)'</span><span class="p">,</span> <span class="n">expand</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+<span class="c1">#Here are three</span>
+<span class="n">data</span><span class="p">[</span><span class="n">cmtest</span><span class="o">.</span><span class="n">isnull</span><span class="p">()</span> <span class="o">==</span> <span class="bp">False</span><span class="p">][</span><span class="mi">0</span><span class="p">:</span><span class="mi">3</span><span class="p">]</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt output_prompt">Out[18]:</div>
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<table border="1" class="dataframe">
+<thead><tr style="text-align: right;">
+<th></th>
+      <th>artifactNumber</th>
+      <th>ObjectName</th>
+      <th>GeneralDescription</th>
+      <th>model</th>
+      <th>SerialNumber</th>
+      <th>Manufacturer</th>
+      <th>ManuCountry</th>
+      <th>ManuProvince</th>
+      <th>ManuCity</th>
+      <th>BeginDate</th>
+      <th>EndDate</th>
+      <th>date_qualifier</th>
+      <th>patent</th>
+      <th>NumberOfComponents</th>
+      <th>ArtifactFinish</th>
+      <th>ContextCanada</th>
+      <th>ContextFunction</th>
+      <th>ContextTechnical</th>
+      <th>group1</th>
+      <th>category1</th>
+      <th>...</th>
+      <th>category2</th>
+      <th>subcategory2</th>
+      <th>group3</th>
+      <th>category3</th>
+      <th>subcategory3</th>
+      <th>material</th>
+      <th>Length</th>
+      <th>Width</th>
+      <th>Height</th>
+      <th>Thickness</th>
+      <th>Weight</th>
+      <th>Diameter</th>
+      <th>image</th>
+      <th>thumbnail</th>
+      <th>HeightINT</th>
+      <th>HeightMULTI</th>
+      <th>HeightNUM</th>
+      <th>WidthINT</th>
+      <th>WidthMULTI</th>
+      <th>WidthNUM</th>
+    </tr></thead>
+<tbody>
+<tr>
+<th>1934</th>
+      <td>1966.0971.001</td>
+      <td>Photograph</td>
+      <td>photograph paper; wood frame; glass; paper &amp; c...</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>JARMAN, FRANK LTD.</td>
+      <td>Canada</td>
+      <td>Ontario</td>
+      <td>Ottawa</td>
+      <td>1941</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>1.0</td>
+      <td>b + w photograph; black frame</td>
+      <td>presented by Frank Learman to Ralph Bell, Dire...</td>
+      <td>display</td>
+      <td>NaN</td>
+      <td>Aviation</td>
+      <td>Archives</td>
+      <td>...</td>
+      <td>Archives</td>
+      <td>Personal</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>paper-&gt;cardboard;wood-&gt;;glass-&gt;;metal-&gt;steel</td>
+      <td>49.8 cm</td>
+      <td>38.8 cm</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>1.9 cm</td>
+      <td>NaN</td>
+      <td>http://source.techno-science.ca/artifacts-arte...</td>
+      <td>http://source.techno-science.ca/artifacts-arte...</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>38.8</td>
+      <td>1.0</td>
+      <td>38.8</td>
+    </tr>
+<tr>
+<th>1941</th>
+      <td>1966.0978.001</td>
+      <td>Photograph</td>
+      <td>photograph paper; glass; plastic frame; steel ...</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>Royal Canadian Air Force</td>
+      <td>Canada</td>
+      <td>Ontario</td>
+      <td>Ottawa</td>
+      <td>1927</td>
+      <td>NaN</td>
+      <td>circa</td>
+      <td>NaN</td>
+      <td>1.0</td>
+      <td>b + w photograph; caption in white ink; mounte...</td>
+      <td>RCAF Station Ottawa (later Rockcliffe) was the...</td>
+      <td>taken as part of aerial photography survey for...</td>
+      <td>NaN</td>
+      <td>Aviation</td>
+      <td>Archives</td>
+      <td>...</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>paper-&gt;;glass-&gt;;synthetic-&gt;plastic;metal-&gt;steel</td>
+      <td>45.3 cm</td>
+      <td>40.0 cm</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>2.3 cm</td>
+      <td>NaN</td>
+      <td>http://source.techno-science.ca/artifacts-arte...</td>
+      <td>http://source.techno-science.ca/artifacts-arte...</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>40.0</td>
+      <td>1.0</td>
+      <td>40.0</td>
+    </tr>
+<tr>
+<th>52400</th>
+      <td>1989.0488.001</td>
+      <td>Calculator, air navigation</td>
+      <td>plastic; metal swivel at centre - possibly alu...</td>
+      <td>B-24D</td>
+      <td>NaN</td>
+      <td>Consolidated Aircraft Corp.</td>
+      <td>United States of America</td>
+      <td>California</td>
+      <td>San diego</td>
+      <td>1941</td>
+      <td>NaN</td>
+      <td>after</td>
+      <td>NaN</td>
+      <td>2.0</td>
+      <td>white with black detail; pale yellow rotating ...</td>
+      <td>NaN</td>
+      <td>used to determine gross weight &amp; fore &amp; aft ce...</td>
+      <td>especially useful on bombers because of varyin...</td>
+      <td>Aviation</td>
+      <td>Navigation instruments &amp; equipment</td>
+      <td>...</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>synthetic-&gt;plastic;metal-&gt;aluminum - possible</td>
+      <td>28.0 cm</td>
+      <td>25.2 cm</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>1.0 cm</td>
+      <td>NaN</td>
+      <td>http://source.techno-science.ca/artifacts-arte...</td>
+      <td>http://source.techno-science.ca/artifacts-arte...</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>25.2</td>
+      <td>1.0</td>
+      <td>25.2</td>
+    </tr>
+</tbody>
+</table>
+<p>3 rows × 42 columns</p>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Let's set those cases to NaN, and just ignore them for now:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [19]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">data</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">cmtest</span><span class="o">.</span><span class="n">isnull</span><span class="p">()</span> <span class="o">==</span> <span class="bp">False</span><span class="p">,[</span><span class="s1">'Weight'</span><span class="p">]]</span> <span class="o">=</span> <span class="bp">None</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [20]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">data</span><span class="p">[</span><span class="s1">'WeightINT'</span><span class="p">]</span> <span class="o">=</span> <span class="n">extract_digits</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">'Weight'</span><span class="p">])</span>
+<span class="n">data</span><span class="p">[</span><span class="s1">'WeightMULT'</span><span class="p">]</span> <span class="o">=</span> <span class="n">extract_multipliers</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">'Weight'</span><span class="p">])</span>
+<span class="n">data</span><span class="p">[</span><span class="s1">'WeightNUM'</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">'WeightINT'</span><span class="p">]</span> <span class="o">*</span> <span class="n">data</span><span class="p">[</span><span class="s1">'WeightMULT'</span><span class="p">]</span>
+<span class="k">print</span> <span class="n">data</span><span class="p">[</span><span class="s1">'WeightNUM'</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+<span class="k">print</span> <span class="n">data</span><span class="p">[</span><span class="s1">'WeightNUM'</span><span class="p">]</span><span class="o">.</span><span class="n">median</span><span class="p">()</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>1058.87995356
+16.78
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The average weight is 1 ton, which may be a problem if we want to fabricate this. However, the median is much lower, which suggests that the distribution is skewed, and this is also true for the other dimensions, let's take a look at that next.</p>
+
+</div>
+</div>
+</div>
+    </div>
+  </div>
+
+    </div>
+    <aside class="postpromonav"><nav><ul itemprop="keywords" class="tags">
+<li><a class="tag p-category" href="../../categories/mediocre-museum/" rel="tag">mediocre museum</a></li>
+        </ul>
+<ul class="pager hidden-print">
+<li class="previous">
+                <a href="../skytrax-data-1/" rel="prev" title="Skytrax Data #1">Previous post</a>
+            </li>
+            <li class="next">
+                <a href="../the-average-thing-2/" rel="next" title="The Average Thing #2">Next post</a>
+            </li>
+        </ul></nav></aside><script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"> </script><script type="text/x-mathjax-config">
+            MathJax.Hub.Config({tex2jax: {inlineMath: [['$latex ','$'], ['\\(','\\)']]}});
+            </script></article>
+</div>
+        <!--End of body content-->
+
+        <footer id="footer">
+            Contents © 2016         <a href="mailto:bryan.sim@nyu.edu">Bryan Sim</a> - Powered by         <a href="https://getnikola.com" rel="nofollow">Nikola</a>         
+            
+        </footer>
+</div>
+</div>
+
+
+            <script src="../../assets/js/all-nocdn.js"></script><script>$('a.image-reference:not(.islink) img:not(.islink)').parent().colorbox({rel:"gal",maxWidth:"100%",maxHeight:"100%",scalePhotos:true});</script><!-- fancy dates --><script>
+    moment.locale("en");
+    fancydates(0, "YYYY-MM-DD HH:mm");
+    </script><!-- end fancy dates -->
+</body>
+</html>
