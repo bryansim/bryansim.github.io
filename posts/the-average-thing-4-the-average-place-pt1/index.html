@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html prefix="og: http://ogp.me/ns# article: http://ogp.me/ns/article# " lang="en">
+<head>
+<meta charset="utf-8">
+<base href="https://bryansim.github.io/posts/the-average-thing-4-the-average-place-pt1/">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Average Thing #4: The Average Place pt.1 | Bryan Sim</title>
+<link href="../../assets/css/all-nocdn.css" rel="stylesheet" type="text/css">
+<link href="../../assets/css/ipython.min.css" rel="stylesheet" type="text/css">
+<link href="../../assets/css/nikola_ipython.css" rel="stylesheet" type="text/css">
+<meta content="#5670d4" name="theme-color">
+<link rel="alternate" type="application/rss+xml" title="RSS" href="../../rss.xml">
+<link rel="canonical" href="https://bryansim.github.io/posts/the-average-thing-4-the-average-place-pt1/">
+<link rel="icon" href="http://bryans.im/favicon.ico" sizes="16x16">
+<!--[if lt IE 9]><script src="../../assets/js/html5.js"></script><![endif]--><meta name="author" content="Bryan Sim">
+<link rel="prev" href="../the-average-thing-3-artifacts-over-time/" title="The Average Thing #3: Artifacts Over Time" type="text/html">
+<meta property="og:site_name" content="Bryan Sim">
+<meta property="og:title" content="The Average Thing #4: The Average Place pt.1">
+<meta property="og:url" content="https://bryansim.github.io/posts/the-average-thing-4-the-average-place-pt1/">
+<meta property="og:description" content="In [1]:
+
+    
+%matplotlib inline
+
+
+
+
+
+
+
+
+
+
+
+
+The Average Thing #4: The average place pt. 1¶Today, we're going to take an initial look at finding where the average artifact comes from.
+
+
+
+
+
+
+In [2]:
+
+ ">
+<meta property="og:type" content="article">
+<meta property="article:published_time" content="2016-05-10T21:13:05-04:00">
+<meta property="article:tag" content="mediocre museum">
+</head>
+<body>
+<a href="#content" class="sr-only sr-only-focusable">Skip to main content</a>
+
+<!-- Menubar -->
+
+<nav class="navbar navbar-inverse navbar-static-top"><div class="container">
+<!-- This keeps the margins nice -->
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-navbar" aria-controls="bs-navbar" aria-expanded="false">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="https://bryansim.github.io/">
+
+                <span id="blog-title">Bryan Sim</span>
+            </a>
+        </div>
+<!-- /.navbar-header -->
+        <div class="collapse navbar-collapse" id="bs-navbar" aria-expanded="false">
+            <ul class="nav navbar-nav">
+<li>
+<a href="../../categories/mediocre-museum">Mediocre Museum</a>
+                </li>
+<li>
+<a href="../../categories/mousetracker">Mousetracker</a>
+                </li>
+<li>
+<a href="../../categories/skytrax">Skytrax</a>
+                </li>
+<li>
+<a href="../../archive.html">Archive</a>
+                </li>
+<li>
+<a href="http://linkedin.com/in/bryansim">LinkedIn</a>
+
+                
+            </li>
+</ul>
+<ul class="nav navbar-nav navbar-right"></ul>
+</div>
+<!-- /.navbar-collapse -->
+    </div>
+<!-- /.container -->
+</nav><!-- End of Menubar --><div class="container" id="content" role="main">
+    <div class="body-content">
+        <!--Body content-->
+        <div class="row">
+            
+            
+<article class="post-text h-entry hentry postpage" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title" itemprop="headline name"><a href="." class="u-url">The Average Thing #4: The Average Place pt.1</a></h1>
+
+        <div class="metadata">
+            <p class="byline author vcard"><span class="byline-name fn">
+                    Bryan Sim
+            </span></p>
+            <p class="dateline"><a href="." rel="bookmark"><time class="published dt-published" datetime="2016-05-10T21:13:05-04:00" itemprop="datePublished" title="2016-05-10 21:13">2016-05-10 21:13</time></a></p>
+            
+
+        </div>
+        
+
+    </header><div class="e-content entry-content" itemprop="articleBody text">
+    <div tabindex="-1" id="notebook" class="border-box-sizing">
+    <div class="container" id="notebook-container">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [1]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="o">%</span><span class="k">matplotlib</span> inline
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="The-Average-Thing-#4:-The-average-place-pt.-1">The Average Thing #4: The average place pt. 1<a class="anchor-link" href="#The-Average-Thing-#4:-The-average-place-pt.-1">¶</a>
+</h2>
+<p>Today, we're going to take an initial look at finding where the average artifact comes from.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [2]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">pyplot</span> <span class="k">as</span> <span class="n">plt</span>
+<span class="kn">from</span> <span class="nn">geopy.geocoders</span> <span class="kn">import</span> <span class="n">Nominatim</span>
+<span class="n">pd</span><span class="o">.</span><span class="n">get_option</span><span class="p">(</span><span class="s2">"display.max_columns"</span><span class="p">)</span>
+<span class="n">pd</span><span class="o">.</span><span class="n">set_option</span><span class="p">(</span><span class="s2">"display.max_columns"</span><span class="p">,</span> <span class="mi">40</span><span class="p">)</span>
+
+<span class="n">data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">"cstmc-CSV-en.csv"</span><span class="p">,</span> <span class="n">delimiter</span> <span class="o">=</span> <span class="s2">"|"</span><span class="p">,</span> <span class="n">error_bad_lines</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">warn_bad_lines</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt"></div>
+<div class="output_subarea output_stream output_stderr output_text">
+<pre>C:\Users\dfthd\Anaconda3\envs\python2\lib\site-packages\IPython\core\interactiveshell.py:2723: DtypeWarning: Columns (9,10) have mixed types. Specify dtype option on import or set low_memory=False.
+  interactivity=interactivity, compiler=compiler, result=result)
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>We're going to use the <a href="http://geopy.readthedocs.io/en/1.10.0/">GeoPy</a> package to see if we can extract the latitude and longitude data from each of the countries. Let's start with a test case:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [3]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">geolocator</span> <span class="o">=</span> <span class="n">Nominatim</span><span class="p">()</span> <span class="c1">#Using the service Nominatim</span>
+<span class="n">examplecase</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">'ManuCountry'</span><span class="p">][</span><span class="mi">7</span><span class="p">]</span>
+<span class="k">print</span> <span class="n">examplecase</span>
+<span class="n">location</span> <span class="o">=</span> <span class="n">geolocator</span><span class="o">.</span><span class="n">geocode</span><span class="p">(</span><span class="n">examplecase</span><span class="p">)</span> <span class="c1">#Use the geocode method, </span>
+<span class="k">print</span> <span class="n">location</span><span class="o">.</span><span class="n">latitude</span>
+<span class="k">print</span> <span class="n">location</span><span class="o">.</span><span class="n">longitude</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>United States of America
+39.7837304
+-100.4458824
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Now, with that latitude and longitude, let's see where that takes us. If you imput the coordinates on Google Maps, it points to somewhere in the middle of the U.S. That's good enough for now:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [4]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">from</span> <span class="nn">IPython.display</span> <span class="kn">import</span> <span class="n">IFrame</span>
+<span class="kn">from</span> <span class="nn">IPython.core.display</span> <span class="kn">import</span> <span class="n">display</span>
+
+<span class="n">IFrame</span><span class="p">(</span><span class="s1">'''https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d11800310.147808608!</span><span class="se">\</span>
+<span class="s1">2d-107.43346408765365!3d38.054495438444!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMznCsDQ3JzAx</span><span class="se">\</span>
+<span class="s1">LjQiTiAxMDDCsDI2JzQ1LjIiVw!5e0!3m2!1sen!2sus!4v1462918136743'''</span><span class="p">,</span> <span class="n">width</span> <span class="o">=</span> <span class="mi">800</span><span class="p">,</span> <span class="n">height</span> <span class="o">=</span> <span class="mi">600</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt output_prompt">Out[4]:</div>
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+
+        <iframe width="800" height="600" src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d11800310.147808608!2d-107.43346408765365!3d38.054495438444!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMznCsDQ3JzAxLjQiTiAxMDDCsDI2JzQ1LjIiVw!5e0!3m2!1sen!2sus!4v1462918136743" frameborder="0" allowfullscreen></iframe>
+        
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Next, we're going to do the same for all the countries of origin:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [5]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="c1">#This simple function takes a string and returns a tuple of the latitude and longitude</span>
+<span class="k">def</span> <span class="nf">find_lat_long</span><span class="p">(</span><span class="n">string</span><span class="p">):</span>
+    <span class="n">geolocator</span> <span class="o">=</span> <span class="n">Nominatim</span><span class="p">()</span> <span class="c1">#Using the service Nominatim</span>
+    <span class="n">location</span> <span class="o">=</span> <span class="n">geolocator</span><span class="o">.</span><span class="n">geocode</span><span class="p">(</span><span class="n">string</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="bp">None</span><span class="p">)</span> <span class="c1">#Use the geocode method, </span>
+    <span class="k">return</span><span class="p">(</span><span class="n">location</span><span class="o">.</span><span class="n">latitude</span><span class="p">,</span> <span class="n">location</span><span class="o">.</span><span class="n">longitude</span><span class="p">)</span>
+
+<span class="kn">import</span> <span class="nn">math</span>
+
+<span class="c1">#create a dictionary of all the countries</span>
+<span class="n">country_locations</span> <span class="o">=</span> <span class="p">{</span><span class="n">country</span><span class="p">:</span><span class="s2">""</span> <span class="k">for</span> <span class="n">country</span> <span class="ow">in</span> <span class="n">data</span><span class="p">[</span><span class="s1">'ManuCountry'</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">()</span> <span class="k">if</span> <span class="p">(</span><span class="n">country</span> <span class="o">!=</span> <span class="s1">'Unknown'</span><span class="p">)</span>\
+                          <span class="ow">and</span> <span class="p">(</span><span class="n">country</span> <span class="o">!=</span> <span class="s1">'unknown'</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">country</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">str</span><span class="p">)}</span>
+
+<span class="c1">#country_locations = {k: find_lat_long(k) for k, v in country_locations.iteritems()}</span>
+<span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">country_locations</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">country_locations</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">find_lat_long</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="k">pass</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [6]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="k">print</span> <span class="n">country_locations</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>{'Canada': (61.0666922, -107.991707), 'Brazil': (-10.3333332, -53.1999999), 'Qatar': (25.3336984, 51.2295295), 'Italy': (42.6384261, 12.674297), 'Peru': (-6.8699696, -75.0458514), 'Antarctica': (-82.1081819, 34.378236), 'Panama': (8.3096067, -81.3066245), 'Scotland': (56.7861112, -4.1140517), 'Cambodia': (13.5066394, 104.869423), 'France': (46.603354, 1.8883335), 'Great Britain': (54.31536155, -1.91802339480124), 'Bermuda': (32.3018217, -64.7603582), 'Ireland': (52.865196, -7.9794598), 'Wales': (52.2928116, -3.7389299), 'Argentina': (-34.9964962, -64.9672816), 'Norway': (64.574131, 11.5270102892405), 'Thailand': (14.8971921, 100.83273), 'Bangladesh': (24.4768783, 90.2932426), 'Federal Republic of Germany': (45.4185139, -75.6817796429953), 'Slovakia': (48.7411522, 19.4528646), 'Israel': (30.8760272, 35.0015196), 'Australia': (-24.7761085, 134.755), 'Columbia': (2.893108, -73.7845142), 'Indonesia': (-4.7993355, 114.5632032), 'Singapore': (1.2904527, 103.852038), 'Afganistan': (33.0000866, 64.9998468), 'Czechoslovakia': (41.2133453, -98.6228518), 'German Democratic Republic': (19.4347018, -99.2052135855648), 'United States of America': (39.7837304, -100.4458824), 'South America': (-21.0002178, -61.0006564), 'Union of Soviet Socialist Republics': '', 'Guatemala': (15.6356088, -89.8988086), 'Germany': (51.0834196, 10.4234469), 'Chile': (-31.7613364, -71.3187696), 'Martinique': (14.6113732, -60.9620776), 'Belgium': (50.6407351, 4.66696), 'China': (35.000074, 104.999927), 'Haiti': (19.1399952, -72.3570971), 'Hong Kong': (22.2793278, 114.1628131), 'Philippines': (12.7503486, 122.7312101), 'Spain': (40.0028028, -4.0031039), 'Ukraine': (49.4871968, 31.2718321), 'Europe': (51.0000003, 9.9999997), 'Netherlands': (52.2379891, 5.53460738161551), 'Holland': (42.7876022, -86.1090827), 'Pakistan': (30.3308401, 71.247499), 'Denmark': (55.670249, 10.3333283), 'Poland': (52.0977181, 19.0258159), 'Finland': (63.2467777, 25.9209164), 'Mexico': (19.4325301, -99.1332101), 'North America': (51.0000002, -109.0000001), 'Sweden': (59.6749712, 14.5208584), 'Korea': (35.3985008, 127.937111), 'Hungary': (47.1817585, 19.5060937), 'Switzerland': (46.7985624, 8.2319736), 'Honduras': (15.0610686, -84.5978533), 'New Zealand': (-41.500083, 172.8344077), 'Cuba': (23.0131338, -80.8328747), 'Physics': (14.4832485, 121.0269845), 'Jamaica': (18.1850507, -77.3947692), 'Romania': (45.9852129, 24.6859225), 'England': (52.7954791, -0.540240236617432), 'Portugal': (40.033265, -7.8896262), 'South Africa': (-28.8166235, 24.991639), 'Egypt': (26.2540493, 29.2675469), 'Unknown.': (24.9993709, -77.4417422759927), 'Liechtenshtein': (31.9345932, 34.8325777), 'India': (22.3511148, 78.6677428), 'United Kingdom': (54.7023545, -3.2765752), 'Malaysia': (2.3923759, 112.8471939), 'Austria': (47.2000338, 13.199959), 'Trinidad and Tabago': '', 'Republic of Korea': (35.3985008, 127.937111), 'Northern Ireland': (54.65688285, -6.5634352096912), 'Sri Lanka': (7.878, 80.7038245875), 'Japan': (36.5748441, 139.2394179), 'Taiwan': (23.9739374, 120.9820179)}
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [7]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">data</span><span class="p">[</span><span class="s1">'GeoLocations'</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">country_locations</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">data</span><span class="p">[</span><span class="s1">'ManuCountry'</span><span class="p">]]</span> 
+<span class="c1">#we use .get() instead of country_locations[x] to prevent errors when keys are not in the dictionary</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [12]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">data</span><span class="p">[</span><span class="s1">'GeoLocations'</span><span class="p">][</span><span class="mi">80</span><span class="p">:</span><span class="mi">100</span><span class="p">]</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt output_prompt">Out[12]:</div>
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>80                          None
+81                          None
+82                          None
+83    (39.7837304, -100.4458824)
+84    (39.7837304, -100.4458824)
+85                          None
+86                          None
+87     (61.0666922, -107.991707)
+88     (61.0666922, -107.991707)
+89    (39.7837304, -100.4458824)
+90    (39.7837304, -100.4458824)
+91    (39.7837304, -100.4458824)
+92    (39.7837304, -100.4458824)
+93    (39.7837304, -100.4458824)
+94    (39.7837304, -100.4458824)
+95    (39.7837304, -100.4458824)
+96    (39.7837304, -100.4458824)
+97                          None
+98                          None
+99    (39.7837304, -100.4458824)
+Name: GeoLocations, dtype: object</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The above process has yielded tuples of latitudes and longitudes where an artifact's country of origin was available, and null where it hasn't. To average this, we're going to have to do some <a href="http://www.geomidpoint.com/calculation.html">math</a>, because the earth is round and we can't just add the latitudes and longitudes up:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [9]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="c1">#We're going to have to convert degrees to radians, so let's define a function to do that:</span>
+
+<span class="k">def</span> <span class="nf">to_radians</span><span class="p">(</span><span class="n">latlong</span><span class="p">):</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">latlong</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="mf">3.142</span><span class="o">/</span><span class="mi">180</span><span class="p">,</span> <span class="n">latlong</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="mf">3.142</span><span class="o">/</span><span class="mi">180</span><span class="p">)</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="k">pass</span>
+
+<span class="c1">#Next, because the earth is round, we have to convert these to cartesian coordinates:</span>
+<span class="k">def</span> <span class="nf">to_cartesian</span><span class="p">(</span><span class="n">latlongradians</span><span class="p">):</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">latlongradians</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">latlongradians</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">latlongradians</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">latlongradians</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">z</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">latlongradians</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="k">return</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">z</span><span class="p">)</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="k">pass</span>
+    
+<span class="c1">#Finally, we convert back to our original latitude/longitude:</span>
+<span class="k">def</span> <span class="nf">to_latlong</span><span class="p">(</span><span class="n">cartesian</span><span class="p">):</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">cartesian</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="n">cartesian</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">z</span> <span class="o">=</span> <span class="n">cartesian</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+        <span class="n">lon</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">atan2</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+        <span class="n">hyp</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">x</span> <span class="o">*</span> <span class="n">x</span> <span class="o">+</span> <span class="n">y</span> <span class="o">*</span> <span class="n">y</span><span class="p">)</span>
+        <span class="n">lat</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">atan2</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="n">hyp</span><span class="p">)</span>
+        <span class="k">return</span><span class="p">(</span><span class="n">lat</span><span class="o">*</span><span class="mi">180</span><span class="o">/</span><span class="mf">3.142</span><span class="p">,</span><span class="n">lon</span><span class="o">*</span><span class="mi">180</span><span class="o">/</span><span class="mf">3.142</span><span class="p">)</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="k">pass</span>
+    
+<span class="k">print</span> <span class="n">data</span><span class="p">[</span><span class="s1">'GeoLocations'</span><span class="p">][</span><span class="mi">90</span><span class="p">]</span>    
+<span class="k">print</span> <span class="n">to_radians</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">'GeoLocations'</span><span class="p">][</span><span class="mi">90</span><span class="p">])</span>
+<span class="k">print</span> <span class="n">to_cartesian</span><span class="p">(</span><span class="n">to_radians</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">'GeoLocations'</span><span class="p">][</span><span class="mi">90</span><span class="p">]))</span>
+<span class="k">print</span> <span class="n">to_latlong</span><span class="p">(</span><span class="n">to_cartesian</span><span class="p">(</span><span class="n">to_radians</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">'GeoLocations'</span><span class="p">][</span><span class="mi">90</span><span class="p">])))</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>(39.7837304, -100.4458824)
+(0.6944471162044444, -1.75333868056)
+(-0.13948924758883874, -0.7556408246036178, 0.6399606972302785)
+(39.7837304, -100.4458824)
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Looks like this works! Now, let's map it to the entire series:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [10]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">data</span><span class="p">[</span><span class="s1">'GeoRadians'</span><span class="p">]</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="n">to_radians</span><span class="p">,</span><span class="n">data</span><span class="p">[</span><span class="s1">'GeoLocations'</span><span class="p">])</span>
+<span class="n">data</span><span class="p">[</span><span class="s1">'GeoCartesian'</span><span class="p">]</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="n">to_cartesian</span><span class="p">,</span> <span class="n">data</span><span class="p">[</span><span class="s1">'GeoRadians'</span><span class="p">])</span>
+
+<span class="c1">#Now, let's average across all the dimensions by reducing:</span>
+<span class="n">geo_no_nan</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">data</span><span class="p">[</span><span class="s1">'GeoCartesian'</span><span class="p">]</span><span class="o">.</span><span class="n">isnull</span><span class="p">()</span> <span class="o">==</span> <span class="bp">False</span><span class="p">][</span><span class="s1">'GeoCartesian'</span><span class="p">]</span>
+
+<span class="n">avgcoordinates</span> <span class="o">=</span> <span class="nb">reduce</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">:</span> <span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">y</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">y</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">+</span> <span class="n">y</span><span class="p">[</span><span class="mi">2</span><span class="p">]),</span> <span class="n">geo_no_nan</span><span class="p">)</span>
+<span class="k">print</span> <span class="n">avgcoordinates</span>
+<span class="n">avgcoordinates</span> <span class="o">=</span> <span class="p">(</span><span class="n">avgcoordinates</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">/</span><span class="nb">len</span><span class="p">(</span><span class="n">geo_no_nan</span><span class="p">),</span> <span class="n">avgcoordinates</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">/</span><span class="nb">len</span><span class="p">(</span><span class="n">geo_no_nan</span><span class="p">),</span> <span class="n">avgcoordinates</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">/</span><span class="nb">len</span><span class="p">(</span><span class="n">geo_no_nan</span><span class="p">))</span>
+<span class="k">print</span> <span class="n">avgcoordinates</span>
+<span class="k">print</span> <span class="n">to_latlong</span><span class="p">(</span><span class="n">avgcoordinates</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>(1612.787448314339, -17961.012440354283, 33139.39424219098)
+(0.036587737030724564, -0.40746398458154, 0.7518011397956211)
+(61.43857821633736, -84.85795258473567)
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>This procedure says that the location where the average artifact is manufactured is in the Hudson Bay in Canada:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [11]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">IFrame</span><span class="p">(</span><span class="s1">'''https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d9892352.643336799!2d-98.04822081277437</span><span class="se">\</span>
+<span class="s1">!3d59.40187990911089!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNjHCsDI2JzE4LjkiTiA</span><span class="se">\</span>
+<span class="s1">4NMKwNTEnMjguNiJX!5e0!3m2!1sen!2sus!4v1462926074704'''</span><span class="p">,</span> <span class="n">width</span> <span class="o">=</span> <span class="mi">800</span><span class="p">,</span> <span class="n">height</span> <span class="o">=</span> <span class="mi">600</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt output_prompt">Out[11]:</div>
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+
+        <iframe width="800" height="600" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d9892352.643336799!2d-98.04822081277437!3d59.40187990911089!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNjHCsDI2JzE4LjkiTiA4NMKwNTEnMjguNiJX!5e0!3m2!1sen!2sus!4v1462926074704" frameborder="0" allowfullscreen></iframe>
+        
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>This seems a little strange to me, and I'm definitely going to have to dig deeper in a future post, but I think my math is right, and perhaps I'm just visualizing this in my head wrongly.</p>
+
+</div>
+</div>
+</div>
+    </div>
+  </div>
+
+    </div>
+    <aside class="postpromonav"><nav><ul itemprop="keywords" class="tags">
+<li><a class="tag p-category" href="../../categories/mediocre-museum/" rel="tag">mediocre museum</a></li>
+        </ul>
+<ul class="pager hidden-print">
+<li class="previous">
+                <a href="../the-average-thing-3-artifacts-over-time/" rel="prev" title="The Average Thing #3: Artifacts Over Time">Previous post</a>
+            </li>
+        </ul></nav></aside><script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"> </script><script type="text/x-mathjax-config">
+            MathJax.Hub.Config({tex2jax: {inlineMath: [['$latex ','$'], ['\\(','\\)']]}});
+            </script></article>
+</div>
+        <!--End of body content-->
+
+        <footer id="footer">
+            Contents © 2016         <a href="mailto:bryan.sim@nyu.edu">Bryan Sim</a> - Powered by         <a href="https://getnikola.com" rel="nofollow">Nikola</a>         
+            
+        </footer>
+</div>
+</div>
+
+
+            <script src="../../assets/js/all-nocdn.js"></script><script>$('a.image-reference:not(.islink) img:not(.islink)').parent().colorbox({rel:"gal",maxWidth:"100%",maxHeight:"100%",scalePhotos:true});</script><!-- fancy dates --><script>
+    moment.locale("en");
+    fancydates(0, "YYYY-MM-DD HH:mm");
+    </script><!-- end fancy dates -->
+</body>
+</html>
