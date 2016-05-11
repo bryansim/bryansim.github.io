@@ -68,7 +68,273 @@
 
 
 <div class="postindex">
-    <article class="h-entry post-text"><header><h1 class="p-name entry-title"><a href="../../posts/the-average-thing-4-the-average-place-pt1/" class="u-url">The Average Thing #4: The Average Place pt.1</a></h1>
+    <article class="h-entry post-text"><header><h1 class="p-name entry-title"><a href="../../posts/the-average-thing-5-the-average-place-pt2/" class="u-url">The Average Thing #5: The Average Place pt.2</a></h1>
+        <div class="metadata">
+            <p class="byline author vcard"><span class="byline-name fn">
+                Bryan Sim
+            </span></p>
+            <p class="dateline"><a href="../../posts/the-average-thing-5-the-average-place-pt2/" rel="bookmark"><time class="published dt-published" datetime="2016-05-11T10:36:00-04:00" title="2016-05-11 10:36">2016-05-11 10:36</time></a></p>
+        </div>
+    </header><div class="e-content entry-content">
+    <div tabindex="-1" id="notebook" class="border-box-sizing">
+    <div class="container" id="notebook-container">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [1]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="o">%</span><span class="k">matplotlib</span> inline
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="The-Average-Thing-#5:-The-average-place-pt.-2">The Average Thing #5: The average place pt. 2<a class="anchor-link" href="../../posts/the-average-thing-5-the-average-place-pt2/#The-Average-Thing-#5:-The-average-place-pt.-2">¶</a>
+</h2>
+<p>This is a quick follow up on the last post: We're going to check our math and look at an alternate way of finding the average location: using the Mercator Projection.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Earlier, we saw that the origin of the average object was somewhere in the Hudson Bay in Canada. This seemed at odds with my intuition. I also had a feeling that the reason this result seemed weird was because my mental representation of the earth was not spherical, but cylindrical (e.g., the <a href="https://en.wikipedia.org/wiki/Mercator_projection">Mercator Projection</a>).</p>
+<p>To demonstrate this, let's test the simple case where we find the point between the middle of Canada and the UK:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [6]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">canada</span> <span class="o">=</span> <span class="n">country_locations</span><span class="p">[</span><span class="s1">'Canada'</span><span class="p">]</span>
+<span class="n">uk</span> <span class="o">=</span> <span class="n">country_locations</span><span class="p">[</span><span class="s1">'England'</span><span class="p">]</span>
+
+<span class="c1">#convert to radians</span>
+<span class="n">canada</span> <span class="o">=</span> <span class="n">to_radians</span><span class="p">(</span><span class="n">canada</span><span class="p">)</span>
+<span class="n">uk</span> <span class="o">=</span> <span class="n">to_radians</span><span class="p">(</span><span class="n">uk</span><span class="p">)</span>
+<span class="c1">#convert to cartesian</span>
+<span class="n">canada</span> <span class="o">=</span> <span class="n">to_cartesian</span><span class="p">(</span><span class="n">canada</span><span class="p">)</span>
+<span class="n">uk</span> <span class="o">=</span> <span class="n">to_cartesian</span><span class="p">(</span><span class="n">uk</span><span class="p">)</span>
+<span class="c1">#find average</span>
+<span class="n">averagepoint</span> <span class="o">=</span> <span class="p">((</span><span class="n">canada</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span><span class="n">uk</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="p">(</span><span class="n">canada</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">+</span><span class="n">uk</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="p">(</span><span class="n">canada</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">+</span><span class="n">uk</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span>
+
+<span class="k">print</span> <span class="n">to_latlong</span><span class="p">(</span><span class="n">averagepoint</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>(68.71255890231265, -45.65693500322893)
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [7]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">from</span> <span class="nn">IPython.display</span> <span class="kn">import</span> <span class="n">IFrame</span>
+
+<span class="n">IFrame</span><span class="p">(</span><span class="s1">'''https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d32299245.83742049!2d-81.10312744481017!3d60</span><span class="se">\</span>
+<span class="s1">.38924413554626!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNjjCsDQyJzQ1LjIiTiA0NcKwMzknM</span><span class="se">\</span>
+<span class="s1">jUuMCJX!5e0!3m2!1sen!2sus!4v1462973875452'''</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">800</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">600</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt output_prompt">Out[7]:</div>
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+
+        <iframe width="800" height="600" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d32299245.83742049!2d-81.10312744481017!3d60.38924413554626!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNjjCsDQyJzQ1LjIiTiA0NcKwMzknMjUuMCJX!5e0!3m2!1sen!2sus!4v1462973875452" frameborder="0" allowfullscreen></iframe>
+        
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>To visualize how this is really the mid point, we can look at that point on a 3D globe (<a href="http://www.webglearth.com/#ll=68.71256,-45.65694;alt=7988864;t=-0.530">external link</a>):</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [8]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">IFrame</span><span class="p">(</span><span class="s1">'''http://www.webglearth.com/#ll=68.71256,-45.65694;alt=7988864;t=-0.530'''</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">800</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">600</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt output_prompt">Out[8]:</div>
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+
+        <iframe width="800" height="600" src="http://www.webglearth.com/#ll=68.71256,-45.65694;alt=7988864;t=-0.530" frameborder="0" allowfullscreen></iframe>
+        
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The above visualization makes it clear how my intuition differed from reality - the shortest distance between the middle of Canada and the UK is not across the Atlantic, but crosses Greenland.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>But let's, for a moment, be flat-earthers, and stick to our flat representation of the earth, like we do whenever we use a map or chart. In this case, we simply average the latitude and longitudes of all the points (see: <a href="http://www.geomidpoint.com/calculation.html">http://www.geomidpoint.com/calculation.html</a>)</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [10]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">latlon_no_na</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">data</span><span class="p">[</span><span class="s1">'GeoLocations'</span><span class="p">]</span><span class="o">.</span><span class="n">isnull</span><span class="p">()</span> <span class="o">==</span> <span class="bp">False</span><span class="p">][</span><span class="s1">'GeoLocations'</span><span class="p">]</span>
+<span class="n">latlon_no_na</span> <span class="o">=</span> <span class="n">latlon_no_na</span><span class="p">[</span><span class="n">latlon_no_na</span> <span class="o">!=</span> <span class="s1">''</span><span class="p">]</span>
+        
+<span class="n">avelatlon</span> <span class="o">=</span> <span class="nb">reduce</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">:</span> <span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">y</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">y</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> <span class="n">latlon_no_na</span><span class="p">)</span>
+
+<span class="n">avelatlon</span> <span class="o">=</span> <span class="p">(</span><span class="n">avelatlon</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">/</span><span class="nb">len</span><span class="p">(</span><span class="n">latlon_no_na</span><span class="p">),</span> <span class="n">avelatlon</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">/</span><span class="nb">len</span><span class="p">(</span><span class="n">latlon_no_na</span><span class="p">))</span>
+<span class="n">avelatlon</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt output_prompt">Out[10]:</div>
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>(49.76023781406744, -68.28145709782275)</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Constructing the map this way gives us a point somewhere in Quebec, which is in line with how we might think of the average point if the world was flat:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [11]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">IFrame</span><span class="p">(</span><span class="s1">'''https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d46671329.280431576!2d-113.3722364450685!</span><span class="se">\</span>
+<span class="s1">3d44.44153336080491!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNDnCsDQ1JzM2LjkiTiA2OM</span><span class="se">\</span>
+<span class="s1">KwMTYnNTMuMiJX!5e0!3m2!1sen!2sus!4v1462977105095'''</span><span class="p">,</span> <span class="n">width</span> <span class="o">=</span> <span class="mi">800</span><span class="p">,</span> <span class="n">height</span> <span class="o">=</span> <span class="mi">600</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt output_prompt">Out[11]:</div>
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+
+        <iframe width="800" height="600" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d46671329.280431576!2d-113.3722364450685!3d44.44153336080491!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNDnCsDQ1JzM2LjkiTiA2OMKwMTYnNTMuMiJX!5e0!3m2!1sen!2sus!4v1462977105095" frameborder="0" allowfullscreen></iframe>
+        
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    </div>
+  </div>
+
+    </div>
+    </article><article class="h-entry post-text"><header><h1 class="p-name entry-title"><a href="../../posts/the-average-thing-4-the-average-place-pt1/" class="u-url">The Average Thing #4: The Average Place pt.1</a></h1>
         <div class="metadata">
             <p class="byline author vcard"><span class="byline-name fn">
                 Bryan Sim
