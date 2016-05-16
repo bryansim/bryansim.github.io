@@ -68,7 +68,332 @@
 
 
 <div class="postindex">
-    <article class="h-entry post-text"><header><h1 class="p-name entry-title"><a href="../../posts/skytrax-data-2-shapley-value-regression/" class="u-url">Skytrax Data #2: Shapley Value Regression</a></h1>
+    <article class="h-entry post-text"><header><h1 class="p-name entry-title"><a href="../../posts/skytrax-data-3-the-ols-model/" class="u-url">Skytrax Data #3: The OLS Model</a></h1>
+        <div class="metadata">
+            <p class="byline author vcard"><span class="byline-name fn">
+                Bryan Sim
+            </span></p>
+            <p class="dateline"><a href="../../posts/skytrax-data-3-the-ols-model/" rel="bookmark"><time class="published dt-published" datetime="2016-05-16T18:38:29-04:00" title="2016-05-16 18:38">2016-05-16 18:38</time></a></p>
+        </div>
+    </header><div class="e-content entry-content">
+    <div tabindex="-1" id="notebook" class="border-box-sizing">
+    <div class="container" id="notebook-container">
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Skytrax-Data-#3:-The-OLS-Model">Skytrax Data #3: The OLS Model<a class="anchor-link" href="../../posts/skytrax-data-3-the-ols-model/#Skytrax-Data-#3:-The-OLS-Model">¶</a>
+</h2>
+<p>In this post, we're going to examine one way someone might evaluate which rating is the "most important" one in predicting participants' overall ratings: By examining coefficients in a multiple regression. Recall that besides passengers' overall ratings, there were 7 other criteria: their ratings of the flight's seat comfort, cabin staff, food and beverage, inflight entertainment, ground service, wifi connectivity, and value for money.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [1]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">psycopg2</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">sqlalchemy</span> <span class="kn">import</span> <span class="n">create_engine</span>
+<span class="kn">import</span> <span class="nn">math</span>
+<span class="kn">import</span> <span class="nn">statsmodels.api</span> <span class="kn">as</span> <span class="nn">sm</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [2]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="c1">#This connects to the postgres database above.</span>
+<span class="n">connection</span> <span class="o">=</span> <span class="n">psycopg2</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="s2">"dbname = skytrax user=skytraxadmin password=skytraxadmin"</span><span class="p">)</span>
+<span class="n">cursor</span> <span class="o">=</span> <span class="n">connection</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [3]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">connection</span><span class="o">.</span><span class="n">rollback</span><span class="p">()</span>
+<span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s1">'SELECT * from airline;'</span><span class="p">)</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">cursor</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [4]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+<span class="n">descriptions</span> <span class="o">=</span> <span class="p">[</span><span class="n">desc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">desc</span> <span class="ow">in</span> <span class="n">cursor</span><span class="o">.</span><span class="n">description</span><span class="p">]</span>
+<span class="n">data</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="n">descriptions</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [5]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">data</span><span class="o">.</span><span class="n">count</span><span class="p">()</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt output_prompt">Out[5]:</div>
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>airline_name                     41396
+link                             41396
+title                            41396
+author                           41396
+author_country                   39805
+date                             41396
+content                          41396
+aircraft                          1278
+type_traveller                    2378
+cabin_flown                      38520
+route                             2341
+overall_rating                   36861
+seat_comfort_rating              33706
+cabin_staff_rating               33708
+food_beverages_rating            33264
+inflight_entertainment_rating    31114
+ground_service_rating             2203
+wifi_connectivity_rating           565
+value_money_rating               39723
+recommended                      41396
+dtype: int64</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>In our subsequent analysis, we're going to ignore ground service ratings as well as wifi connectivity rating because, as you can see, these have very limited data.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [6]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">from</span> <span class="nn">pandas.stats.api</span> <span class="kn">import</span> <span class="n">ols</span> <span class="k">as</span> <span class="n">olspd</span>
+
+<span class="n">olspd</span><span class="p">(</span><span class="n">y</span><span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">'overall_rating'</span><span class="p">],</span> <span class="n">x</span> <span class="o">=</span> <span class="n">data</span><span class="p">[[</span><span class="s1">'seat_comfort_rating'</span><span class="p">,</span> <span class="s1">'cabin_staff_rating'</span><span class="p">,</span>\
+                                           <span class="s1">'food_beverages_rating'</span><span class="p">,</span> <span class="s1">'inflight_entertainment_rating'</span><span class="p">,</span>\
+                                           <span class="s1">'value_money_rating'</span><span class="p">]])</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt"></div>
+<div class="output_subarea output_stream output_stderr output_text">
+<pre>C:\Users\dfthd\Anaconda3\envs\python2\lib\site-packages\IPython\core\interactiveshell.py:2885: FutureWarning: The pandas.stats.ols module is deprecated and will be removed in a future version. We refer to external packages like statsmodels, see some examples here: http://statsmodels.sourceforge.net/stable/regression.html
+  exec(code_obj, self.user_global_ns, self.user_ns)
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+<div class="prompt output_prompt">Out[6]:</div>
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>
+-------------------------Summary of Regression Analysis-------------------------
+
+Formula: Y ~ &lt;seat_comfort_rating&gt; + &lt;cabin_staff_rating&gt;
+             + &lt;food_beverages_rating&gt; + &lt;inflight_entertainment_rating&gt; + &lt;value_money_rating&gt;
+             + &lt;intercept&gt;
+
+Number of Observations:         28341
+Number of Degrees of Freedom:   6
+
+R-squared:         0.7887
+Adj R-squared:     0.7887
+
+Rmse:              1.4956
+
+F-stat (5, 28335): 21157.9768, p-value:     0.0000
+
+Degrees of Freedom: model 5, resid 28335
+
+-----------------------Summary of Estimated Coefficients------------------------
+      Variable       Coef    Std Err     t-stat    p-value    CI 2.5%   CI 97.5%
+--------------------------------------------------------------------------------
+seat_comfort_rating     0.4255     0.0097      43.89     0.0000     0.4065     0.4445
+cabin_staff_rating     0.6621     0.0094      70.60     0.0000     0.6437     0.6805
+food_beverages_rating     0.1660     0.0085      19.63     0.0000     0.1494     0.1826
+inflight_entertainment_rating     0.0317     0.0062       5.09     0.0000     0.0195     0.0439
+value_money_rating     0.9759     0.0103      94.89     0.0000     0.9557     0.9960
+--------------------------------------------------------------------------------
+     intercept    -1.5582     0.0254     -61.42     0.0000    -1.6079    -1.5085
+---------------------------------End of Summary---------------------------------</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>First, this tells us that the model with these 5 predictors predicts about 79% of the variance in participants' overall ratings. In addition, the F-test tells us that this percentage is statistically significant, although it has to be said that with such a large sample (n = 28341), this test was probably always going to be significant.</p>
+<p>Second, each of the coefficients tell us the change in Y (overall_ratings) for each unit change in that predictor. For example, for each unit change in passengers' seat comfort ratings, passengers overall ratings increased by .43 points.</p>
+<p>In the case of passengers' seat comfort ratings, this relationship is statistically significant. In fact, in this analysis, all the predictors are significantly related to passengers' overall ratings.</p>
+<p>However, it should be said that statistical significance and practical significance are not the same. From the coefficients, for example, each unit change in passengers' inflight entertainment ratings only increased their overall rating by 0.03, but each unit change in passengers' value for money ratings increased their overall ratings by .98 points.</p>
+<p>That said, the coefficients in this analysis are <em>conditional</em> in that they are adjusted for one another. In other words, these coefficients represent what we know about the relationship between passenger ratings of each of the criteria <em>given our knowledge of how they rated the other elements</em>.</p>
+<p>Trying to isolate the impact of a single predictor is not as simple as running 5 separate regression models, because the predictors are correlated. We can illustrate this as follows:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [7]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">statsmodels.api</span> <span class="kn">as</span> <span class="nn">sm</span>
+
+<span class="n">predictors</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'seat_comfort_rating'</span><span class="p">,</span> <span class="s1">'cabin_staff_rating'</span><span class="p">,</span> <span class="s1">'food_beverages_rating'</span><span class="p">,</span> <span class="s1">'inflight_entertainment_rating'</span><span class="p">,</span>\
+                <span class="s1">'value_money_rating'</span><span class="p">]</span>
+
+<span class="n">cleaned_data</span> <span class="o">=</span> <span class="n">data</span><span class="p">[[</span><span class="s1">'overall_rating'</span><span class="p">,</span><span class="s1">'seat_comfort_rating'</span><span class="p">,</span> <span class="s1">'cabin_staff_rating'</span><span class="p">,</span> <span class="s1">'food_beverages_rating'</span><span class="p">,</span> <span class="s1">'inflight_entertainment_rating'</span><span class="p">,</span>\
+                <span class="s1">'value_money_rating'</span><span class="p">]]</span>
+
+<span class="n">cleaned_data</span> <span class="o">=</span> <span class="n">cleaned_data</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span>
+
+<span class="k">for</span> <span class="n">predictor</span> <span class="ow">in</span> <span class="n">predictors</span><span class="p">:</span>
+    <span class="c1">#x = sm.add_constant(cleaned_data[predictor])</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">sm</span><span class="o">.</span><span class="n">OLS</span><span class="p">(</span><span class="n">cleaned_data</span><span class="p">[</span><span class="n">predictor</span><span class="p">],</span> <span class="n">cleaned_data</span><span class="p">[</span><span class="s1">'overall_rating'</span><span class="p">])</span>
+    <span class="n">results</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">()</span>
+    <span class="k">print</span> <span class="s1">'{0} coefficient: {1}'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">predictor</span><span class="p">,</span> <span class="n">results</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="k">print</span> <span class="s1">'{0} rsquared: {1}'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">predictor</span><span class="p">,</span> <span class="n">results</span><span class="o">.</span><span class="n">rsquared</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>seat_comfort_rating coefficient: 0.485086064206
+seat_comfort_rating rsquared: 0.892254153535
+cabin_staff_rating coefficient: 0.53019002014
+cabin_staff_rating rsquared: 0.911693773785
+food_beverages_rating coefficient: 0.452602436575
+food_beverages_rating rsquared: 0.852452501199
+inflight_entertainment_rating coefficient: 0.374759040658
+inflight_entertainment_rating rsquared: 0.710378283952
+value_money_rating coefficient: 0.52075902098
+value_money_rating rsquared: 0.931569962502
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>As you can see, the five separate OLS models give us five R<sup>2</sup> values that do not add up to 100% of variance explained. This is because the five predictors are correlated. In a future post, we will use Shapley Value Regression to try and tease them apart.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [ ]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span> 
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [ ]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span> 
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+    </div>
+  </div>
+
+    </div>
+    </article><article class="h-entry post-text"><header><h1 class="p-name entry-title"><a href="../../posts/skytrax-data-2-shapley-value-regression/" class="u-url">Skytrax Data #2: Shapley Value Regression</a></h1>
         <div class="metadata">
             <p class="byline author vcard"><span class="byline-name fn">
                 Bryan Sim

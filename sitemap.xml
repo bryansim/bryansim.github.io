@@ -15,7 +15,7 @@
  </url>
  <url>
   <loc>https://bryansim.github.io/archive.html</loc>
-  <lastmod>2016-05-11T14:36:00Z</lastmod>
+  <lastmod>2016-05-16T22:39:00Z</lastmod>
  </url>
  <url>
   <loc>https://bryansim.github.io/categories/</loc>
@@ -52,6 +52,10 @@
  <url>
   <loc>https://bryansim.github.io/posts/skytrax-data-2-shapley-value-regression/</loc>
   <lastmod>2016-05-05T23:52:00Z</lastmod>
+ </url>
+ <url>
+  <loc>https://bryansim.github.io/posts/skytrax-data-3-the-ols-model/</loc>
+  <lastmod>2016-05-16T22:39:00Z</lastmod>
  </url>
  <url>
   <loc>https://bryansim.github.io/posts/the-average-thing-1/</loc>
