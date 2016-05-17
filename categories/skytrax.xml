@@ -1,5 +1,570 @@
 <?xml version="1.0" encoding="utf-8"?>
-<?xml-stylesheet type="text/xsl" href="../assets/xml/rss.xsl" media="all"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Bryan Sim (skytrax)</title><link>https://bryansim.github.io/</link><description></description><atom:link href="https://bryansim.github.io/categories/skytrax.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><lastBuildDate>Tue, 17 May 2016 01:27:14 GMT</lastBuildDate><generator>https://getnikola.com/</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>Skytrax Data #3: The OLS Model</title><link>https://bryansim.github.io/posts/skytrax-data-3-the-ols-model/</link><dc:creator>Bryan Sim</dc:creator><description>&lt;div tabindex="-1" id="notebook" class="border-box-sizing"&gt;
+<?xml-stylesheet type="text/xsl" href="../assets/xml/rss.xsl" media="all"?><rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/"><channel><title>Bryan Sim (skytrax)</title><link>https://bryansim.github.io/</link><description></description><atom:link type="application/rss+xml" href="https://bryansim.github.io/categories/skytrax.xml" rel="self"></atom:link><language>en</language><lastBuildDate>Tue, 17 May 2016 21:45:49 GMT</lastBuildDate><generator>https://getnikola.com/</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>Skytrax Data #4: The Logit Model</title><link>https://bryansim.github.io/posts/skytrax-data-4-the-logit-model/</link><dc:creator>Bryan Sim</dc:creator><description>&lt;div tabindex="-1" id="notebook" class="border-box-sizing"&gt;
+    &lt;div class="container" id="notebook-container"&gt;
+
+&lt;div class="cell border-box-sizing text_cell rendered"&gt;
+&lt;div class="prompt input_prompt"&gt;
+&lt;/div&gt;
+&lt;div class="inner_cell"&gt;
+&lt;div class="text_cell_render border-box-sizing rendered_html"&gt;
+&lt;h2 id="Skytrax-Data-#4:-The-Logit-Model"&gt;Skytrax Data #4: The Logit Model&lt;a class="anchor-link" href="https://bryansim.github.io/posts/skytrax-data-4-the-logit-model/#Skytrax-Data-#4:-The-Logit-Model"&gt;¶&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;We're going to quickly follow up on the OLS model presented in the last post with an alternative outcome variable: Whether or not passengers chose to recommend the airline to others.&lt;/p&gt;
+
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="cell border-box-sizing code_cell rendered"&gt;
+&lt;div class="input"&gt;
+&lt;div class="prompt input_prompt"&gt;In [1]:&lt;/div&gt;
+&lt;div class="inner_cell"&gt;
+    &lt;div class="input_area"&gt;
+&lt;div class=" highlight hl-ipython2"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;psycopg2&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;pandas&lt;/span&gt; &lt;span class="kn"&gt;as&lt;/span&gt; &lt;span class="nn"&gt;pd&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;numpy&lt;/span&gt; &lt;span class="kn"&gt;as&lt;/span&gt; &lt;span class="nn"&gt;np&lt;/span&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;sqlalchemy&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;create_engine&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;math&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;statsmodels.api&lt;/span&gt; &lt;span class="kn"&gt;as&lt;/span&gt; &lt;span class="nn"&gt;sm&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;/div&gt;
+&lt;div class="cell border-box-sizing code_cell rendered"&gt;
+&lt;div class="input"&gt;
+&lt;div class="prompt input_prompt"&gt;In [2]:&lt;/div&gt;
+&lt;div class="inner_cell"&gt;
+    &lt;div class="input_area"&gt;
+&lt;div class=" highlight hl-ipython2"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;#This connects to the postgres database above.&lt;/span&gt;
+&lt;span class="n"&gt;connection&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;psycopg2&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;connect&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;"dbname = skytrax user=skytraxadmin password=skytraxadmin"&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;cursor&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;connection&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;cursor&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;/div&gt;
+&lt;div class="cell border-box-sizing code_cell rendered"&gt;
+&lt;div class="input"&gt;
+&lt;div class="prompt input_prompt"&gt;In [3]:&lt;/div&gt;
+&lt;div class="inner_cell"&gt;
+    &lt;div class="input_area"&gt;
+&lt;div class=" highlight hl-ipython2"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;connection&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;rollback&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;span class="n"&gt;cursor&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;execute&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;'SELECT * from airline;'&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;data&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;cursor&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;fetchall&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;/div&gt;
+&lt;div class="cell border-box-sizing code_cell rendered"&gt;
+&lt;div class="input"&gt;
+&lt;div class="prompt input_prompt"&gt;In [4]:&lt;/div&gt;
+&lt;div class="inner_cell"&gt;
+    &lt;div class="input_area"&gt;
+&lt;div class=" highlight hl-ipython2"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;data&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;pd&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;DataFrame&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;data&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;descriptions&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;desc&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;desc&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="n"&gt;cursor&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;description&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;span class="n"&gt;data&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;columns&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;descriptions&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;/div&gt;
+&lt;div class="cell border-box-sizing text_cell rendered"&gt;
+&lt;div class="prompt input_prompt"&gt;
+&lt;/div&gt;
+&lt;div class="inner_cell"&gt;
+&lt;div class="text_cell_render border-box-sizing rendered_html"&gt;
+&lt;p&gt;In these data, "recommended" is coded as 1 and "not recommended" is coded as 0:&lt;/p&gt;
+
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="cell border-box-sizing code_cell rendered"&gt;
+&lt;div class="input"&gt;
+&lt;div class="prompt input_prompt"&gt;In [25]:&lt;/div&gt;
+&lt;div class="inner_cell"&gt;
+    &lt;div class="input_area"&gt;
+&lt;div class=" highlight hl-ipython2"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="nb"&gt;len&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;data&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;loc&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;data&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;'recommended'&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;])&lt;/span&gt;
+&lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="nb"&gt;len&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;data&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;loc&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;data&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;'recommended'&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;])&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;div class="output_wrapper"&gt;
+&lt;div class="output"&gt;
+
+
+&lt;div class="output_area"&gt;&lt;div class="prompt"&gt;&lt;/div&gt;
+&lt;div class="output_subarea output_stream output_stdout output_text"&gt;
+&lt;pre&gt;22098
+19298
+&lt;/pre&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;/div&gt;
+&lt;div class="cell border-box-sizing code_cell rendered"&gt;
+&lt;div class="input"&gt;
+&lt;div class="prompt input_prompt"&gt;In [27]:&lt;/div&gt;
+&lt;div class="inner_cell"&gt;
+    &lt;div class="input_area"&gt;
+&lt;div class=" highlight hl-ipython2"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;data&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;groupby&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;by&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s1"&gt;'recommended'&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;mean&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;div class="output_wrapper"&gt;
+&lt;div class="output"&gt;
+
+
+&lt;div class="output_area"&gt;&lt;div class="prompt output_prompt"&gt;Out[27]:&lt;/div&gt;
+
+&lt;div class="output_html rendered_html output_subarea output_execute_result"&gt;
+&lt;div&gt;
+&lt;table border="1" class="dataframe"&gt;
+  &lt;thead&gt;
+    &lt;tr style="text-align: right;"&gt;
+      &lt;th&gt;&lt;/th&gt;
+      &lt;th&gt;overall_rating&lt;/th&gt;
+      &lt;th&gt;seat_comfort_rating&lt;/th&gt;
+      &lt;th&gt;cabin_staff_rating&lt;/th&gt;
+      &lt;th&gt;food_beverages_rating&lt;/th&gt;
+      &lt;th&gt;inflight_entertainment_rating&lt;/th&gt;
+      &lt;th&gt;ground_service_rating&lt;/th&gt;
+      &lt;th&gt;wifi_connectivity_rating&lt;/th&gt;
+      &lt;th&gt;value_money_rating&lt;/th&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;th&gt;recommended&lt;/th&gt;
+      &lt;th&gt;&lt;/th&gt;
+      &lt;th&gt;&lt;/th&gt;
+      &lt;th&gt;&lt;/th&gt;
+      &lt;th&gt;&lt;/th&gt;
+      &lt;th&gt;&lt;/th&gt;
+      &lt;th&gt;&lt;/th&gt;
+      &lt;th&gt;&lt;/th&gt;
+      &lt;th&gt;&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;th&gt;0&lt;/th&gt;
+      &lt;td&gt;2.640637&lt;/td&gt;
+      &lt;td&gt;2.082208&lt;/td&gt;
+      &lt;td&gt;2.094998&lt;/td&gt;
+      &lt;td&gt;1.773961&lt;/td&gt;
+      &lt;td&gt;1.618873&lt;/td&gt;
+      &lt;td&gt;1.626176&lt;/td&gt;
+      &lt;td&gt;1.403509&lt;/td&gt;
+      &lt;td&gt;1.812525&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;th&gt;1&lt;/th&gt;
+      &lt;td&gt;8.327206&lt;/td&gt;
+      &lt;td&gt;3.953765&lt;/td&gt;
+      &lt;td&gt;4.358122&lt;/td&gt;
+      &lt;td&gt;3.667807&lt;/td&gt;
+      &lt;td&gt;3.043509&lt;/td&gt;
+      &lt;td&gt;3.992263&lt;/td&gt;
+      &lt;td&gt;3.547085&lt;/td&gt;
+      &lt;td&gt;4.242555&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;/div&gt;
+
+&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;/div&gt;
+&lt;div class="cell border-box-sizing text_cell rendered"&gt;
+&lt;div class="prompt input_prompt"&gt;
+&lt;/div&gt;
+&lt;div class="inner_cell"&gt;
+&lt;div class="text_cell_render border-box-sizing rendered_html"&gt;
+&lt;p&gt;Unsurprisingly, ratings for flights that are recommended are higher than those that are not.&lt;/p&gt;
+
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="cell border-box-sizing text_cell rendered"&gt;
+&lt;div class="prompt input_prompt"&gt;
+&lt;/div&gt;
+&lt;div class="inner_cell"&gt;
+&lt;div class="text_cell_render border-box-sizing rendered_html"&gt;
+&lt;h3 id="The-logistic-regression-model"&gt;The logistic regression model&lt;a class="anchor-link" href="https://bryansim.github.io/posts/skytrax-data-4-the-logit-model/#The-logistic-regression-model"&gt;¶&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;How do these ratings influence whether or not a passenger ultimately choses to recommend an airline to others? To find out, we can calculate the change in odds with each unit change in each variable. For example, for every point higher an airline scores on its overall rating, what is the probability that a passenger selected "1", would recommend, rather than "0"?&lt;/p&gt;
+&lt;p&gt;Again, we're going to ignore ground service ratings as well as wifi connectivity rating because the vast majority of cases have missing values on these variables.&lt;/p&gt;
+
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="cell border-box-sizing text_cell rendered"&gt;
+&lt;div class="prompt input_prompt"&gt;
+&lt;/div&gt;
+&lt;div class="inner_cell"&gt;
+&lt;div class="text_cell_render border-box-sizing rendered_html"&gt;
+&lt;p&gt;The first thing we're going to do is center all our predictors. This, as we will see shortly, makes the constant interpretable, and is useful when trying to make point predictions (i.e., what are the odds that someone recommends an airline vs. not if he/she rated it an 8, for example).&lt;/p&gt;
+
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="cell border-box-sizing code_cell rendered"&gt;
+&lt;div class="input"&gt;
+&lt;div class="prompt input_prompt"&gt;In [ ]:&lt;/div&gt;
+&lt;div class="inner_cell"&gt;
+    &lt;div class="input_area"&gt;
+&lt;div class=" highlight hl-ipython2"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;predictors&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;'overall_rating'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;'seat_comfort_rating'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;'cabin_staff_rating'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;'food_beverages_rating'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; \
+          &lt;span class="s1"&gt;'inflight_entertainment_rating'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;'value_money_rating'&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+
+&lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;predictor&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="n"&gt;predictors&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+    &lt;span class="n"&gt;data&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;'{0}_centered'&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;format&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;predictor&lt;/span&gt;&lt;span class="p"&gt;)]&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;data&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;predictor&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt; &lt;span class="n"&gt;data&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;predictor&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;mean&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;/div&gt;
+&lt;div class="cell border-box-sizing text_cell rendered"&gt;
+&lt;div class="prompt input_prompt"&gt;
+&lt;/div&gt;
+&lt;div class="inner_cell"&gt;
+&lt;div class="text_cell_render border-box-sizing rendered_html"&gt;
+&lt;p&gt;I ran two models, one that included passengers' overall ratings, and one that did not:&lt;/p&gt;
+
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="cell border-box-sizing code_cell rendered"&gt;
+&lt;div class="input"&gt;
+&lt;div class="prompt input_prompt"&gt;In [55]:&lt;/div&gt;
+&lt;div class="inner_cell"&gt;
+    &lt;div class="input_area"&gt;
+&lt;div class=" highlight hl-ipython2"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;statsmodels.api&lt;/span&gt; &lt;span class="kn"&gt;as&lt;/span&gt; &lt;span class="nn"&gt;sm&lt;/span&gt;
+
+&lt;span class="c1"&gt;#x = data[['seat_comfort_rating', 'cabin_staff_rating', 'food_beverages_rating', \&lt;/span&gt;
+&lt;span class="c1"&gt;#          'inflight_entertainment_rating', 'value_money_rating']]&lt;/span&gt;
+
+&lt;span class="n"&gt;x&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;data&lt;/span&gt;&lt;span class="p"&gt;[[&lt;/span&gt;&lt;span class="s1"&gt;'seat_comfort_rating_centered'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;'cabin_staff_rating_centered'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;\
+          &lt;span class="s1"&gt;'food_beverages_rating_centered'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;'inflight_entertainment_rating_centered'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;'value_money_rating_centered'&lt;/span&gt;&lt;span class="p"&gt;]]&lt;/span&gt;
+
+
+&lt;span class="n"&gt;x&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;sm&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;add_constant&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="n"&gt;logit&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;sm&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Logit&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;data&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;'recommended'&lt;/span&gt;&lt;span class="p"&gt;],&lt;/span&gt; &lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;missing&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s1"&gt;'drop'&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="c1"&gt;#drop missing values&lt;/span&gt;
+
+&lt;span class="n"&gt;results&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;logit&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;fit&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;span class="n"&gt;results&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;summary&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;div class="output_wrapper"&gt;
+&lt;div class="output"&gt;
+
+
+&lt;div class="output_area"&gt;&lt;div class="prompt"&gt;&lt;/div&gt;
+&lt;div class="output_subarea output_stream output_stdout output_text"&gt;
+&lt;pre&gt;Optimization terminated successfully.
+         Current function value: 0.215391
+         Iterations 8
+&lt;/pre&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;div class="output_area"&gt;&lt;div class="prompt output_prompt"&gt;Out[55]:&lt;/div&gt;
+
+&lt;div class="output_html rendered_html output_subarea output_execute_result"&gt;
+&lt;table class="simpletable"&gt;
+&lt;caption&gt;Logit Regression Results&lt;/caption&gt;
+&lt;tr&gt;
+  &lt;th&gt;Dep. Variable:&lt;/th&gt;    &lt;td&gt;recommended&lt;/td&gt;   &lt;th&gt;  No. Observations:  &lt;/th&gt;  &lt;td&gt; 31075&lt;/td&gt; 
+&lt;/tr&gt;
+&lt;tr&gt;
+  &lt;th&gt;Model:&lt;/th&gt;               &lt;td&gt;Logit&lt;/td&gt;      &lt;th&gt;  Df Residuals:      &lt;/th&gt;  &lt;td&gt; 31069&lt;/td&gt; 
+&lt;/tr&gt;
+&lt;tr&gt;
+  &lt;th&gt;Method:&lt;/th&gt;               &lt;td&gt;MLE&lt;/td&gt;       &lt;th&gt;  Df Model:          &lt;/th&gt;  &lt;td&gt;     5&lt;/td&gt; 
+&lt;/tr&gt;
+&lt;tr&gt;
+  &lt;th&gt;Date:&lt;/th&gt;          &lt;td&gt;Tue, 17 May 2016&lt;/td&gt; &lt;th&gt;  Pseudo R-squ.:     &lt;/th&gt;  &lt;td&gt;0.6876&lt;/td&gt; 
+&lt;/tr&gt;
+&lt;tr&gt;
+  &lt;th&gt;Time:&lt;/th&gt;              &lt;td&gt;17:17:33&lt;/td&gt;     &lt;th&gt;  Log-Likelihood:    &lt;/th&gt; &lt;td&gt; -6693.3&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+  &lt;th&gt;converged:&lt;/th&gt;           &lt;td&gt;True&lt;/td&gt;       &lt;th&gt;  LL-Null:           &lt;/th&gt; &lt;td&gt; -21423.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+  &lt;th&gt; &lt;/th&gt;                      &lt;td&gt; &lt;/td&gt;        &lt;th&gt;  LLR p-value:       &lt;/th&gt;  &lt;td&gt; 0.000&lt;/td&gt; 
+&lt;/tr&gt;
+&lt;/table&gt;
+&lt;table class="simpletable"&gt;
+&lt;tr&gt;
+                     &lt;td&gt;&lt;/td&gt;                       &lt;th&gt;coef&lt;/th&gt;     &lt;th&gt;std err&lt;/th&gt;      &lt;th&gt;z&lt;/th&gt;      &lt;th&gt;P&amp;gt;|z|&lt;/th&gt; &lt;th&gt;[95.0% Conf. Int.]&lt;/th&gt; 
+&lt;/tr&gt;
+&lt;tr&gt;
+  &lt;th&gt;const&lt;/th&gt;                                  &lt;td&gt;    0.0595&lt;/td&gt; &lt;td&gt;    0.023&lt;/td&gt; &lt;td&gt;    2.610&lt;/td&gt; &lt;td&gt; 0.009&lt;/td&gt; &lt;td&gt;    0.015     0.104&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+  &lt;th&gt;seat_comfort_rating_centered&lt;/th&gt;           &lt;td&gt;    0.5314&lt;/td&gt; &lt;td&gt;    0.022&lt;/td&gt; &lt;td&gt;   24.398&lt;/td&gt; &lt;td&gt; 0.000&lt;/td&gt; &lt;td&gt;    0.489     0.574&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+  &lt;th&gt;cabin_staff_rating_centered&lt;/th&gt;            &lt;td&gt;    0.8361&lt;/td&gt; &lt;td&gt;    0.021&lt;/td&gt; &lt;td&gt;   39.970&lt;/td&gt; &lt;td&gt; 0.000&lt;/td&gt; &lt;td&gt;    0.795     0.877&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+  &lt;th&gt;food_beverages_rating_centered&lt;/th&gt;         &lt;td&gt;    0.2134&lt;/td&gt; &lt;td&gt;    0.019&lt;/td&gt; &lt;td&gt;   11.344&lt;/td&gt; &lt;td&gt; 0.000&lt;/td&gt; &lt;td&gt;    0.177     0.250&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+  &lt;th&gt;inflight_entertainment_rating_centered&lt;/th&gt; &lt;td&gt;    0.0747&lt;/td&gt; &lt;td&gt;    0.015&lt;/td&gt; &lt;td&gt;    4.915&lt;/td&gt; &lt;td&gt; 0.000&lt;/td&gt; &lt;td&gt;    0.045     0.105&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+  &lt;th&gt;value_money_rating_centered&lt;/th&gt;            &lt;td&gt;    1.3341&lt;/td&gt; &lt;td&gt;    0.026&lt;/td&gt; &lt;td&gt;   52.277&lt;/td&gt; &lt;td&gt; 0.000&lt;/td&gt; &lt;td&gt;    1.284     1.384&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/table&gt;
+&lt;/div&gt;
+
+&lt;/div&gt;
+
+&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;/div&gt;
+&lt;div class="cell border-box-sizing code_cell rendered"&gt;
+&lt;div class="input"&gt;
+&lt;div class="prompt input_prompt"&gt;In [56]:&lt;/div&gt;
+&lt;div class="inner_cell"&gt;
+    &lt;div class="input_area"&gt;
+&lt;div class=" highlight hl-ipython2"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;np&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;exp&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;results&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;params&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;div class="output_wrapper"&gt;
+&lt;div class="output"&gt;
+
+
+&lt;div class="output_area"&gt;&lt;div class="prompt output_prompt"&gt;Out[56]:&lt;/div&gt;
+
+
+&lt;div class="output_text output_subarea output_execute_result"&gt;
+&lt;pre&gt;const                                     1.061330
+seat_comfort_rating_centered              1.701393
+cabin_staff_rating_centered               2.307242
+food_beverages_rating_centered            1.237909
+inflight_entertainment_rating_centered    1.077572
+value_money_rating_centered               3.796635
+dtype: float64&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;/div&gt;
+
+&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;/div&gt;
+&lt;div class="cell border-box-sizing text_cell rendered"&gt;
+&lt;div class="prompt input_prompt"&gt;
+&lt;/div&gt;
+&lt;div class="inner_cell"&gt;
+&lt;div class="text_cell_render border-box-sizing rendered_html"&gt;
+&lt;h3 id="Interpreting-the-output"&gt;Interpreting the output&lt;a class="anchor-link" href="https://bryansim.github.io/posts/skytrax-data-4-the-logit-model/#Interpreting-the-output"&gt;¶&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;The coefficients of a logistic regression are in log odds, so to make them intuitively interpretable, we exponentiate them to get odds ratios. Odds ratios are simply the likelihood of one case over the other (in our case, it's the likelihood of recommending vs not).&lt;/p&gt;
+&lt;h4 id="The-constant"&gt;The constant&lt;a class="anchor-link" href="https://bryansim.github.io/posts/skytrax-data-4-the-logit-model/#The-constant"&gt;¶&lt;/a&gt;&lt;/h4&gt;&lt;p&gt;The constant in this model is the predicted value (in this case, the predicted log odds) when all Xs = 0.&lt;/p&gt;
+&lt;p&gt;In this case, because we centered our variables at the mean, X=0 refers to the mean of that variable. Thus, our constant in this analysis refers to the odds of recommending vs not recommending for a hypothetical passenger who gave the airline mean ratings across the board. It's value, in this case, 1.06, tells us that this hypothetical passenger was 6% more likely to recommend than not. This is close to the unconditional (i.e., when we don't have any predictors) ratio of 14% (which is what you get when you divide the number of people who recommended vs not).&lt;/p&gt;
+&lt;h4 id="The-coefficients"&gt;The coefficients&lt;a class="anchor-link" href="https://bryansim.github.io/posts/skytrax-data-4-the-logit-model/#The-coefficients"&gt;¶&lt;/a&gt;&lt;/h4&gt;&lt;p&gt;The coefficients in this model refer to the change in odds with each unit change for each variable. A value above one means that higher passenger ratings on that variable makes it more likely that a passenger recommends an airline. As one might expect, this was the case across the board here.&lt;/p&gt;
+&lt;p&gt;Let's look at a specific example: The coefficient of value for money, which is the largest here, tells us that, holding all other variables constant (i.e., for our hypothetical passenger that scored an airline the mean for everything), each unit change in value for money made it 3.8 times more likely (than the base rate of 6%) that he/she would recommend vs not.&lt;/p&gt;
+
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="cell border-box-sizing text_cell rendered"&gt;
+&lt;div class="prompt input_prompt"&gt;
+&lt;/div&gt;
+&lt;div class="inner_cell"&gt;
+&lt;div class="text_cell_render border-box-sizing rendered_html"&gt;
+&lt;h3 id="Including-passengers'-overall-ratings-into-the-model"&gt;Including passengers' overall ratings into the model&lt;a class="anchor-link" href="https://bryansim.github.io/posts/skytrax-data-4-the-logit-model/#Including-passengers'-overall-ratings-into-the-model"&gt;¶&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;Next, we're going to look at a model that includes passengers' overall ratings:&lt;/p&gt;
+
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="cell border-box-sizing code_cell rendered"&gt;
+&lt;div class="input"&gt;
+&lt;div class="prompt input_prompt"&gt;In [60]:&lt;/div&gt;
+&lt;div class="inner_cell"&gt;
+    &lt;div class="input_area"&gt;
+&lt;div class=" highlight hl-ipython2"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;#x = data[['overall_rating', 'seat_comfort_rating', 'cabin_staff_rating', 'food_beverages_rating', \&lt;/span&gt;
+&lt;span class="c1"&gt;#          'inflight_entertainment_rating', 'value_money_rating']]&lt;/span&gt;
+
+&lt;span class="n"&gt;x&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;data&lt;/span&gt;&lt;span class="p"&gt;[[&lt;/span&gt;&lt;span class="s1"&gt;'overall_rating_centered'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;'seat_comfort_rating_centered'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;'cabin_staff_rating_centered'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;\
+          &lt;span class="s1"&gt;'food_beverages_rating_centered'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;'inflight_entertainment_rating_centered'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;'value_money_rating_centered'&lt;/span&gt;&lt;span class="p"&gt;]]&lt;/span&gt;
+
+&lt;span class="n"&gt;x&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;sm&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;add_constant&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="n"&gt;logit&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;sm&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Logit&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;data&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;'recommended'&lt;/span&gt;&lt;span class="p"&gt;],&lt;/span&gt; &lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;missing&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s1"&gt;'drop'&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="c1"&gt;#drop missing values&lt;/span&gt;
+
+&lt;span class="n"&gt;results&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;logit&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;fit&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;span class="n"&gt;results&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;summary&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;div class="output_wrapper"&gt;
+&lt;div class="output"&gt;
+
+
+&lt;div class="output_area"&gt;&lt;div class="prompt"&gt;&lt;/div&gt;
+&lt;div class="output_subarea output_stream output_stdout output_text"&gt;
+&lt;pre&gt;Optimization terminated successfully.
+         Current function value: 0.128654
+         Iterations 9
+&lt;/pre&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;div class="output_area"&gt;&lt;div class="prompt output_prompt"&gt;Out[60]:&lt;/div&gt;
+
+&lt;div class="output_html rendered_html output_subarea output_execute_result"&gt;
+&lt;table class="simpletable"&gt;
+&lt;caption&gt;Logit Regression Results&lt;/caption&gt;
+&lt;tr&gt;
+  &lt;th&gt;Dep. Variable:&lt;/th&gt;    &lt;td&gt;recommended&lt;/td&gt;   &lt;th&gt;  No. Observations:  &lt;/th&gt;  &lt;td&gt; 28341&lt;/td&gt; 
+&lt;/tr&gt;
+&lt;tr&gt;
+  &lt;th&gt;Model:&lt;/th&gt;               &lt;td&gt;Logit&lt;/td&gt;      &lt;th&gt;  Df Residuals:      &lt;/th&gt;  &lt;td&gt; 28334&lt;/td&gt; 
+&lt;/tr&gt;
+&lt;tr&gt;
+  &lt;th&gt;Method:&lt;/th&gt;               &lt;td&gt;MLE&lt;/td&gt;       &lt;th&gt;  Df Model:          &lt;/th&gt;  &lt;td&gt;     6&lt;/td&gt; 
+&lt;/tr&gt;
+&lt;tr&gt;
+  &lt;th&gt;Date:&lt;/th&gt;          &lt;td&gt;Tue, 17 May 2016&lt;/td&gt; &lt;th&gt;  Pseudo R-squ.:     &lt;/th&gt;  &lt;td&gt;0.8093&lt;/td&gt; 
+&lt;/tr&gt;
+&lt;tr&gt;
+  &lt;th&gt;Time:&lt;/th&gt;              &lt;td&gt;17:32:21&lt;/td&gt;     &lt;th&gt;  Log-Likelihood:    &lt;/th&gt; &lt;td&gt; -3646.2&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+  &lt;th&gt;converged:&lt;/th&gt;           &lt;td&gt;True&lt;/td&gt;       &lt;th&gt;  LL-Null:           &lt;/th&gt; &lt;td&gt; -19124.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+  &lt;th&gt; &lt;/th&gt;                      &lt;td&gt; &lt;/td&gt;        &lt;th&gt;  LLR p-value:       &lt;/th&gt;  &lt;td&gt; 0.000&lt;/td&gt; 
+&lt;/tr&gt;
+&lt;/table&gt;
+&lt;table class="simpletable"&gt;
+&lt;tr&gt;
+                     &lt;td&gt;&lt;/td&gt;                       &lt;th&gt;coef&lt;/th&gt;     &lt;th&gt;std err&lt;/th&gt;      &lt;th&gt;z&lt;/th&gt;      &lt;th&gt;P&amp;gt;|z|&lt;/th&gt; &lt;th&gt;[95.0% Conf. Int.]&lt;/th&gt; 
+&lt;/tr&gt;
+&lt;tr&gt;
+  &lt;th&gt;const&lt;/th&gt;                                  &lt;td&gt;    0.9089&lt;/td&gt; &lt;td&gt;    0.033&lt;/td&gt; &lt;td&gt;   27.320&lt;/td&gt; &lt;td&gt; 0.000&lt;/td&gt; &lt;td&gt;    0.844     0.974&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+  &lt;th&gt;overall_rating_centered&lt;/th&gt;                &lt;td&gt;    1.2794&lt;/td&gt; &lt;td&gt;    0.023&lt;/td&gt; &lt;td&gt;   54.786&lt;/td&gt; &lt;td&gt; 0.000&lt;/td&gt; &lt;td&gt;    1.234     1.325&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+  &lt;th&gt;seat_comfort_rating_centered&lt;/th&gt;           &lt;td&gt;    0.1691&lt;/td&gt; &lt;td&gt;    0.029&lt;/td&gt; &lt;td&gt;    5.802&lt;/td&gt; &lt;td&gt; 0.000&lt;/td&gt; &lt;td&gt;    0.112     0.226&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+  &lt;th&gt;cabin_staff_rating_centered&lt;/th&gt;            &lt;td&gt;    0.2845&lt;/td&gt; &lt;td&gt;    0.029&lt;/td&gt; &lt;td&gt;    9.981&lt;/td&gt; &lt;td&gt; 0.000&lt;/td&gt; &lt;td&gt;    0.229     0.340&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+  &lt;th&gt;food_beverages_rating_centered&lt;/th&gt;         &lt;td&gt;    0.0528&lt;/td&gt; &lt;td&gt;    0.027&lt;/td&gt; &lt;td&gt;    1.974&lt;/td&gt; &lt;td&gt; 0.048&lt;/td&gt; &lt;td&gt;    0.000     0.105&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+  &lt;th&gt;inflight_entertainment_rating_centered&lt;/th&gt; &lt;td&gt;    0.0154&lt;/td&gt; &lt;td&gt;    0.021&lt;/td&gt; &lt;td&gt;    0.726&lt;/td&gt; &lt;td&gt; 0.468&lt;/td&gt; &lt;td&gt;   -0.026     0.057&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+  &lt;th&gt;value_money_rating_centered&lt;/th&gt;            &lt;td&gt;    0.5350&lt;/td&gt; &lt;td&gt;    0.034&lt;/td&gt; &lt;td&gt;   15.784&lt;/td&gt; &lt;td&gt; 0.000&lt;/td&gt; &lt;td&gt;    0.469     0.601&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/table&gt;
+&lt;/div&gt;
+
+&lt;/div&gt;
+
+&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;/div&gt;
+&lt;div class="cell border-box-sizing code_cell rendered"&gt;
+&lt;div class="input"&gt;
+&lt;div class="prompt input_prompt"&gt;In [61]:&lt;/div&gt;
+&lt;div class="inner_cell"&gt;
+    &lt;div class="input_area"&gt;
+&lt;div class=" highlight hl-ipython2"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;np&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;exp&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;results&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;params&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;div class="output_wrapper"&gt;
+&lt;div class="output"&gt;
+
+
+&lt;div class="output_area"&gt;&lt;div class="prompt output_prompt"&gt;Out[61]:&lt;/div&gt;
+
+
+&lt;div class="output_text output_subarea output_execute_result"&gt;
+&lt;pre&gt;const                                     2.481574
+overall_rating_centered                   3.594482
+seat_comfort_rating_centered              1.184220
+cabin_staff_rating_centered               1.329129
+food_beverages_rating_centered            1.054215
+inflight_entertainment_rating_centered    1.015530
+value_money_rating_centered               1.707426
+dtype: float64&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;/div&gt;
+
+&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;/div&gt;
+&lt;div class="cell border-box-sizing text_cell rendered"&gt;
+&lt;div class="prompt input_prompt"&gt;
+&lt;/div&gt;
+&lt;div class="inner_cell"&gt;
+&lt;div class="text_cell_render border-box-sizing rendered_html"&gt;
+&lt;p&gt;Including passengers' overall ratings substantially changed many of the coefficients. Let's go over the different parameters agian:&lt;/p&gt;
+&lt;h3 id="The-constant"&gt;The constant&lt;a class="anchor-link" href="https://bryansim.github.io/posts/skytrax-data-4-the-logit-model/#The-constant"&gt;¶&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;The constant for this model is now 2.48, which tells us that the hypothetical passenger who gave the airline the mean score on all ratings is now ~2.5 times more likely to recommend than not (contrast this to 1.06 in the previous model). What this implies is that an "average" in terms of an overall rating is really, on average, an endorsement of the airline.&lt;/p&gt;
+&lt;h3 id="The-coefficients"&gt;The coefficients&lt;a class="anchor-link" href="https://bryansim.github.io/posts/skytrax-data-4-the-logit-model/#The-coefficients"&gt;¶&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;Here, compared to the previous model, the coefficients for all the other ratings are "depressed", in they are much smaller than before. They are still positive, which means that in general, higher ratings on these criteria = more likely to recommend, but knowing a passenger's overall rating makes that information somewhat redundant.&lt;/p&gt;
+
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="cell border-box-sizing text_cell rendered"&gt;
+&lt;div class="prompt input_prompt"&gt;
+&lt;/div&gt;
+&lt;div class="inner_cell"&gt;
+&lt;div class="text_cell_render border-box-sizing rendered_html"&gt;
+&lt;h2 id="Summary"&gt;Summary&lt;a class="anchor-link" href="https://bryansim.github.io/posts/skytrax-data-4-the-logit-model/#Summary"&gt;¶&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;In sum, when passengers are made to rate airlines this way, their decision to recommend is dominated by their overall, wholistic rating of the airline. That said, these ratings are all correlated, so the takeaway point should not be that inflight entertainment (which was a non-significant predictor even with an n of 28,000) is unimportant, but rather that further analyses should be done to assess the relative contribution of each predictor to a passenger's overall rating.&lt;/p&gt;
+
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+</description><category>skytrax</category><guid>https://bryansim.github.io/posts/skytrax-data-4-the-logit-model/</guid><pubDate>Tue, 17 May 2016 21:45:22 GMT</pubDate></item><item><title>Skytrax Data #3: The OLS Model</title><link>https://bryansim.github.io/posts/skytrax-data-3-the-ols-model/</link><dc:creator>Bryan Sim</dc:creator><description>&lt;div tabindex="-1" id="notebook" class="border-box-sizing"&gt;
     &lt;div class="container" id="notebook-container"&gt;
 
 &lt;div class="cell border-box-sizing text_cell rendered"&gt;
