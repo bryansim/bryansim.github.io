@@ -1,0 +1,1672 @@
+<!DOCTYPE html>
+<html prefix="og: http://ogp.me/ns# article: http://ogp.me/ns/article# " lang="en">
+<head>
+<meta charset="utf-8">
+<base href="https://bryansim.github.io/posts/hack-for-heat-1-initial-thoughts-on-hpd-open-data/">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hack for Heat #1: Initial thoughts on HPD open data | Bryan Sim</title>
+<link href="../../assets/css/all-nocdn.css" rel="stylesheet" type="text/css">
+<link href="../../assets/css/ipython.min.css" rel="stylesheet" type="text/css">
+<link href="../../assets/css/nikola_ipython.css" rel="stylesheet" type="text/css">
+<meta content="#5670d4" name="theme-color">
+<link rel="alternate" type="application/rss+xml" title="RSS" href="../../rss.xml">
+<link rel="canonical" href="https://bryansim.github.io/posts/hack-for-heat-1-initial-thoughts-on-hpd-open-data/">
+<link rel="icon" href="http://bryans.im/favicon.ico" sizes="16x16">
+<!--[if lt IE 9]><script src="../../assets/js/html5.js"></script><![endif]--><meta name="author" content="Bryan Sim">
+<link rel="prev" href="../skytrax-data-4-the-logit-model/" title="Skytrax Data #4: The Logit Model" type="text/html">
+<meta property="og:site_name" content="Bryan Sim">
+<meta property="og:title" content="Hack for Heat #1: Initial thoughts on HPD open data">
+<meta property="og:url" content="https://bryansim.github.io/posts/hack-for-heat-1-initial-thoughts-on-hpd-open-data/">
+<meta property="og:description" content="Hacking for heat¶In this series, I'm going to be posting about the process that goes on behind some of the blog posts we end up writing. In this first entry, I'm going to be exploring a number of dats">
+<meta property="og:type" content="article">
+<meta property="article:published_time" content="2016-05-20T19:53:40-04:00">
+<meta property="article:tag" content="heakseek">
+</head>
+<body>
+<a href="#content" class="sr-only sr-only-focusable">Skip to main content</a>
+
+<!-- Menubar -->
+
+<nav class="navbar navbar-inverse navbar-static-top"><div class="container">
+<!-- This keeps the margins nice -->
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-navbar" aria-controls="bs-navbar" aria-expanded="false">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="https://bryansim.github.io/">
+
+                <span id="blog-title">Bryan Sim</span>
+            </a>
+        </div>
+<!-- /.navbar-header -->
+        <div class="collapse navbar-collapse" id="bs-navbar" aria-expanded="false">
+            <ul class="nav navbar-nav">
+<li>
+<a href="../../categories/heatseek">Heatseek</a>
+                </li>
+<li>
+<a href="../../categories/mediocre-museum">Mediocre Museum</a>
+                </li>
+<li>
+<a href="../../categories/mousetracker">Mousetracker</a>
+                </li>
+<li>
+<a href="../../categories/skytrax">Skytrax</a>
+                </li>
+<li>
+<a href="../../archive.html">Archive</a>
+                </li>
+<li>
+<a href="http://linkedin.com/in/bryansim">LinkedIn</a>
+
+                
+            </li>
+</ul>
+<ul class="nav navbar-nav navbar-right"></ul>
+</div>
+<!-- /.navbar-collapse -->
+    </div>
+<!-- /.container -->
+</nav><!-- End of Menubar --><div class="container" id="content" role="main">
+    <div class="body-content">
+        <!--Body content-->
+        <div class="row">
+            
+            
+<article class="post-text h-entry hentry postpage" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title" itemprop="headline name"><a href="." class="u-url">Hack for Heat #1: Initial thoughts on HPD open data</a></h1>
+
+        <div class="metadata">
+            <p class="byline author vcard"><span class="byline-name fn">
+                    Bryan Sim
+            </span></p>
+            <p class="dateline"><a href="." rel="bookmark"><time class="published dt-published" datetime="2016-05-20T19:53:40-04:00" itemprop="datePublished" title="2016-05-20 19:53">2016-05-20 19:53</time></a></p>
+            
+
+        </div>
+        
+
+    </header><div class="e-content entry-content" itemprop="articleBody text">
+    <div tabindex="-1" id="notebook" class="border-box-sizing">
+    <div class="container" id="notebook-container">
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Hacking-for-heat">Hacking for heat<a class="anchor-link" href="#Hacking-for-heat">¶</a>
+</h2>
+<p>In this series, I'm going to be posting about the process that goes on behind some of the blog posts we end up writing. In this first entry, I'm going to be exploring a number of datsets.</p>
+<p>These are the ones that I'm going to be looking at:</p>
+<ol>
+<li><a href="https://data.cityofnewyork.us/Housing-Development/Housing-Litigations/59kj-x8nc">HPD (Housing Preservation and Development) housing litigations</a></li>
+<li><a href="https://data.cityofnewyork.us/Housing-Development/Housing-Maintenance-Code-Complaints/uwyv-629c">Housing maintenance code complaints</a></li>
+<li><a href="https://data.cityofnewyork.us/Housing-Development/Housing-Maintenance-Code-Violations/wvxf-dwi5">Housing maintanence code violations</a></li>
+<li><a href="https://data.cityofnewyork.us/Housing-Development/Complaint-Problems/a2nx-4u46">HPD complaints</a></li>
+</ol>
+<p>(for HPD datasets, some documentation can be found <a href="https://www1.nyc.gov/site/hpd/about/open-data.page">here</a>)</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="HPD-litigation-database">HPD litigation database<a class="anchor-link" href="#HPD-litigation-database">¶</a>
+</h3>
+<p>First, we're going to look at the smallest dataset, one that contains cases against landlords. From the documentation, this file contains "All cases commenced by HPD or by tennants (naming HPD as a party) in [housing court] since August 2006" either seeking orders for landlords to comply with regulations, or awarding HPD civil penalties (i.e., collecting on fines).</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [2]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [3]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">litigation</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">"Housing_Litigations.csv"</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [5]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">litigation</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt output_prompt">Out[5]:</div>
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<table border="1" class="dataframe">
+<thead><tr style="text-align: right;">
+<th></th>
+      <th>LitigationID</th>
+      <th>BuildingID</th>
+      <th>BoroID</th>
+      <th>Boro</th>
+      <th>HouseNumber</th>
+      <th>StreetName</th>
+      <th>Zip</th>
+      <th>Block</th>
+      <th>Lot</th>
+      <th>CaseType</th>
+      <th>CaseOpenDate</th>
+      <th>CaseStatus</th>
+      <th>CaseJudgement</th>
+    </tr></thead>
+<tbody>
+<tr>
+<th>0</th>
+      <td>98385</td>
+      <td>806633</td>
+      <td>2</td>
+      <td>BRONX</td>
+      <td>866</td>
+      <td>EAST 221 STREET</td>
+      <td>10467.0</td>
+      <td>4679</td>
+      <td>73</td>
+      <td>Tenant Action</td>
+      <td>04/23/2009</td>
+      <td>CLOSED</td>
+      <td>NO</td>
+    </tr>
+<tr>
+<th>1</th>
+      <td>98387</td>
+      <td>55134</td>
+      <td>2</td>
+      <td>BRONX</td>
+      <td>3940</td>
+      <td>CARPENTER AVENUE</td>
+      <td>10466.0</td>
+      <td>4825</td>
+      <td>51</td>
+      <td>Tenant Action</td>
+      <td>04/23/2009</td>
+      <td>CLOSED</td>
+      <td>NO</td>
+    </tr>
+<tr>
+<th>2</th>
+      <td>98389</td>
+      <td>119044</td>
+      <td>2</td>
+      <td>BRONX</td>
+      <td>1356</td>
+      <td>WALTON AVENUE</td>
+      <td>10452.0</td>
+      <td>2841</td>
+      <td>41</td>
+      <td>Tenant Action</td>
+      <td>04/23/2009</td>
+      <td>CLOSED</td>
+      <td>NO</td>
+    </tr>
+<tr>
+<th>3</th>
+      <td>98391</td>
+      <td>889796</td>
+      <td>2</td>
+      <td>BRONX</td>
+      <td>871</td>
+      <td>EAST 179 STREET</td>
+      <td>10460.0</td>
+      <td>3123</td>
+      <td>77</td>
+      <td>Tenant Action</td>
+      <td>04/24/2009</td>
+      <td>CLOSED</td>
+      <td>NO</td>
+    </tr>
+<tr>
+<th>4</th>
+      <td>98393</td>
+      <td>56949</td>
+      <td>2</td>
+      <td>BRONX</td>
+      <td>1680</td>
+      <td>CLAY AVENUE</td>
+      <td>10457.0</td>
+      <td>2889</td>
+      <td>1</td>
+      <td>Tenant Action</td>
+      <td>04/24/2009</td>
+      <td>CLOSED</td>
+      <td>NO</td>
+    </tr>
+</tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Let's take a look at unique values for some of the columns:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [6]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">litigation</span><span class="p">[</span><span class="s1">'Boro'</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">()</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt output_prompt">Out[6]:</div>
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>array(['BRONX', 'QUEENS', 'MANHATTAN', 'BROOKLYN', 'STATEN ISLAND'], dtype=object)</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [14]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">litigation</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">by</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'Boro'</span><span class="p">,</span><span class="s1">'CaseJudgement'</span><span class="p">])</span><span class="o">.</span><span class="n">count</span><span class="p">()</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt output_prompt">Out[14]:</div>
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<table border="1" class="dataframe">
+<thead>
+<tr style="text-align: right;">
+<th></th>
+      <th></th>
+      <th>LitigationID</th>
+      <th>BuildingID</th>
+      <th>BoroID</th>
+      <th>HouseNumber</th>
+      <th>StreetName</th>
+      <th>Zip</th>
+      <th>Block</th>
+      <th>Lot</th>
+      <th>CaseType</th>
+      <th>CaseOpenDate</th>
+      <th>CaseStatus</th>
+    </tr>
+<tr>
+<th>Boro</th>
+      <th>CaseJudgement</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+</thead>
+<tbody>
+<tr>
+<th rowspan="2" valign="top">BRONX</th>
+      <th>NO</th>
+      <td>19734</td>
+      <td>19734</td>
+      <td>19734</td>
+      <td>19734</td>
+      <td>19734</td>
+      <td>19734</td>
+      <td>19734</td>
+      <td>19734</td>
+      <td>19734</td>
+      <td>19701</td>
+      <td>19734</td>
+    </tr>
+<tr>
+<th>YES</th>
+      <td>481</td>
+      <td>481</td>
+      <td>481</td>
+      <td>481</td>
+      <td>481</td>
+      <td>481</td>
+      <td>481</td>
+      <td>481</td>
+      <td>481</td>
+      <td>478</td>
+      <td>481</td>
+    </tr>
+<tr>
+<th rowspan="2" valign="top">BROOKLYN</th>
+      <th>NO</th>
+      <td>19833</td>
+      <td>19833</td>
+      <td>19833</td>
+      <td>19833</td>
+      <td>19833</td>
+      <td>19831</td>
+      <td>19833</td>
+      <td>19833</td>
+      <td>19833</td>
+      <td>19807</td>
+      <td>19833</td>
+    </tr>
+<tr>
+<th>YES</th>
+      <td>762</td>
+      <td>762</td>
+      <td>762</td>
+      <td>762</td>
+      <td>762</td>
+      <td>760</td>
+      <td>762</td>
+      <td>762</td>
+      <td>762</td>
+      <td>762</td>
+      <td>762</td>
+    </tr>
+<tr>
+<th rowspan="2" valign="top">MANHATTAN</th>
+      <th>NO</th>
+      <td>11849</td>
+      <td>11849</td>
+      <td>11849</td>
+      <td>11849</td>
+      <td>11849</td>
+      <td>11849</td>
+      <td>11849</td>
+      <td>11849</td>
+      <td>11849</td>
+      <td>11841</td>
+      <td>11849</td>
+    </tr>
+<tr>
+<th>YES</th>
+      <td>129</td>
+      <td>129</td>
+      <td>129</td>
+      <td>129</td>
+      <td>129</td>
+      <td>129</td>
+      <td>129</td>
+      <td>129</td>
+      <td>129</td>
+      <td>129</td>
+      <td>129</td>
+    </tr>
+<tr>
+<th rowspan="2" valign="top">QUEENS</th>
+      <th>NO</th>
+      <td>9068</td>
+      <td>9068</td>
+      <td>9068</td>
+      <td>9068</td>
+      <td>9068</td>
+      <td>9061</td>
+      <td>9068</td>
+      <td>9068</td>
+      <td>9068</td>
+      <td>9063</td>
+      <td>9068</td>
+    </tr>
+<tr>
+<th>YES</th>
+      <td>313</td>
+      <td>313</td>
+      <td>313</td>
+      <td>313</td>
+      <td>313</td>
+      <td>313</td>
+      <td>313</td>
+      <td>313</td>
+      <td>313</td>
+      <td>308</td>
+      <td>313</td>
+    </tr>
+<tr>
+<th rowspan="2" valign="top">STATEN ISLAND</th>
+      <th>NO</th>
+      <td>1064</td>
+      <td>1064</td>
+      <td>1064</td>
+      <td>1064</td>
+      <td>1064</td>
+      <td>1064</td>
+      <td>1064</td>
+      <td>1064</td>
+      <td>1064</td>
+      <td>1064</td>
+      <td>1064</td>
+    </tr>
+<tr>
+<th>YES</th>
+      <td>84</td>
+      <td>84</td>
+      <td>84</td>
+      <td>84</td>
+      <td>84</td>
+      <td>84</td>
+      <td>84</td>
+      <td>84</td>
+      <td>84</td>
+      <td>84</td>
+      <td>84</td>
+    </tr>
+</tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The above table tells us that Manhattan has the lowest proportion of cases that receive judgement (about 1 in 80), whereas Staten Island has the highest (about 1 in 12). It may be something worth looking into, but it's also important to note that many cases settle out of court, and landlords in Manhattan may be more willing (or able) to do so.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [7]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">litigation</span><span class="p">[</span><span class="s1">'CaseType'</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">()</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt output_prompt">Out[7]:</div>
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>array(['Tenant Action', 'Heat and Hot Water', 'CONH',
+       'Comp Supplemental Cases', 'Comprehensive',
+       'Access Warrant - Non-Lead', 'Access Warrant - lead',
+       'Lead False Certification', 'False Certification Non-Lead',
+       'Heat Supplemental Cases', '7A', 'Failure to Register Only',
+       'HLD - Other Case Type'], dtype=object)</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [16]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">litigation</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">by</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'CaseType'</span><span class="p">,</span> <span class="s1">'CaseJudgement'</span><span class="p">])</span><span class="o">.</span><span class="n">count</span><span class="p">()</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt output_prompt">Out[16]:</div>
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<table border="1" class="dataframe">
+<thead>
+<tr style="text-align: right;">
+<th></th>
+      <th></th>
+      <th>LitigationID</th>
+      <th>BuildingID</th>
+      <th>BoroID</th>
+      <th>Boro</th>
+      <th>HouseNumber</th>
+      <th>StreetName</th>
+      <th>Zip</th>
+      <th>Block</th>
+      <th>Lot</th>
+      <th>CaseOpenDate</th>
+      <th>CaseStatus</th>
+    </tr>
+<tr>
+<th>CaseType</th>
+      <th>CaseJudgement</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+</thead>
+<tbody>
+<tr>
+<th>7A</th>
+      <th>NO</th>
+      <td>105</td>
+      <td>105</td>
+      <td>105</td>
+      <td>105</td>
+      <td>105</td>
+      <td>105</td>
+      <td>105</td>
+      <td>105</td>
+      <td>105</td>
+      <td>102</td>
+      <td>105</td>
+    </tr>
+<tr>
+<th rowspan="2" valign="top">Access Warrant - Non-Lead</th>
+      <th>NO</th>
+      <td>5665</td>
+      <td>5665</td>
+      <td>5665</td>
+      <td>5665</td>
+      <td>5665</td>
+      <td>5665</td>
+      <td>5665</td>
+      <td>5665</td>
+      <td>5665</td>
+      <td>5665</td>
+      <td>5665</td>
+    </tr>
+<tr>
+<th>YES</th>
+      <td>8</td>
+      <td>8</td>
+      <td>8</td>
+      <td>8</td>
+      <td>8</td>
+      <td>8</td>
+      <td>8</td>
+      <td>8</td>
+      <td>8</td>
+      <td>8</td>
+      <td>8</td>
+    </tr>
+<tr>
+<th>Access Warrant - lead</th>
+      <th>NO</th>
+      <td>1786</td>
+      <td>1786</td>
+      <td>1786</td>
+      <td>1786</td>
+      <td>1786</td>
+      <td>1786</td>
+      <td>1786</td>
+      <td>1786</td>
+      <td>1786</td>
+      <td>1785</td>
+      <td>1786</td>
+    </tr>
+<tr>
+<th>CONH</th>
+      <th>NO</th>
+      <td>797</td>
+      <td>797</td>
+      <td>797</td>
+      <td>797</td>
+      <td>797</td>
+      <td>797</td>
+      <td>797</td>
+      <td>797</td>
+      <td>797</td>
+      <td>797</td>
+      <td>797</td>
+    </tr>
+<tr>
+<th rowspan="2" valign="top">Comp Supplemental Cases</th>
+      <th>NO</th>
+      <td>750</td>
+      <td>750</td>
+      <td>750</td>
+      <td>750</td>
+      <td>750</td>
+      <td>750</td>
+      <td>750</td>
+      <td>750</td>
+      <td>750</td>
+      <td>702</td>
+      <td>750</td>
+    </tr>
+<tr>
+<th>YES</th>
+      <td>31</td>
+      <td>31</td>
+      <td>31</td>
+      <td>31</td>
+      <td>31</td>
+      <td>31</td>
+      <td>31</td>
+      <td>31</td>
+      <td>31</td>
+      <td>29</td>
+      <td>31</td>
+    </tr>
+<tr>
+<th rowspan="2" valign="top">Comprehensive</th>
+      <th>NO</th>
+      <td>2274</td>
+      <td>2274</td>
+      <td>2274</td>
+      <td>2274</td>
+      <td>2274</td>
+      <td>2274</td>
+      <td>2274</td>
+      <td>2274</td>
+      <td>2274</td>
+      <td>2274</td>
+      <td>2274</td>
+    </tr>
+<tr>
+<th>YES</th>
+      <td>121</td>
+      <td>121</td>
+      <td>121</td>
+      <td>121</td>
+      <td>121</td>
+      <td>121</td>
+      <td>121</td>
+      <td>121</td>
+      <td>121</td>
+      <td>121</td>
+      <td>121</td>
+    </tr>
+<tr>
+<th rowspan="2" valign="top">Failure to Register Only</th>
+      <th>NO</th>
+      <td>60</td>
+      <td>60</td>
+      <td>60</td>
+      <td>60</td>
+      <td>60</td>
+      <td>60</td>
+      <td>60</td>
+      <td>60</td>
+      <td>60</td>
+      <td>60</td>
+      <td>60</td>
+    </tr>
+<tr>
+<th>YES</th>
+      <td>3</td>
+      <td>3</td>
+      <td>3</td>
+      <td>3</td>
+      <td>3</td>
+      <td>3</td>
+      <td>3</td>
+      <td>3</td>
+      <td>3</td>
+      <td>3</td>
+      <td>3</td>
+    </tr>
+<tr>
+<th rowspan="2" valign="top">False Certification Non-Lead</th>
+      <th>NO</th>
+      <td>2355</td>
+      <td>2355</td>
+      <td>2355</td>
+      <td>2355</td>
+      <td>2355</td>
+      <td>2355</td>
+      <td>2355</td>
+      <td>2355</td>
+      <td>2355</td>
+      <td>2355</td>
+      <td>2355</td>
+    </tr>
+<tr>
+<th>YES</th>
+      <td>20</td>
+      <td>20</td>
+      <td>20</td>
+      <td>20</td>
+      <td>20</td>
+      <td>20</td>
+      <td>20</td>
+      <td>20</td>
+      <td>20</td>
+      <td>20</td>
+      <td>20</td>
+    </tr>
+<tr>
+<th>HLD - Other Case Type</th>
+      <th>NO</th>
+      <td>3</td>
+      <td>3</td>
+      <td>3</td>
+      <td>3</td>
+      <td>3</td>
+      <td>3</td>
+      <td>3</td>
+      <td>3</td>
+      <td>3</td>
+      <td>2</td>
+      <td>3</td>
+    </tr>
+<tr>
+<th rowspan="2" valign="top">Heat Supplemental Cases</th>
+      <th>NO</th>
+      <td>124</td>
+      <td>124</td>
+      <td>124</td>
+      <td>124</td>
+      <td>124</td>
+      <td>124</td>
+      <td>124</td>
+      <td>124</td>
+      <td>124</td>
+      <td>108</td>
+      <td>124</td>
+    </tr>
+<tr>
+<th>YES</th>
+      <td>7</td>
+      <td>7</td>
+      <td>7</td>
+      <td>7</td>
+      <td>7</td>
+      <td>7</td>
+      <td>6</td>
+      <td>7</td>
+      <td>7</td>
+      <td>6</td>
+      <td>7</td>
+    </tr>
+<tr>
+<th rowspan="2" valign="top">Heat and Hot Water</th>
+      <th>NO</th>
+      <td>15760</td>
+      <td>15760</td>
+      <td>15760</td>
+      <td>15760</td>
+      <td>15760</td>
+      <td>15760</td>
+      <td>15758</td>
+      <td>15760</td>
+      <td>15760</td>
+      <td>15757</td>
+      <td>15760</td>
+    </tr>
+<tr>
+<th>YES</th>
+      <td>1299</td>
+      <td>1299</td>
+      <td>1299</td>
+      <td>1299</td>
+      <td>1299</td>
+      <td>1299</td>
+      <td>1298</td>
+      <td>1299</td>
+      <td>1299</td>
+      <td>1294</td>
+      <td>1299</td>
+    </tr>
+<tr>
+<th rowspan="2" valign="top">Lead False Certification</th>
+      <th>NO</th>
+      <td>239</td>
+      <td>239</td>
+      <td>239</td>
+      <td>239</td>
+      <td>239</td>
+      <td>239</td>
+      <td>239</td>
+      <td>239</td>
+      <td>239</td>
+      <td>239</td>
+      <td>239</td>
+    </tr>
+<tr>
+<th>YES</th>
+      <td>2</td>
+      <td>2</td>
+      <td>2</td>
+      <td>2</td>
+      <td>2</td>
+      <td>2</td>
+      <td>2</td>
+      <td>2</td>
+      <td>2</td>
+      <td>2</td>
+      <td>2</td>
+    </tr>
+<tr>
+<th rowspan="2" valign="top">Tenant Action</th>
+      <th>NO</th>
+      <td>31630</td>
+      <td>31630</td>
+      <td>31630</td>
+      <td>31630</td>
+      <td>31630</td>
+      <td>31630</td>
+      <td>31623</td>
+      <td>31630</td>
+      <td>31630</td>
+      <td>31630</td>
+      <td>31630</td>
+    </tr>
+<tr>
+<th>YES</th>
+      <td>278</td>
+      <td>278</td>
+      <td>278</td>
+      <td>278</td>
+      <td>278</td>
+      <td>278</td>
+      <td>278</td>
+      <td>278</td>
+      <td>278</td>
+      <td>278</td>
+      <td>278</td>
+    </tr>
+</tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The table above shows the same case judgement proportions, but conditioned on what type of case it was. Unhelpfully, the documentation does not specify what the difference between Access Warrant - Lead and Non-Lead is. It could be one of two possibilities: The first is whether the warrants have to do with lead-based paint, which is a common problem, but perhaps still too idiosyncratic to have it's own warrant type. The second, perhaps more likely possibility is whether or not HPD was the lead party in the case.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>We'll probably end up using these data by aggregating it and examining how complaints change over time, perhaps as a function of what type they are. There's also the possibility of looking up specific buildings' complaints and tying them to landlords. There's probably also an easy way to join this dataset with another, by converting the address information into something standardized, like borough-block-lot (BBL; <a href="http://www1.nyc.gov/nyc-resources/service/1232/borough-block-lot-bbl-lookup">http://www1.nyc.gov/nyc-resources/service/1232/borough-block-lot-bbl-lookup</a>)</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="HPD-complaints">HPD complaints<a class="anchor-link" href="#HPD-complaints">¶</a>
+</h3>
+<p>Next, we're going to look at a dataset of HPD complaints.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [32]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">hpdcomp</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">'Housing_Maintenance_Code_Complaints.csv'</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [34]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">hpdcomp</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt output_prompt">Out[34]:</div>
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<table border="1" class="dataframe">
+<thead><tr style="text-align: right;">
+<th></th>
+      <th>ComplaintID</th>
+      <th>BuildingID</th>
+      <th>BoroughID</th>
+      <th>Borough</th>
+      <th>HouseNumber</th>
+      <th>StreetName</th>
+      <th>Zip</th>
+      <th>Block</th>
+      <th>Lot</th>
+      <th>Apartment</th>
+      <th>CommunityBoard</th>
+      <th>ReceivedDate</th>
+      <th>StatusID</th>
+      <th>Status</th>
+      <th>StatusDate</th>
+    </tr></thead>
+<tbody>
+<tr>
+<th>0</th>
+      <td>6960137</td>
+      <td>3418</td>
+      <td>1</td>
+      <td>MANHATTAN</td>
+      <td>1989</td>
+      <td>ADAM C POWELL BOULEVARD</td>
+      <td>10026.0</td>
+      <td>1904</td>
+      <td>4</td>
+      <td>12D</td>
+      <td>10</td>
+      <td>07/07/2014</td>
+      <td>2</td>
+      <td>CLOSE</td>
+      <td>07/29/2014</td>
+    </tr>
+<tr>
+<th>1</th>
+      <td>6960832</td>
+      <td>3512</td>
+      <td>1</td>
+      <td>MANHATTAN</td>
+      <td>2267</td>
+      <td>ADAM C POWELL BOULEVARD</td>
+      <td>10030.0</td>
+      <td>1918</td>
+      <td>4</td>
+      <td>3B</td>
+      <td>10</td>
+      <td>07/08/2014</td>
+      <td>2</td>
+      <td>CLOSE</td>
+      <td>07/12/2014</td>
+    </tr>
+<tr>
+<th>2</th>
+      <td>6946867</td>
+      <td>5318</td>
+      <td>1</td>
+      <td>MANHATTAN</td>
+      <td>778</td>
+      <td>11 AVENUE</td>
+      <td>10019.0</td>
+      <td>1083</td>
+      <td>1</td>
+      <td>4P</td>
+      <td>4</td>
+      <td>06/19/2014</td>
+      <td>2</td>
+      <td>CLOSE</td>
+      <td>07/13/2014</td>
+    </tr>
+<tr>
+<th>3</th>
+      <td>6966946</td>
+      <td>5608</td>
+      <td>1</td>
+      <td>MANHATTAN</td>
+      <td>1640</td>
+      <td>AMSTERDAM AVENUE</td>
+      <td>10031.0</td>
+      <td>2073</td>
+      <td>29</td>
+      <td>5A</td>
+      <td>9</td>
+      <td>07/16/2014</td>
+      <td>2</td>
+      <td>CLOSE</td>
+      <td>07/21/2014</td>
+    </tr>
+<tr>
+<th>4</th>
+      <td>6956574</td>
+      <td>17896</td>
+      <td>1</td>
+      <td>MANHATTAN</td>
+      <td>230</td>
+      <td>EAST 88 STREET</td>
+      <td>10128.0</td>
+      <td>1533</td>
+      <td>32</td>
+      <td>1E</td>
+      <td>8</td>
+      <td>07/01/2014</td>
+      <td>2</td>
+      <td>CLOSE</td>
+      <td>07/09/2014</td>
+    </tr>
+</tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [39]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="nb">len</span><span class="p">(</span><span class="n">hpdcomp</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt output_prompt">Out[39]:</div>
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>662672</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>This dataset is less useful on its own. It doesn't tell us what the type of complaint was, only the date it was received and whether or not the complaint is still open. However, it may be useful in conjunction with the earlier dataset. For example, we might be interested in how many of these complaints end up in court (or at least, have some sort of legal action taken).</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="HPD-violations">HPD violations<a class="anchor-link" href="#HPD-violations">¶</a>
+</h3>
+<p>The following dataset tracks HPD violations.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [35]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">hpdviol</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">'Housing_Maintenance_Code_Violations.csv'</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [36]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">hpdviol</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt output_prompt">Out[36]:</div>
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<table border="1" class="dataframe">
+<thead><tr style="text-align: right;">
+<th></th>
+      <th>ViolationID</th>
+      <th>BuildingID</th>
+      <th>RegistrationID</th>
+      <th>BoroID</th>
+      <th>Boro</th>
+      <th>HouseNumber</th>
+      <th>LowHouseNumber</th>
+      <th>HighHouseNumber</th>
+      <th>StreetName</th>
+      <th>StreetCode</th>
+      <th>...</th>
+      <th>NewCertifyByDate</th>
+      <th>NewCorrectByDate</th>
+      <th>CertifiedDate</th>
+      <th>OrderNumber</th>
+      <th>NOVID</th>
+      <th>NOVDescription</th>
+      <th>NOVIssuedDate</th>
+      <th>CurrentStatusID</th>
+      <th>CurrentStatus</th>
+      <th>CurrentStatusDate</th>
+    </tr></thead>
+<tbody>
+<tr>
+<th>0</th>
+      <td>2293208</td>
+      <td>444</td>
+      <td>130476</td>
+      <td>1</td>
+      <td>MANHATTAN</td>
+      <td>22</td>
+      <td>22</td>
+      <td>22</td>
+      <td>1 AVENUE</td>
+      <td>10010</td>
+      <td>...</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>772</td>
+      <td>338596.0</td>
+      <td>Â§ 27-2098 ADM CODE FILE WITH THIS DEPARTMENT ...</td>
+      <td>04/22/1997</td>
+      <td>19</td>
+      <td>VIOLATION CLOSED</td>
+      <td>03/10/2015</td>
+    </tr>
+<tr>
+<th>1</th>
+      <td>2293181</td>
+      <td>444</td>
+      <td>130476</td>
+      <td>1</td>
+      <td>MANHATTAN</td>
+      <td>22</td>
+      <td>22</td>
+      <td>22</td>
+      <td>1 AVENUE</td>
+      <td>10010</td>
+      <td>...</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>09/10/1974</td>
+      <td>775</td>
+      <td>338584.0</td>
+      <td>D26-41.05 ADM CODE FILE WITH THIS DEPARTMENT R...</td>
+      <td>07/16/1974</td>
+      <td>19</td>
+      <td>VIOLATION CLOSED</td>
+      <td>03/10/2015</td>
+    </tr>
+<tr>
+<th>2</th>
+      <td>2293249</td>
+      <td>448</td>
+      <td>135326</td>
+      <td>1</td>
+      <td>MANHATTAN</td>
+      <td>2222</td>
+      <td>2222</td>
+      <td>2222</td>
+      <td>1 AVENUE</td>
+      <td>10010</td>
+      <td>...</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>772</td>
+      <td>338619.0</td>
+      <td>Â§ 27-2098 ADM CODE FILE WITH THIS DEPARTMENT ...</td>
+      <td>11/19/1996</td>
+      <td>19</td>
+      <td>VIOLATION CLOSED</td>
+      <td>03/10/2015</td>
+    </tr>
+<tr>
+<th>3</th>
+      <td>2293486</td>
+      <td>467</td>
+      <td>136913</td>
+      <td>1</td>
+      <td>MANHATTAN</td>
+      <td>2250</td>
+      <td>2250</td>
+      <td>2250</td>
+      <td>1 AVENUE</td>
+      <td>10010</td>
+      <td>...</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>772</td>
+      <td>338733.0</td>
+      <td>D26-41.03 ADM CODE FILE WITH THIS DEPARTMENT A...</td>
+      <td>05/10/1982</td>
+      <td>19</td>
+      <td>VIOLATION CLOSED</td>
+      <td>03/10/2015</td>
+    </tr>
+<tr>
+<th>4</th>
+      <td>2293490</td>
+      <td>467</td>
+      <td>136913</td>
+      <td>1</td>
+      <td>MANHATTAN</td>
+      <td>2250</td>
+      <td>2250</td>
+      <td>2250</td>
+      <td>1 AVENUE</td>
+      <td>10010</td>
+      <td>...</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>772</td>
+      <td>338737.0</td>
+      <td>Â§ 27-2098 ADM CODE FILE WITH THIS DEPARTMENT ...</td>
+      <td>11/19/1996</td>
+      <td>19</td>
+      <td>VIOLATION CLOSED</td>
+      <td>03/10/2015</td>
+    </tr>
+</tbody>
+</table>
+<p>5 rows × 30 columns</p>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [40]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="nb">len</span><span class="p">(</span><span class="n">hpdviol</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt output_prompt">Out[40]:</div>
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>1437246</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>These datasets all have different lengths, but that's not surprising, given they come from different years. One productive initial step would be to convert the date strings into something numerical.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="HPD-complaint-problems-database">HPD complaint problems database<a class="anchor-link" href="#HPD-complaint-problems-database">¶</a>
+</h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [45]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">hpdcompprob</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">'Complaint_Problems.csv'</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [48]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">hpdcompprob</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt output_prompt">Out[48]:</div>
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<table border="1" class="dataframe">
+<thead><tr style="text-align: right;">
+<th></th>
+      <th>ProblemID</th>
+      <th>ComplaintID</th>
+      <th>UnitTypeID</th>
+      <th>UnitType</th>
+      <th>SpaceTypeID</th>
+      <th>SpaceType</th>
+      <th>TypeID</th>
+      <th>Type</th>
+      <th>MajorCategoryID</th>
+      <th>MajorCategory</th>
+      <th>MinorCategoryID</th>
+      <th>MinorCategory</th>
+      <th>CodeID</th>
+      <th>Code</th>
+      <th>StatusID</th>
+      <th>Status</th>
+      <th>StatusDate</th>
+      <th>StatusDescription</th>
+    </tr></thead>
+<tbody>
+<tr>
+<th>0</th>
+      <td>14548958</td>
+      <td>6967900</td>
+      <td>91</td>
+      <td>APARTMENT</td>
+      <td>541</td>
+      <td>BATHROOM</td>
+      <td>1</td>
+      <td>EMERGENCY</td>
+      <td>9</td>
+      <td>PLUMBING</td>
+      <td>63</td>
+      <td>BATHTUB/SHOWER</td>
+      <td>2538</td>
+      <td>BROKEN OR MISSING</td>
+      <td>2</td>
+      <td>CLOSE</td>
+      <td>07/29/2014</td>
+      <td>The Department of Housing Preservation and De...</td>
+    </tr>
+<tr>
+<th>1</th>
+      <td>14548959</td>
+      <td>6967900</td>
+      <td>91</td>
+      <td>APARTMENT</td>
+      <td>541</td>
+      <td>BATHROOM</td>
+      <td>3</td>
+      <td>NON EMERGENCY</td>
+      <td>9</td>
+      <td>PLUMBING</td>
+      <td>63</td>
+      <td>BATHTUB/SHOWER</td>
+      <td>2540</td>
+      <td>FAUCET BROKEN/MISSING/LEAKING</td>
+      <td>2</td>
+      <td>CLOSE</td>
+      <td>08/04/2014</td>
+      <td>The Department of Housing Preservation and De...</td>
+    </tr>
+<tr>
+<th>2</th>
+      <td>14548960</td>
+      <td>6967900</td>
+      <td>91</td>
+      <td>APARTMENT</td>
+      <td>543</td>
+      <td>ENTIRE APARTMENT</td>
+      <td>3</td>
+      <td>NON EMERGENCY</td>
+      <td>58</td>
+      <td>FLOORING/STAIRS</td>
+      <td>343</td>
+      <td>FLOOR</td>
+      <td>2691</td>
+      <td>TILE BROKEN OR MISSING</td>
+      <td>2</td>
+      <td>CLOSE</td>
+      <td>08/04/2014</td>
+      <td>The Department of Housing Preservation and De...</td>
+    </tr>
+<tr>
+<th>3</th>
+      <td>14548961</td>
+      <td>6967900</td>
+      <td>91</td>
+      <td>APARTMENT</td>
+      <td>541</td>
+      <td>BATHROOM</td>
+      <td>3</td>
+      <td>NON EMERGENCY</td>
+      <td>9</td>
+      <td>PLUMBING</td>
+      <td>63</td>
+      <td>BATHTUB/SHOWER</td>
+      <td>2541</td>
+      <td>CHIPPED OR RUSTED</td>
+      <td>2</td>
+      <td>CLOSE</td>
+      <td>08/04/2014</td>
+      <td>The Department of Housing Preservation and De...</td>
+    </tr>
+<tr>
+<th>4</th>
+      <td>14615271</td>
+      <td>6994958</td>
+      <td>20</td>
+      <td>APARTMENT</td>
+      <td>68</td>
+      <td>ENTIRE APARTMENT</td>
+      <td>1</td>
+      <td>EMERGENCY</td>
+      <td>59</td>
+      <td>HEAT/HOT WATER</td>
+      <td>349</td>
+      <td>ENTIRE BUILDING</td>
+      <td>2717</td>
+      <td>NO HOT WATER</td>
+      <td>2</td>
+      <td>CLOSE</td>
+      <td>08/22/2014</td>
+      <td>The Department of Housing Preservation and De...</td>
+    </tr>
+</tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Awesome! This dataset provides some more details about the complaints, and lets us join by ComplaintID.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Summary-and-next-steps">Summary and next steps<a class="anchor-link" href="#Summary-and-next-steps">¶</a>
+</h3>
+<p>In the immediate future, I'm going to be writing script to join and clean this dataset. This can either be done either in python, or by writing some SQL. I haven't decided yet. Additionally, I'm going to be writing some code to do things like convert date strings, and perhaps scrape text.</p>
+
+</div>
+</div>
+</div>
+    </div>
+  </div>
+
+    </div>
+    <aside class="postpromonav"><nav><ul itemprop="keywords" class="tags">
+<li><a class="tag p-category" href="../../categories/heakseek/" rel="tag">heakseek</a></li>
+        </ul>
+<ul class="pager hidden-print">
+<li class="previous">
+                <a href="../skytrax-data-4-the-logit-model/" rel="prev" title="Skytrax Data #4: The Logit Model">Previous post</a>
+            </li>
+        </ul></nav></aside><script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"> </script><script type="text/x-mathjax-config">
+            MathJax.Hub.Config({tex2jax: {inlineMath: [['$latex ','$'], ['\\(','\\)']]}});
+            </script></article>
+</div>
+        <!--End of body content-->
+
+        <footer id="footer">
+            Contents © 2016         <a href="mailto:bryan.sim@nyu.edu">Bryan Sim</a> - Powered by         <a href="https://getnikola.com" rel="nofollow">Nikola</a>         
+            
+        </footer>
+</div>
+</div>
+
+
+            <script src="../../assets/js/all-nocdn.js"></script><script>$('a.image-reference:not(.islink) img:not(.islink)').parent().colorbox({rel:"gal",maxWidth:"100%",maxHeight:"100%",scalePhotos:true});</script><!-- fancy dates --><script>
+    moment.locale("en");
+    fancydates(0, "YYYY-MM-DD HH:mm");
+    </script><!-- end fancy dates -->
+</body>
+</html>

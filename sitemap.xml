@@ -7,7 +7,7 @@
                         http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
  <url>
   <loc>https://bryansim.github.io/</loc>
-  <lastmod>2016-05-03T04:40:00Z</lastmod>
+  <lastmod>2016-05-21T00:01:00Z</lastmod>
  </url>
  <url>
   <loc>https://bryansim.github.io/2016/</loc>
@@ -15,11 +15,15 @@
  </url>
  <url>
   <loc>https://bryansim.github.io/archive.html</loc>
-  <lastmod>2016-05-17T21:45:00Z</lastmod>
+  <lastmod>2016-05-21T00:01:00Z</lastmod>
  </url>
  <url>
   <loc>https://bryansim.github.io/categories/</loc>
-  <lastmod>2016-05-04T02:12:00Z</lastmod>
+  <lastmod>2016-05-21T00:01:00Z</lastmod>
+ </url>
+ <url>
+  <loc>https://bryansim.github.io/categories/heakseek/</loc>
+  <lastmod>2016-05-21T00:01:00Z</lastmod>
  </url>
  <url>
   <loc>https://bryansim.github.io/categories/mediocre-museum/</loc>
@@ -38,8 +42,16 @@
   <lastmod>2016-05-02T02:06:00Z</lastmod>
  </url>
  <url>
+  <loc>https://bryansim.github.io/index-1.html</loc>
+  <lastmod>2016-05-21T00:01:00Z</lastmod>
+ </url>
+ <url>
   <loc>https://bryansim.github.io/listings/</loc>
   <lastmod>2016-05-02T02:06:00Z</lastmod>
+ </url>
+ <url>
+  <loc>https://bryansim.github.io/posts/hack-for-heat-1-initial-thoughts-on-hpd-open-data/</loc>
+  <lastmod>2016-05-21T00:01:00Z</lastmod>
  </url>
  <url>
   <loc>https://bryansim.github.io/posts/mousetracker-data-1/</loc>
