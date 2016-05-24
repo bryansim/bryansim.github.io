@@ -1,0 +1,70 @@
+<html>
+    <head>
+        <script src="Chart.js"></script>
+    </head>
+<canvas id="myChart" width="640" height="480"></canvas>
+<body>
+    <script>
+        var ctx = document.getElementById("myChart");
+
+        var data = {
+            labels: Array.apply(null, Array(8)).map(function (_, i) {return i;}),
+            datasets: [
+                {
+                    label: "y1",
+                    fill: false,
+                    lineTension: 0.1,
+                    backgroundColor: "blue",
+                    borderColor: "blue",
+                    borderCapStyle: 'butt',
+                    borderJoinStyle: 'miter',
+                    pointBorderColor: "blue",
+                    pointBackgroundColor: "#fff",
+                    pointBorderWidth: 1,
+                    pointHoverRadius: 5,
+                    pointHoverBackgroundColor: "blue",
+                    pointHoverBorderColor: "blue",
+                    pointHoverBorderWidth: 2,
+                    pointRadius: 1,
+                    pointHitRadius: 10,
+                    data: [-0.3314,-0.4506,-0.5698,-0.689,-0.8082,-0.9274,-1.0466],
+                },
+                        {
+                    label: "y2",
+                    fill: false,
+                    lineTension: 0.1,
+                    backgroundColor: "red",
+                    borderColor: "red",
+                    borderCapStyle: 'butt',
+                    borderJoinStyle: 'miter',
+                    pointBorderColor: "red",
+                    pointBackgroundColor: "#fff",
+                    pointBorderWidth: 1,
+                    pointHoverRadius: 5,
+                    pointHoverBackgroundColor: "red",
+                    pointHoverBorderColor: "red",
+                    pointHoverBorderWidth: 2,
+                    pointRadius: 1,
+                    pointHitRadius: 10,
+                    data: [-1.0147,-0.6396,-0.2645,0.1106,0.4857,0.8608,1.2359],
+                }
+            ]
+        };
+
+        var myChart = new Chart(ctx, {
+            type: 'line',
+            data: data,
+            options: {
+                responsive:false,
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero:false
+                        }
+                    }]
+                }
+            }
+        });
+</script>
+</body>
+</html>
