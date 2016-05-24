@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html prefix="og: http://ogp.me/ns# article: http://ogp.me/ns/article# " lang="en">
+<head>
+<meta charset="utf-8">
+<base href="https://bryansim.github.io/categories/misc/">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Posts about misc | Bryan Sim</title>
+<link href="../../assets/css/all-nocdn.css" rel="stylesheet" type="text/css">
+<link href="../../assets/css/ipython.min.css" rel="stylesheet" type="text/css">
+<link href="../../assets/css/nikola_ipython.css" rel="stylesheet" type="text/css">
+<meta content="#5670d4" name="theme-color">
+<link rel="alternate" type="application/rss+xml" title="RSS for tag misc (en)" href="../misc.xml">
+<link rel="canonical" href="https://bryansim.github.io/categories/misc/">
+<link rel="icon" href="http://bryans.im/favicon.ico" sizes="16x16">
+<!--[if lt IE 9]><script src="../../assets/js/html5.js"></script><![endif]-->
+</head>
+<body>
+<a href="#content" class="sr-only sr-only-focusable">Skip to main content</a>
+
+<!-- Menubar -->
+
+<nav class="navbar navbar-inverse navbar-static-top"><div class="container">
+<!-- This keeps the margins nice -->
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-navbar" aria-controls="bs-navbar" aria-expanded="false">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="https://bryansim.github.io/">
+
+                <span id="blog-title">Bryan Sim</span>
+            </a>
+        </div>
+<!-- /.navbar-header -->
+        <div class="collapse navbar-collapse" id="bs-navbar" aria-expanded="false">
+            <ul class="nav navbar-nav">
+<li>
+<a href="../heatseek">Heat Seek</a>
+                </li>
+<li>
+<a href="../mediocre-museum">Mediocre Museum</a>
+                </li>
+<li>
+<a href="../mousetracker">Mousetracker</a>
+                </li>
+<li>
+<a href="../skytrax">Skytrax</a>
+                </li>
+<li>
+<a href="../misc">Misc</a>
+                </li>
+<li>
+<a href="../../archive.html">Archive</a>
+                </li>
+<li>
+<a href="http://linkedin.com/in/bryansim">LinkedIn</a>
+
+                
+            </li>
+</ul>
+<ul class="nav navbar-nav navbar-right"></ul>
+</div>
+<!-- /.navbar-collapse -->
+    </div>
+<!-- /.container -->
+</nav><!-- End of Menubar --><div class="container" id="content" role="main">
+    <div class="body-content">
+        <!--Body content-->
+        <div class="row">
+            
+            
+
+
+<div class="postindex">
+    <article class="h-entry post-text"><header><h1 class="p-name entry-title"><a href="../../posts/misc-1-experimenting-with-plots/" class="u-url">Misc #1: Experimenting with plots</a></h1>
+        <div class="metadata">
+            <p class="byline author vcard"><span class="byline-name fn">
+                Bryan Sim
+            </span></p>
+            <p class="dateline"><a href="../../posts/misc-1-experimenting-with-plots/" rel="bookmark"><time class="published dt-published" datetime="2016-05-24T15:31:43-04:00" title="2016-05-24 15:31">2016-05-24 15:31</time></a></p>
+        </div>
+    </header><div class="e-content entry-content">
+    <div tabindex="-1" id="notebook" class="border-box-sizing">
+    <div class="container" id="notebook-container">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [1]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="o">%</span><span class="k">matplotlib</span> inline
+
+<span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">pyplot</span> <span class="k">as</span> <span class="n">plt</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Misc-1:-Experimenting-with-plots">Misc 1: Experimenting with plots<a class="anchor-link" href="../../posts/misc-1-experimenting-with-plots/#Misc-1:-Experimenting-with-plots">¶</a>
+</h2>
+<p>I'm in the process of constructing figures for my dissertation, and I thought I'd share the different options I'm considering. I only need to plot simple line graphs, so my main considerations are aesthetics and ease of use (as I'll likely be making changes to them). This is the list I'm going to test:</p>
+<ol>
+<li>matplotlib</li>
+<li>MATLAB</li>
+<li>R + ggplot</li>
+<li>Excel</li>
+<li>gnuplot</li>
+<li>plot.ly</li>
+<li>Chart.js</li>
+<li>Tableau</li>
+<li>Bokeh</li>
+<li>MS paint (just kidding)</li>
+</ol>
+<p>Without further ado, let's go!</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="matplotlib">matplotlib<a class="anchor-link" href="../../posts/misc-1-experimenting-with-plots/#matplotlib">¶</a>
+</h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [2]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">intercept</span> <span class="o">=</span> <span class="o">-.</span><span class="mi">2122</span>
+<span class="n">b1</span> <span class="o">=</span> <span class="o">-</span><span class="mf">1.1776</span> 
+<span class="n">b2</span> <span class="o">=</span> <span class="o">-.</span><span class="mi">1192</span>
+<span class="n">b3</span> <span class="o">=</span> <span class="o">.</span><span class="mi">4943</span>
+
+<span class="c1">#x1 is a categorical predictor, x2 is a continuous predictor, x3 is their interaction</span>
+<span class="k">def</span> <span class="nf">y</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">intercept</span> <span class="o">+</span> <span class="n">b1</span><span class="o">*</span><span class="n">x1</span> <span class="o">+</span> <span class="n">b2</span><span class="o">*</span><span class="n">x2</span> <span class="o">+</span> <span class="n">b3</span><span class="o">*</span><span class="n">x1</span><span class="o">*</span><span class="n">x2</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [3]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">x</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">8</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="p">[</span><span class="n">y</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">z</span><span class="p">)</span> <span class="k">for</span> <span class="n">z</span> <span class="ow">in</span> <span class="n">x</span><span class="p">],</span> <span class="s2">"blue"</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="p">[</span><span class="n">y</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="n">z</span><span class="p">)</span> <span class="k">for</span> <span class="n">z</span> <span class="ow">in</span> <span class="n">x</span><span class="p">],</span> <span class="s2">"red"</span><span class="p">)</span>
+
+<span class="c1">#pl.fill_between(x, y-error, y+error)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span><span class="o">.</span><span class="n">spines</span><span class="p">[</span><span class="s1">'right'</span><span class="p">]</span><span class="o">.</span><span class="n">set_visible</span><span class="p">(</span><span class="bp">False</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span><span class="o">.</span><span class="n">spines</span><span class="p">[</span><span class="s1">'top'</span><span class="p">]</span><span class="o">.</span><span class="n">set_visible</span><span class="p">(</span><span class="bp">False</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span><span class="o">.</span><span class="n">yaxis</span><span class="o">.</span><span class="n">set_ticks_position</span><span class="p">(</span><span class="s1">'left'</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span><span class="o">.</span><span class="n">xaxis</span><span class="o">.</span><span class="n">set_ticks_position</span><span class="p">(</span><span class="s1">'bottom'</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt"></div>
+
+
+<div class="output_png output_subarea ">
+<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAXoAAAEACAYAAAC9Gb03AAAABHNCSVQICAgIfAhkiAAAAAlwSFlz%0AAAALEgAACxIB0t1+/AAAFkNJREFUeJzt3X2MHHd9x/HP1z7nySR2Ert+iC9+iM++FCE1pLUNCLKE%0AUNmhzQM4T6iqyh8VihpaKaEEKPiOvxBICBQQyApJ5NA0CaUFJeTJDiSpK6EQiPNQuIsfEofzc+yz%0Azzmf4/h83/4xu/He3tzd3s3MzsO+X5LlPe/czu9k+z2zv5nZMXcXAKC4pqQ9AABAsgg9ABQcoQeA%0AgiP0AFBwhB4ACo7QA0DBRQ69md1rZvvN7NVRni+ZWZ+ZbSn/+lrUdQIA6tcSw2vcJ+n7ku4fY5nn%0A3P2aGNYFAJigyHv07r5Z0uFxFrOo6wEATE4j5uhd0ofN7GUze9zM/rwB6wQAlMUxdTOeFyW1uvuA%0Ama2R9AtJyxqwXgCAGhB6d3+76vETZvZDM7vA3XurlzMz7+joeO/rUqmkUqmU9PAAIO/GnRq3OD7U%0AzMwWSXrU3T8Q8twcSQfc3c1shaSfuvuikOWcD1gDgAkbN/SR9+jN7EFJV0iaZWY9kjokTZMkd18v%0Aaa2kW81sUNKApJujrhMAUL9Y9ujjwB49AEzKuHv0XBkLAAVH6AGg4Ag9ABQcoQeAgiP0AFBwhB4A%0ACo7QA0DBEXoAKDhCDwAFR+gBoOAIPQAUHKEHgIIj9ABQcIQeAAqO0ANAHrlLv/lNXYsSegDIE3fp%0AkUekyy+Xbr21rm9pxM3BAQBRuUuPPip1dkpDQ1JHh3TttXV9K6EHgCwbLfBT6p+QIfQAkEUxBL6C%0A0ANAlsQY+ApCDwBZkEDgKwg9AKTJXfrlL4PAnzoVa+ArCD0ApKE68IODwe8xB76C0ANAIzUw8BWE%0AHgAaIYXAVxB6AEhSioGvIPQAkIQMBL6C0ANAnDIU+IrIoTezeyV9StIBd//AKMvcJWmNpAFJ/+Du%0AW6KuFwAyJYOBr4hjj/4+Sd+XdH/Yk2Z2taSl7t5mZisl/UjSqhjWCwDpy3DgKyKH3t03m9miMRa5%0ARtKG8rLPm9lMM5vj7vujrhsAUlMb+I4O6brrMhX4ikbM0V8kqafq612SFkgi9ADyJ0eBr2jUwVir%0A+dobtF4AiIe79NhjQeBPnsxF4CsaEfrdklqrvl5Q/rMROjs733tcKpVUKpWSHBcAjC/Hga8w9+g7%0A1+U5+kfDzropH4y9zd2vNrNVkr7n7iMOxpqZxzEWAIhFfgJfO2MyQhynVz4o6QpJs8ysR1KHpGmS%0A5O7r3f1xM7vazLZLOibpc1HXCQCJyU/g6xbLHn0c2KMHkKr8Bj75PXoAyLX8Br5uhB5Ac2qCwFcQ%0AegDNpYkCX0HoATSHJgx8BaEHUGxNHPgKQg+gmAj8ewg9gGJxlx5/PAj8iRPB700a+ApCD6AYagPf%0A0SFdf31TB76C0APINwI/LkIPIJ8IfN0IPYB8IfATRugB5AOBnzRCDyDbCHxkhB5ANhH42BB6ANlC%0A4GNH6AFkA4FPDKEHkC4CnzhCDyAdBL5hCD2AxiLwDUfoATQGgU8NoQeQrOrAv/NO8DuBbyhCDyAZ%0AtYHv6JA+/WkCnwJCDyBeBD5zCD2AeBD4zCL0AKIh8JlH6AFMjrv0xBNB4I8fJ/AZRugBTAyBzx1C%0AD6A+BD63CD2AsRH43Iv8N2Vmq82s28y2mdmdIc+XzKzPzLaUf30t6joBNEDlIOvKldKdd0pf+pL0%0A8svS2rVEPmci7dGb2VRJP5B0laTdkl4ws0fcvatm0efc/Zoo6wLQIOzBF07UqZsVkra7+05JMrOH%0AJF0rqTb0FnE9AJJG4AsraugvktRT9fUuSStrlnFJHzazlxXs9X/R3f8Ycb0A4kLgCy9q6L2OZV6U%0A1OruA2a2RtIvJC0LW7Czs/O9x6VSSaVSKeLwAIyKwDcNc6+n1aN8s9kqSZ3uvrr89VckDbn7t8b4%0AnjckXe7uvTV/7lHGAqBO1YEfGAgC/5nPEPj8GndqPOoe/e8ktZnZIkl7JN0k6ZZhIzCbI+mAu7uZ%0ArVCwcemtfSEACSPwTStS6N190Mxuk/SUpKmS7nH3LjP7fPn59ZLWSrrVzAYlDUi6OeKYAUwEgW96%0AkaZu4sTUDRAzAt8sEp+6AZA1BB41CD1QFAQeoyD0QN4ReIyD0AN5ReBRJ0IP5A2BxwQReiAv3KUn%0AnwwCf+wYgUfdCD2QdQQeERF6IKsIPGJC6IGsIfCIGaEHsoLAIyGEHkgbgUfCCD2QFgKPBiH0QKMR%0AeDQYoQcahcAjJYQeSBqBR8oIPZAUAo+MIPRA3KoD398fBH7tWgKP1BB6IC4EHhlF6IGoCDwyjtAD%0Ak0XgkROEHpgoAo+cIfRAvQg8corQA+Mh8Mg5Qg+MhsCjIAg9UMtdeuqpIPBvvy2tWyfdcAOBR24R%0AeqCiNvDswaMgCD1A4FFwhB7Ni8CjSUT+F21mq82s28y2mdmdoyxzV/n5l83ssqjrBCKpHGT90Iek%0AO+6Qbr9devVV6cYbiTwKKdIevZlNlfQDSVdJ2i3pBTN7xN27qpa5WtJSd28zs5WSfiRpVZT1ApPC%0AHjyaVNSpmxWStrv7Tkkys4ckXSupq2qZayRtkCR3f97MZprZHHffH3HdQH0IPJpc1NBfJKmn6utd%0AklbWscwCSYQeySLwgKToofc6l7N6vq+zs/O9x6VSSaVSaVKDQpMj8MAwUUO/W1Jr1detCvbYx1pm%0AQfnPRqgOPTBhBB4IFTX0v5PUZmaLJO2RdJOkW2qWeUTSbZIeMrNVko4wP49YhV3JunatNHVq2iMD%0AMiFS6N190Mxuk/SUpKmS7nH3LjP7fPn59e7+uJldbWbbJR2T9LnIowYkAg/UydzrnWZPlpl5VsaC%0AjCPwQLXaY6AjcGUs8oPAA5NC6JF97tLGjUHgjx4l8MAEEXpkF4EHYkHokT0EHogVoUd2EHggEYQe%0A6SPwQKIIPdJTHfi+vtNXshJ4IFaEHo1H4IGGIvRoHAIPpILQI3kEHkgVoUdyCDyQCYQe8SPwQKYQ%0AesSHwAOZROgRHYEHMo3QY/LcpU2bgrATeCCzCD0mrhL4zk7pyJHgStYbbiDwQEYRetSPwAO5ROgx%0APgIP5Bqhx+gIPFAImQr9hg3SpZdK7e3SeeelPZomRuCBQsnUzcE/+1lXV5f02mvSzJlB9Cvhrzye%0AO1eycW+Fi0kh8EAejVvETIW+MpahIamnR+rqkrq7g98rv06eHB7+yuPFi6WWTL0/yRECD+RZPkM/%0AloMHT8e/eiOwb590ySUjNwDLl0vnnNOAHyCPCDxQBMUL/WgGBqStW0duALZvl+bMCZ8GmjUrxh8g%0ATwg8UCTNE/rRDA5KO3eeDn/1RqCl5XT0qzcCF18sTZkS+1DSR+CBIiL0o3GX9u8fPv9f2QgcPiwt%0AWzZyA9DWJp15ZsOGGB8CDxQZoZ+Mo0eDM39qNwA7d0qtreHTQDNmpD3qEO7S008Hge/tDT6LhsAD%0ARUPo4/Tuu9KOHSPfBXR3B+f9h50NNH9+CqeD1gZ+3TrpxhsJPFBMyYXezC6Q9LCkhZJ2SrrR3Y+E%0ALLdT0lFJpySddPcVo7xe5kM/mqEhadeu4fP/lcfHj4dvAC65JIHTQQk80IwSDf23JR1092+b2Z2S%0Aznf3L4cs94aky929d5zXy23ox9LbOzz8ld/37JGWLBm5EWhvl6ZPn+BKCDzQzBINfbekK9x9v5nN%0AlfSsu7eHLPeGpL9090PjvF4hQz+a48eD00Fr3wVs2ybNnh3+LmD27JppIAIPIOHQH3b388uPTVJv%0A5eua5V6X1Kdg6ma9u989yus1VehHc+pUcNA3bBrIrBz9dtfqlqd15eZOve/dXrV8Y52m3EzggSYV%0ALfRmtknS3JCn/k3Shuqwm1mvu18Q8hrz3H2vmc2WtEnSF9x9c8hy3tHR8d7XpVJJpVJpvPE3DXfp%0AwH7X/gee1p/9sFM63Kv7FqzT+sM36sChqWprG3lNwLJl0llnpT1yAAlLfOqm5O77zGyepGfCpm5q%0AvqdDUr+7fyfkOfboRzPOFE1///DTQSvvAl5/XVqwIHwa6PwR770A5FTiB2MPufu3zOzLkmbWHow1%0As3MkTXX3t81suqSNkr7h7htDXo/Q14o4B3/yZHA6aO00UHd38Pk/YRuABQv4dFAgZxI/vfKnki5W%0A1emVZjZf0t3u/ikzWyLpv8vf0iLpAXf/5iivR+grEj7I6i7t3h1+HKC/P/gguNoNwNKl0rRpsawe%0AQLy4YCpXMnAWzeHD4VcF9/RIixaNPA7Q3i6de27DhgdgJEKfC+7Sr34VBP7QoUyeJvnOO8EngdYe%0AB9i6VbrggvBpoDlzmAYCGoDQZ1p14A8eDAJ/002ZCvx4hoakN98MnwY6dWr0m8Tk6EcEso7QZ1IB%0AAl+Pt94aeYew7u7gU0Pb2kZuBJYvl84+O+1RA7lD6DOlSQI/nmPHguMAte8CduyQ5s0b+cmg7e3S%0AhRemPWogswh9JhD4ugwOBuf+194gprs7uA9A2AagtbWgN4kB6kfoU0XgY+Eu7d0bvgHo6zt9Omj1%0ARmDpUumMM9IeOdAQhD4VtYH/+telm28m8Ano6wu/Wfyf/iQtXBj+LuC889IeNRArQt9Q7MFnxokT%0Aw08HrWwEXntNmjkz/C5hc+dyOihyidA3BIHPjaGh4OKvsJvFnzx5OvzVG4DFixO4SQwQH0KfKAJf%0AKAcPhl8PsG9fcEew2ncBy5cHnxkEpIzQJ4LAN5WBgeAK4NoNwPbtwdW/YdNAs2alPWo0EUIfKwKP%0AKoODwU1iai8I6+oKpnpqPxfo0kuliy/mdFDEjtDHgsBjAtyD6Z6waaDDh4MbwtRuANragmsFgEkg%0A9JEQeMTs6NHwTwfduTO4+CtsGmjGjLRHjYwj9JNC4NFg774bfARE7TRQd3dw3n/Yh8PNn8/poJBE%0A6CfIXfr1r4PAv/UWgUfqhoakXbvCp4GOHw/fAFxyCaeDNhlCX5fqwB84EASeK1mRcb294RuA3bul%0AJUtGbgDa26Xp09MeNRJA6MdE4FFAx49L27aN3ABs2xac9hl2HGD2bKaBcozQhyLwaEKnTgU3iQm7%0AKtgsfBpo4UL+W+QAoR+GwAMjuAf/HcKmgQ4eDE79rN0ALFsmnXVW2iNHGaGXROCBServDz8d9PXX%0ApYsuCp8GOv/8tEfddJo89AQeSMTJk6dvElO9AejuDm4HGXZV8IIFHAdISJOGnsADqXCX9uwJ/1iI%0A/v7TN4mp3gAsXSpNm5b2yHOtyUJP4IHMOnIk/DhAT4+0aFH46aDnnpv2qHOhSUJP4IHceued8JvE%0AbN0azPeHHQeYM4dpoCoFDz2BBwpraCi4JWTY6aCnToWfDrp4cVP+9y9o6Ak80NQOHgw/DrB/fzDn%0AH3aTmLPPTnvUiSlY6Ak8gDEcOzb8JjGVjcCOHcE9gcOmgS68MO1RR5Zc6M3sBkmdktol/ZW7vzjK%0AcqslfU/SVEk/dvdvjbLc6KEn8AAiGBwMTgcNOxh85pnh00Ctrbm5SUyioW+XNCRpvaQ7wkJvZlMl%0AvSbpKkm7Jb0g6RZ37wpZdmToCTyABLlLe/eGbwCOHAk/HbStTTrjjLRHPsy4oZ/0h5m6e7ck2diH%0AvldI2u7uO8vLPiTpWkkjQl/z4gQeQOLMgs/1nz9fuvLK4c/19Z2+J0BXl/STnwSP33wzuCVk7UVh%0A7e3ZvUlM0p9afZGknqqvd0laOerSBB5ARsyYIa1cGfyqduJEcDpoZQOwcaN0113BR0XMmBE+DTRv%0AXrqng44ZejPbJGluyFNfdfdH63j9ic0LfexjBB5App15pvT+9we/qg0NBRd/VaZ/XnlFevjh4PGJ%0AE+EbgCVLGnOTmDFX4e6fjPj6uyW1Vn3dqmCvPlTn7NnSxz8ubdum0ubNKpVKEVcPAI0xZUrwsc4L%0AF0qrVw9/7tCh4ccAnnsueLxvX3BHsNqNwPLl8d4kJvLplWb2jKQvuvvvQ55rUXAw9hOS9kj6rSZy%0AMBYACmxg4PTpoNUHhLdvD67+DXsXMHv2iJdJ9Kyb6yXdJWmWpD5JW9x9jZnNl3S3u3+qvNwanT69%0A8h53/+Yor0foAUDBlb9vvBF+VXBLy/ANwO23F+2CKQBoYu7B1b+V6G/bJn33u4QeAIpu3NDn47ov%0AAMCkEXoAKDhCDwAFR+gBoOAIPQAUHKEHgIIj9ABQcIQeAAqO0ANAwRF6ACg4Qg8ABUfoAaDgCD0A%0AFByhB4CCI/QAUHCEHgAKjtADQMERegAoOEIPAAVH6AGg4Ag9ABQcoQeAgiP0AFBwhB4ACo7QA0DB%0AEXoAKDhCDwAFN+nQm9kNZvYHMztlZh8cY7mdZvaKmW0xs99Odn0AgMmJskf/qqTrJf3POMu5pJK7%0AX+buKyKsL9eeffbZtIeQmCL/bBI/X94V/eczs9J4y0w69O7e7e5b6x3LZNdTFEX+x1bkn03i58u7%0Aov98kkrjLdCIOXqX9LSZ/c7M/rEB6wMAVGkZ60kz2yRpbshTX3X3R+tcx0fcfa+ZzZa0ycy63X3z%0ARAcKAJgcc/doL2D2jKQ73P3FOpbtkNTv7t8JeS7aQACgSbn7mNPjY+7RT0DoSszsHElT3f1tM5su%0A6a8lfSNs2fEGCgCYnCinV15vZj2SVkl6zMyeKP/5fDN7rLzYXEmbzewlSc9L+qW7b4w6aABA/SJP%0A3QAAsi31K2PN7F4z229mr6Y9lriZWauZPVO+sOz/zOyf0x5TnMzsLDN73sxeKv98nWmPKW5mNrV8%0AsV+9Jx/kSpEvaDSzmWb2MzPrMrM/mtmqtMcUFzNbXv47q/zqG6svqe/Rm9lHJfVLut/dP5DqYGJm%0AZnMlzXX3l8zsfZJ+L+k6d+9KeWixMbNz3H3AzFok/a+kf3H359MeV1zM7HZJl0s6192vSXs8cTOz%0ANyRd7u69aY8lbma2QdJz7n5v+d/ndHfvS3tccTOzKZJ2S1rh7j1hy6S+R18+1fJw2uNIgrvvc/eX%0Ayo/7JXVJmp/uqOLl7gPlh2dImiZpKMXhxMrMFki6WtKPVeyL/gr3s5nZDEkfdfd7JcndB4sY+bKr%0AJO0YLfJSBkLfLMxskaTLFByULgwzm1I+2L5f0kZ3fyHtMcXou5L+VQXaeIUo6gWNiyW9ZWb3mdmL%0AZnZ3+SzAIrpZ0n+MtQChb4DytM3PFExr9Kc9nji5+5C7/4WkBZJWmtn70x5THMzsbyQdcPctKuAe%0Ab5WPuPtlktZI+qfyVGoRtEj6oKQfuvsHJR2T9OV0hxQ/MztD0t9K+s+xliP0CTOzaZL+S9K/u/sv%0A0h5PUspvi5+RtDrtscTkw5KuKc9hPyjpSjO7P+Uxxc7d95Z/f0vSzyUV5YMHd0naVfUO82cKwl80%0AayT9vvz3NypCnyAzM0n3SPqju38v7fHEzcxmmdnM8uOzJX1SwXGI3HP3r7p7q7svVvDW+Nfu/vdp%0AjytOZnaOmZ1bfly5oLEQZ7+5+z5JPWa2rPxHV0n6Q4pDSsotCnZExhTXlbGTZmYPSrpC0oXlC7DW%0Auft9KQ8rLh+R9HeSXjGzLeU/+4q7P5nimOI0T9IGM5uqYKfhYXd/POUxJaWIF5zMkfTzYH9ELZIe%0AKNgFjV+Q9EB5emOHpM+lPJ5YlTfOV0ka99hK6qdXAgCSxdQNABQcoQeAgiP0AFBwhB4ACo7QA0DB%0AEXoAKDhCDwAFR+gBoOD+H2NDE/jEO5XjAAAAAElFTkSuQmCC">
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="MATLAB">MATLAB<a class="anchor-link" href="../../posts/misc-1-experimenting-with-plots/#MATLAB">¶</a>
+</h3>
+<pre><code>intercept = -.2122
+b1 = -1.1776 
+b2 = -.1192
+b3 = .4943
+x = 1:7
+% moderator = 0
+y1 = intercept + b2*x
+% moderator = 1
+y2 = intercept + b1 + b2*x + b3*x
+
+figure
+plot(x,y1,x,y2)</code></pre>
+<p><img src="http://i.imgur.com/Gaqy1KW.png" align="left"></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="R">R<a class="anchor-link" href="../../posts/misc-1-experimenting-with-plots/#R">¶</a>
+</h3>
+<pre><code>intercept = -.2122
+b1 = -1.1776 
+b2 = -.1192
+b3 = .4943
+
+y &lt;- function(x1, x2){
+  return(intercept + b1*x1 + b2*x2 + b3*x1*x2)
+}
+
+x = c(1:7)
+y1 = sapply(x,y,x1=0)
+y2 = sapply(x,y,x1=1)
+xrange &lt;- range(1:7) 
+yrange &lt;- range(-1.5:1.5) 
+plot(xrange,yrange, type='n')
+lines(x,y1)
+lines(x,y2)</code></pre>
+<p><img src="http://i.imgur.com/SyK6tqS.png" align="left"></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="ggplot2">ggplot2<a class="anchor-link" href="../../posts/misc-1-experimenting-with-plots/#ggplot2">¶</a>
+</h3>
+<pre><code>d1 &lt;- data.frame(x,y=y1,g='0')
+d2 &lt;- data.frame(x,y=y2,g='1')
+data &lt;- rbind(d1, d2)
+
+cbbPalette &lt;- c("blue", "red")
+ggplot(data=data, aes(x=x, y=y, group=g, color = g)) +
+  geom_line() +
+  scale_color_manual(values=cbbPalette) +
+  scale_x_continuous(limits = c(1,7)) + 
+  scale_y_continuous(limits = c(-1.5,1.5))</code></pre>
+<p><img src="http://i.imgur.com/2MEHspE.png" align="left"></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Excel">Excel<a class="anchor-link" href="../../posts/misc-1-experimenting-with-plots/#Excel">¶</a>
+</h3>
+<p><img src="http://i.imgur.com/2obmVS4.png" align="left"></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="gnuplot">gnuplot<a class="anchor-link" href="../../posts/misc-1-experimenting-with-plots/#gnuplot">¶</a>
+</h2>
+<pre><code>set title ""
+intercept = -.2122
+b1 = -1.1776 
+b2 = -.1192
+b3 = .4943
+y1(x) = intercept + b2*x
+y2(x) = intercept + b1 + b2*x + b3*x
+
+plot [1:7] y1(x) lt rgb "blue", y2(x) lt rgb "red"</code></pre>
+<p><img src="http://i.imgur.com/7ekpIGZ.png" align="left"></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="plot.ly">plot.ly<a class="anchor-link" href="../../posts/misc-1-experimenting-with-plots/#plot.ly">¶</a>
+</h3>
+<p>plot.ly is web-based; I took screencaps of the interface:
+<img src="http://i.imgur.com/URQvJPu.png" align="left"></p>
+<p>The plot looks like this:
+<img src="http://i.imgur.com/AO9e4IV.png" align="left"></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="chart.js">chart.js<a class="anchor-link" href="../../posts/misc-1-experimenting-with-plots/#chart.js">¶</a>
+</h3>
+<pre><code>&lt;html&gt;
+    &lt;head&gt;
+        &lt;script src="Chart.js"&gt;&lt;/script&gt;
+    &lt;/head&gt;
+&lt;canvas id="myChart" width="640" height="480"&gt;&lt;/canvas&gt;
+&lt;body&gt;
+    &lt;script&gt;
+        var ctx = document.getElementById("myChart");
+
+        var data = {
+            labels: Array.apply(null, Array(8)).map(function (_, i) {return i;}),
+            datasets: [
+                {
+                    label: "y1",
+                    fill: false,
+                    lineTension: 0.1,
+                    backgroundColor: "blue",
+                    borderColor: "blue",
+                    borderCapStyle: 'butt',
+                    borderJoinStyle: 'miter',
+                    pointBorderColor: "blue",
+                    pointBackgroundColor: "#fff",
+                    pointBorderWidth: 1,
+                    pointHoverRadius: 5,
+                    pointHoverBackgroundColor: "blue",
+                    pointHoverBorderColor: "blue",
+                    pointHoverBorderWidth: 2,
+                    pointRadius: 1,
+                    pointHitRadius: 10,
+                    data: [-0.3314,-0.4506,-0.5698,-0.689,-0.8082,-0.9274,-1.0466],
+                },
+                        {
+                    label: "y2",
+                    fill: false,
+                    lineTension: 0.1,
+                    backgroundColor: "red",
+                    borderColor: "red",
+                    borderCapStyle: 'butt',
+                    borderJoinStyle: 'miter',
+                    pointBorderColor: "red",
+                    pointBackgroundColor: "#fff",
+                    pointBorderWidth: 1,
+                    pointHoverRadius: 5,
+                    pointHoverBackgroundColor: "red",
+                    pointHoverBorderColor: "red",
+                    pointHoverBorderWidth: 2,
+                    pointRadius: 1,
+                    pointHitRadius: 10,
+                    data: [-1.0147,-0.6396,-0.2645,0.1106,0.4857,0.8608,1.2359],
+                }
+            ]
+        };
+
+        var myChart = new Chart(ctx, {
+            type: 'line',
+            data: data,
+            options: {
+                responsive:false,
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero:false
+                        }
+                    }]
+                }
+            }
+        });
+&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [4]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">from</span> <span class="nn">IPython.display</span> <span class="kn">import</span> <span class="n">IFrame</span>
+<span class="n">IFrame</span><span class="p">(</span><span class="s1">'http://pew3.com/chartjsplot.html'</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">700</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">500</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt output_prompt">Out[4]:</div>
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+
+        <iframe width="700" height="500" src="http://pew3.com/chartjsplot.html" frameborder="0" allowfullscreen></iframe>
+        
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Bokeh">Bokeh<a class="anchor-link" href="../../posts/misc-1-experimenting-with-plots/#Bokeh">¶</a>
+</h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [5]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">from</span> <span class="nn">bokeh.plotting</span> <span class="kn">import</span> <span class="n">figure</span><span class="p">,</span> <span class="n">output_file</span><span class="p">,</span> <span class="n">show</span>
+
+<span class="n">intercept</span> <span class="o">=</span> <span class="o">-.</span><span class="mi">2122</span>
+<span class="n">b1</span> <span class="o">=</span> <span class="o">-</span><span class="mf">1.1776</span> 
+<span class="n">b2</span> <span class="o">=</span> <span class="o">-.</span><span class="mi">1192</span>
+<span class="n">b3</span> <span class="o">=</span> <span class="o">.</span><span class="mi">4943</span>
+
+<span class="c1">#x1 is a categorical predictor, x2 is a continuous predictor, x3 is their interaction</span>
+<span class="k">def</span> <span class="nf">y</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">intercept</span> <span class="o">+</span> <span class="n">b1</span><span class="o">*</span><span class="n">x1</span> <span class="o">+</span> <span class="n">b2</span><span class="o">*</span><span class="n">x2</span> <span class="o">+</span> <span class="n">b3</span><span class="o">*</span><span class="n">x1</span><span class="o">*</span><span class="n">x2</span>
+
+<span class="n">x</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">8</span><span class="p">)</span>
+<span class="n">y1</span> <span class="o">=</span> <span class="p">[</span><span class="n">y</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">z</span><span class="p">)</span> <span class="k">for</span> <span class="n">z</span> <span class="ow">in</span> <span class="n">x</span><span class="p">]</span>
+<span class="n">y2</span> <span class="o">=</span> <span class="p">[</span><span class="n">y</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="n">z</span><span class="p">)</span> <span class="k">for</span> <span class="n">z</span> <span class="ow">in</span> <span class="n">x</span><span class="p">]</span>
+
+<span class="c1"># output to static HTML file</span>
+<span class="n">output_file</span><span class="p">(</span><span class="s2">"bokehplot.html"</span><span class="p">)</span>
+
+<span class="c1"># create a new plot</span>
+<span class="n">p</span> <span class="o">=</span> <span class="n">figure</span><span class="p">(</span>
+   <span class="n">tools</span><span class="o">=</span><span class="s2">"pan,box_zoom,reset,save"</span><span class="p">,</span>
+   <span class="n">y_range</span><span class="o">=</span><span class="p">[</span><span class="o">-</span><span class="mf">1.5</span><span class="p">,</span> <span class="mf">1.5</span><span class="p">],</span>
+<span class="p">)</span>
+
+<span class="c1"># add some renderers</span>
+<span class="n">p</span><span class="o">.</span><span class="n">line</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y1</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="s2">"mod=0"</span><span class="p">,</span> <span class="n">line_color</span><span class="o">=</span><span class="s2">"blue"</span><span class="p">)</span>
+<span class="n">p</span><span class="o">.</span><span class="n">line</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y2</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="s2">"mod=1"</span><span class="p">,</span> <span class="n">line_color</span><span class="o">=</span><span class="s2">"red"</span><span class="p">)</span>
+
+<span class="c1"># show the results</span>
+<span class="n">show</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [10]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">from</span> <span class="nn">IPython.display</span> <span class="kn">import</span> <span class="n">IFrame</span>
+<span class="n">IFrame</span><span class="p">(</span><span class="s1">'http://pew3.com/bokehplot.html'</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">700</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">675</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt output_prompt">Out[10]:</div>
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+
+        <iframe width="700" height="675" src="http://pew3.com/bokehplot.html" frameborder="0" allowfullscreen></iframe>
+        
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Summary">Summary<a class="anchor-link" href="../../posts/misc-1-experimenting-with-plots/#Summary">¶</a>
+</h2>
+<p>I think, from here on out, I'll be using matplotlib for simple plots, Bokeh if I need to generate something interactive, and chart.js if I ever need to implement a dynamic chart.</p>
+<p>With regard to the alternatives:</p>
+<ol>
+<li>MATLAB is proprietary.</li>
+<li>The built-in packages in R generate ugly plots.</li>
+<li>ggplot is a little unwieldy, and has defaults that I don't like (e.g., the grey background)</li>
+<li>Excel is good to visualize something really quick, but most people who have worked with linear models for a while (including myself) can do this in our heads or with a pen and paper.</li>
+<li>gnuplot looks really interesting, and may be something I spend more time on in the future, but it's foreign to me at the moment.</li>
+<li>plot.ly and Tableau (which I wanted to test, but their sign-up system never sent me the confirmation email) are both web-based, and for me, needlessly obfuscate what happens in the backend. I'd be comfortable writing my own code to generate the plots I want.</li>
+</ol>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="BONUS:-MS-Paint">BONUS: MS Paint<a class="anchor-link" href="../../posts/misc-1-experimenting-with-plots/#BONUS:-MS-Paint">¶</a>
+</h3>
+<p><img src="http://i.imgur.com/9fVuaay.png" align="left"></p>
+
+</div>
+</div>
+</div>
+    </div>
+  </div>
+
+    </div>
+    </article>
+</div>
+
+
+
+
+
+            <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"> </script><script type="text/x-mathjax-config">
+            MathJax.Hub.Config({tex2jax: {inlineMath: [['$latex ','$'], ['\\(','\\)']]}});
+            </script>
+</div>
+        <!--End of body content-->
+
+        <footer id="footer">
+            Contents © 2016         <a href="mailto:bryan.sim@nyu.edu">Bryan Sim</a> - Powered by         <a href="https://getnikola.com" rel="nofollow">Nikola</a>         
+            
+        </footer>
+</div>
+</div>
+
+
+            <script src="../../assets/js/all-nocdn.js"></script><script>$('a.image-reference:not(.islink) img:not(.islink)').parent().colorbox({rel:"gal",maxWidth:"100%",maxHeight:"100%",scalePhotos:true});</script><!-- fancy dates --><script>
+    moment.locale("en");
+    fancydates(0, "YYYY-MM-DD HH:mm");
+    </script><!-- end fancy dates -->
+</body>
+</html>

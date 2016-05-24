@@ -1,0 +1,448 @@
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet type="text/xsl" href="../assets/xml/rss.xsl" media="all"?><rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/"><channel><title>Bryan Sim (misc)</title><link>https://bryansim.github.io/</link><description></description><atom:link rel="self" type="application/rss+xml" href="https://bryansim.github.io/categories/misc.xml"></atom:link><language>en</language><lastBuildDate>Tue, 24 May 2016 19:32:11 GMT</lastBuildDate><generator>https://getnikola.com/</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>Misc #1: Experimenting with plots</title><link>https://bryansim.github.io/posts/misc-1-experimenting-with-plots/</link><dc:creator>Bryan Sim</dc:creator><description>&lt;div tabindex="-1" id="notebook" class="border-box-sizing"&gt;
+    &lt;div class="container" id="notebook-container"&gt;
+
+&lt;div class="cell border-box-sizing code_cell rendered"&gt;
+&lt;div class="input"&gt;
+&lt;div class="prompt input_prompt"&gt;In [1]:&lt;/div&gt;
+&lt;div class="inner_cell"&gt;
+    &lt;div class="input_area"&gt;
+&lt;div class=" highlight hl-ipython2"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="o"&gt;%&lt;/span&gt;&lt;span class="k"&gt;matplotlib&lt;/span&gt; inline
+
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;matplotlib&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;pyplot&lt;/span&gt; &lt;span class="k"&gt;as&lt;/span&gt; &lt;span class="n"&gt;plt&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;/div&gt;
+&lt;div class="cell border-box-sizing text_cell rendered"&gt;
+&lt;div class="prompt input_prompt"&gt;
+&lt;/div&gt;
+&lt;div class="inner_cell"&gt;
+&lt;div class="text_cell_render border-box-sizing rendered_html"&gt;
+&lt;h2 id="Misc-1:-Experimenting-with-plots"&gt;Misc 1: Experimenting with plots&lt;a class="anchor-link" href="https://bryansim.github.io/posts/misc-1-experimenting-with-plots/#Misc-1:-Experimenting-with-plots"&gt;¶&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;I'm in the process of constructing figures for my dissertation, and I thought I'd share the different options I'm considering. I only need to plot simple line graphs, so my main considerations are aesthetics and ease of use (as I'll likely be making changes to them). This is the list I'm going to test:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;matplotlib&lt;/li&gt;
+&lt;li&gt;MATLAB&lt;/li&gt;
+&lt;li&gt;R + ggplot&lt;/li&gt;
+&lt;li&gt;Excel&lt;/li&gt;
+&lt;li&gt;gnuplot&lt;/li&gt;
+&lt;li&gt;plot.ly&lt;/li&gt;
+&lt;li&gt;Chart.js&lt;/li&gt;
+&lt;li&gt;Tableau&lt;/li&gt;
+&lt;li&gt;Bokeh&lt;/li&gt;
+&lt;li&gt;MS paint (just kidding)&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;Without further ado, let's go!&lt;/p&gt;
+
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="cell border-box-sizing text_cell rendered"&gt;
+&lt;div class="prompt input_prompt"&gt;
+&lt;/div&gt;
+&lt;div class="inner_cell"&gt;
+&lt;div class="text_cell_render border-box-sizing rendered_html"&gt;
+&lt;h3 id="matplotlib"&gt;matplotlib&lt;a class="anchor-link" href="https://bryansim.github.io/posts/misc-1-experimenting-with-plots/#matplotlib"&gt;¶&lt;/a&gt;&lt;/h3&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="cell border-box-sizing code_cell rendered"&gt;
+&lt;div class="input"&gt;
+&lt;div class="prompt input_prompt"&gt;In [2]:&lt;/div&gt;
+&lt;div class="inner_cell"&gt;
+    &lt;div class="input_area"&gt;
+&lt;div class=" highlight hl-ipython2"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;intercept&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="o"&gt;-.&lt;/span&gt;&lt;span class="mi"&gt;2122&lt;/span&gt;
+&lt;span class="n"&gt;b1&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mf"&gt;1.1776&lt;/span&gt; 
+&lt;span class="n"&gt;b2&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="o"&gt;-.&lt;/span&gt;&lt;span class="mi"&gt;1192&lt;/span&gt;
+&lt;span class="n"&gt;b3&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="mi"&gt;4943&lt;/span&gt;
+
+&lt;span class="c1"&gt;#x1 is a categorical predictor, x2 is a continuous predictor, x3 is their interaction&lt;/span&gt;
+&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;y&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;x1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;x2&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;intercept&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="n"&gt;b1&lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;x1&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="n"&gt;b2&lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;x2&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="n"&gt;b3&lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;x1&lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;x2&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;/div&gt;
+&lt;div class="cell border-box-sizing code_cell rendered"&gt;
+&lt;div class="input"&gt;
+&lt;div class="prompt input_prompt"&gt;In [3]:&lt;/div&gt;
+&lt;div class="inner_cell"&gt;
+    &lt;div class="input_area"&gt;
+&lt;div class=" highlight hl-ipython2"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;x&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nb"&gt;range&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;8&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;plt&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;plot&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;y&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;z&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;z&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="p"&gt;],&lt;/span&gt; &lt;span class="s2"&gt;"blue"&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;y&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;z&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;z&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="p"&gt;],&lt;/span&gt; &lt;span class="s2"&gt;"red"&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="c1"&gt;#pl.fill_between(x, y-error, y+error)&lt;/span&gt;
+
+&lt;span class="n"&gt;plt&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;gca&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;spines&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;'right'&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;set_visible&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;False&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;plt&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;gca&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;spines&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;'top'&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;set_visible&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;False&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;plt&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;gca&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;yaxis&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;set_ticks_position&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;'left'&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;plt&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;gca&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;xaxis&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;set_ticks_position&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;'bottom'&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;div class="output_wrapper"&gt;
+&lt;div class="output"&gt;
+
+
+&lt;div class="output_area"&gt;&lt;div class="prompt"&gt;&lt;/div&gt;
+
+
+&lt;div class="output_png output_subarea "&gt;
+&lt;img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAXoAAAEACAYAAAC9Gb03AAAABHNCSVQICAgIfAhkiAAAAAlwSFlz%0AAAALEgAACxIB0t1+/AAAFkNJREFUeJzt3X2MHHd9x/HP1z7nySR2Ert+iC9+iM++FCE1pLUNCLKE%0AUNmhzQM4T6iqyh8VihpaKaEEKPiOvxBICBQQyApJ5NA0CaUFJeTJDiSpK6EQiPNQuIsfEofzc+yz%0Azzmf4/h83/4xu/He3tzd3s3MzsO+X5LlPe/czu9k+z2zv5nZMXcXAKC4pqQ9AABAsgg9ABQcoQeA%0AgiP0AFBwhB4ACo7QA0DBRQ69md1rZvvN7NVRni+ZWZ+ZbSn/+lrUdQIA6tcSw2vcJ+n7ku4fY5nn%0A3P2aGNYFAJigyHv07r5Z0uFxFrOo6wEATE4j5uhd0ofN7GUze9zM/rwB6wQAlMUxdTOeFyW1uvuA%0Ama2R9AtJyxqwXgCAGhB6d3+76vETZvZDM7vA3XurlzMz7+joeO/rUqmkUqmU9PAAIO/GnRq3OD7U%0AzMwWSXrU3T8Q8twcSQfc3c1shaSfuvuikOWcD1gDgAkbN/SR9+jN7EFJV0iaZWY9kjokTZMkd18v%0Aaa2kW81sUNKApJujrhMAUL9Y9ujjwB49AEzKuHv0XBkLAAVH6AGg4Ag9ABQcoQeAgiP0AFBwhB4A%0ACo7QA0DBEXoAKDhCDwAFR+gBoOAIPQAUHKEHgIIj9ABQcIQeAAqO0ANAHrlLv/lNXYsSegDIE3fp%0AkUekyy+Xbr21rm9pxM3BAQBRuUuPPip1dkpDQ1JHh3TttXV9K6EHgCwbLfBT6p+QIfQAkEUxBL6C%0A0ANAlsQY+ApCDwBZkEDgKwg9AKTJXfrlL4PAnzoVa+ArCD0ApKE68IODwe8xB76C0ANAIzUw8BWE%0AHgAaIYXAVxB6AEhSioGvIPQAkIQMBL6C0ANAnDIU+IrIoTezeyV9StIBd//AKMvcJWmNpAFJ/+Du%0AW6KuFwAyJYOBr4hjj/4+Sd+XdH/Yk2Z2taSl7t5mZisl/UjSqhjWCwDpy3DgKyKH3t03m9miMRa5%0ARtKG8rLPm9lMM5vj7vujrhsAUlMb+I4O6brrMhX4ikbM0V8kqafq612SFkgi9ADyJ0eBr2jUwVir%0A+dobtF4AiIe79NhjQeBPnsxF4CsaEfrdklqrvl5Q/rMROjs733tcKpVUKpWSHBcAjC/Hga8w9+g7%0A1+U5+kfDzropH4y9zd2vNrNVkr7n7iMOxpqZxzEWAIhFfgJfO2MyQhynVz4o6QpJs8ysR1KHpGmS%0A5O7r3f1xM7vazLZLOibpc1HXCQCJyU/g6xbLHn0c2KMHkKr8Bj75PXoAyLX8Br5uhB5Ac2qCwFcQ%0AegDNpYkCX0HoATSHJgx8BaEHUGxNHPgKQg+gmAj8ewg9gGJxlx5/PAj8iRPB700a+ApCD6AYagPf%0A0SFdf31TB76C0APINwI/LkIPIJ8IfN0IPYB8IfATRugB5AOBnzRCDyDbCHxkhB5ANhH42BB6ANlC%0A4GNH6AFkA4FPDKEHkC4CnzhCDyAdBL5hCD2AxiLwDUfoATQGgU8NoQeQrOrAv/NO8DuBbyhCDyAZ%0AtYHv6JA+/WkCnwJCDyBeBD5zCD2AeBD4zCL0AKIh8JlH6AFMjrv0xBNB4I8fJ/AZRugBTAyBzx1C%0AD6A+BD63CD2AsRH43Iv8N2Vmq82s28y2mdmdIc+XzKzPzLaUf30t6joBNEDlIOvKldKdd0pf+pL0%0A8svS2rVEPmci7dGb2VRJP5B0laTdkl4ws0fcvatm0efc/Zoo6wLQIOzBF07UqZsVkra7+05JMrOH%0AJF0rqTb0FnE9AJJG4AsraugvktRT9fUuSStrlnFJHzazlxXs9X/R3f8Ycb0A4kLgCy9q6L2OZV6U%0A1OruA2a2RtIvJC0LW7Czs/O9x6VSSaVSKeLwAIyKwDcNc6+n1aN8s9kqSZ3uvrr89VckDbn7t8b4%0AnjckXe7uvTV/7lHGAqBO1YEfGAgC/5nPEPj8GndqPOoe/e8ktZnZIkl7JN0k6ZZhIzCbI+mAu7uZ%0ArVCwcemtfSEACSPwTStS6N190Mxuk/SUpKmS7nH3LjP7fPn59ZLWSrrVzAYlDUi6OeKYAUwEgW96%0AkaZu4sTUDRAzAt8sEp+6AZA1BB41CD1QFAQeoyD0QN4ReIyD0AN5ReBRJ0IP5A2BxwQReiAv3KUn%0AnwwCf+wYgUfdCD2QdQQeERF6IKsIPGJC6IGsIfCIGaEHsoLAIyGEHkgbgUfCCD2QFgKPBiH0QKMR%0AeDQYoQcahcAjJYQeSBqBR8oIPZAUAo+MIPRA3KoD398fBH7tWgKP1BB6IC4EHhlF6IGoCDwyjtAD%0Ak0XgkROEHpgoAo+cIfRAvQg8corQA+Mh8Mg5Qg+MhsCjIAg9UMtdeuqpIPBvvy2tWyfdcAOBR24R%0AeqCiNvDswaMgCD1A4FFwhB7Ni8CjSUT+F21mq82s28y2mdmdoyxzV/n5l83ssqjrBCKpHGT90Iek%0AO+6Qbr9devVV6cYbiTwKKdIevZlNlfQDSVdJ2i3pBTN7xN27qpa5WtJSd28zs5WSfiRpVZT1ApPC%0AHjyaVNSpmxWStrv7Tkkys4ckXSupq2qZayRtkCR3f97MZprZHHffH3HdQH0IPJpc1NBfJKmn6utd%0AklbWscwCSYQeySLwgKToofc6l7N6vq+zs/O9x6VSSaVSaVKDQpMj8MAwUUO/W1Jr1detCvbYx1pm%0AQfnPRqgOPTBhBB4IFTX0v5PUZmaLJO2RdJOkW2qWeUTSbZIeMrNVko4wP49YhV3JunatNHVq2iMD%0AMiFS6N190Mxuk/SUpKmS7nH3LjP7fPn59e7+uJldbWbbJR2T9LnIowYkAg/UydzrnWZPlpl5VsaC%0AjCPwQLXaY6AjcGUs8oPAA5NC6JF97tLGjUHgjx4l8MAEEXpkF4EHYkHokT0EHogVoUd2EHggEYQe%0A6SPwQKIIPdJTHfi+vtNXshJ4IFaEHo1H4IGGIvRoHAIPpILQI3kEHkgVoUdyCDyQCYQe8SPwQKYQ%0AesSHwAOZROgRHYEHMo3QY/LcpU2bgrATeCCzCD0mrhL4zk7pyJHgStYbbiDwQEYRetSPwAO5ROgx%0APgIP5Bqhx+gIPFAImQr9hg3SpZdK7e3SeeelPZomRuCBQsnUzcE/+1lXV5f02mvSzJlB9Cvhrzye%0AO1eycW+Fi0kh8EAejVvETIW+MpahIamnR+rqkrq7g98rv06eHB7+yuPFi6WWTL0/yRECD+RZPkM/%0AloMHT8e/eiOwb590ySUjNwDLl0vnnNOAHyCPCDxQBMUL/WgGBqStW0duALZvl+bMCZ8GmjUrxh8g%0ATwg8UCTNE/rRDA5KO3eeDn/1RqCl5XT0qzcCF18sTZkS+1DSR+CBIiL0o3GX9u8fPv9f2QgcPiwt%0AWzZyA9DWJp15ZsOGGB8CDxQZoZ+Mo0eDM39qNwA7d0qtreHTQDNmpD3qEO7S008Hge/tDT6LhsAD%0ARUPo4/Tuu9KOHSPfBXR3B+f9h50NNH9+CqeD1gZ+3TrpxhsJPFBMyYXezC6Q9LCkhZJ2SrrR3Y+E%0ALLdT0lFJpySddPcVo7xe5kM/mqEhadeu4fP/lcfHj4dvAC65JIHTQQk80IwSDf23JR1092+b2Z2S%0Aznf3L4cs94aky929d5zXy23ox9LbOzz8ld/37JGWLBm5EWhvl6ZPn+BKCDzQzBINfbekK9x9v5nN%0AlfSsu7eHLPeGpL9090PjvF4hQz+a48eD00Fr3wVs2ybNnh3+LmD27JppIAIPIOHQH3b388uPTVJv%0A5eua5V6X1Kdg6ma9u989yus1VehHc+pUcNA3bBrIrBz9dtfqlqd15eZOve/dXrV8Y52m3EzggSYV%0ALfRmtknS3JCn/k3Shuqwm1mvu18Q8hrz3H2vmc2WtEnSF9x9c8hy3tHR8d7XpVJJpVJpvPE3DXfp%0AwH7X/gee1p/9sFM63Kv7FqzT+sM36sChqWprG3lNwLJl0llnpT1yAAlLfOqm5O77zGyepGfCpm5q%0AvqdDUr+7fyfkOfboRzPOFE1///DTQSvvAl5/XVqwIHwa6PwR770A5FTiB2MPufu3zOzLkmbWHow1%0As3MkTXX3t81suqSNkr7h7htDXo/Q14o4B3/yZHA6aO00UHd38Pk/YRuABQv4dFAgZxI/vfKnki5W%0A1emVZjZf0t3u/ikzWyLpv8vf0iLpAXf/5iivR+grEj7I6i7t3h1+HKC/P/gguNoNwNKl0rRpsawe%0AQLy4YCpXMnAWzeHD4VcF9/RIixaNPA7Q3i6de27DhgdgJEKfC+7Sr34VBP7QoUyeJvnOO8EngdYe%0AB9i6VbrggvBpoDlzmAYCGoDQZ1p14A8eDAJ/002ZCvx4hoakN98MnwY6dWr0m8Tk6EcEso7QZ1IB%0AAl+Pt94aeYew7u7gU0Pb2kZuBJYvl84+O+1RA7lD6DOlSQI/nmPHguMAte8CduyQ5s0b+cmg7e3S%0AhRemPWogswh9JhD4ugwOBuf+194gprs7uA9A2AagtbWgN4kB6kfoU0XgY+Eu7d0bvgHo6zt9Omj1%0ARmDpUumMM9IeOdAQhD4VtYH/+telm28m8Ano6wu/Wfyf/iQtXBj+LuC889IeNRArQt9Q7MFnxokT%0Aw08HrWwEXntNmjkz/C5hc+dyOihyidA3BIHPjaGh4OKvsJvFnzx5OvzVG4DFixO4SQwQH0KfKAJf%0AKAcPhl8PsG9fcEew2ncBy5cHnxkEpIzQJ4LAN5WBgeAK4NoNwPbtwdW/YdNAs2alPWo0EUIfKwKP%0AKoODwU1iai8I6+oKpnpqPxfo0kuliy/mdFDEjtDHgsBjAtyD6Z6waaDDh4MbwtRuANragmsFgEkg%0A9JEQeMTs6NHwTwfduTO4+CtsGmjGjLRHjYwj9JNC4NFg774bfARE7TRQd3dw3n/Yh8PNn8/poJBE%0A6CfIXfr1r4PAv/UWgUfqhoakXbvCp4GOHw/fAFxyCaeDNhlCX5fqwB84EASeK1mRcb294RuA3bul%0AJUtGbgDa26Xp09MeNRJA6MdE4FFAx49L27aN3ABs2xac9hl2HGD2bKaBcozQhyLwaEKnTgU3iQm7%0AKtgsfBpo4UL+W+QAoR+GwAMjuAf/HcKmgQ4eDE79rN0ALFsmnXVW2iNHGaGXROCBServDz8d9PXX%0ApYsuCp8GOv/8tEfddJo89AQeSMTJk6dvElO9AejuDm4HGXZV8IIFHAdISJOGnsADqXCX9uwJ/1iI%0A/v7TN4mp3gAsXSpNm5b2yHOtyUJP4IHMOnIk/DhAT4+0aFH46aDnnpv2qHOhSUJP4IHceued8JvE%0AbN0azPeHHQeYM4dpoCoFDz2BBwpraCi4JWTY6aCnToWfDrp4cVP+9y9o6Ak80NQOHgw/DrB/fzDn%0AH3aTmLPPTnvUiSlY6Ak8gDEcOzb8JjGVjcCOHcE9gcOmgS68MO1RR5Zc6M3sBkmdktol/ZW7vzjK%0AcqslfU/SVEk/dvdvjbLc6KEn8AAiGBwMTgcNOxh85pnh00Ctrbm5SUyioW+XNCRpvaQ7wkJvZlMl%0AvSbpKkm7Jb0g6RZ37wpZdmToCTyABLlLe/eGbwCOHAk/HbStTTrjjLRHPsy4oZ/0h5m6e7ck2diH%0AvldI2u7uO8vLPiTpWkkjQl/z4gQeQOLMgs/1nz9fuvLK4c/19Z2+J0BXl/STnwSP33wzuCVk7UVh%0A7e3ZvUlM0p9afZGknqqvd0laOerSBB5ARsyYIa1cGfyqduJEcDpoZQOwcaN0113BR0XMmBE+DTRv%0AXrqng44ZejPbJGluyFNfdfdH63j9ic0LfexjBB5App15pvT+9we/qg0NBRd/VaZ/XnlFevjh4PGJ%0AE+EbgCVLGnOTmDFX4e6fjPj6uyW1Vn3dqmCvPlTn7NnSxz8ubdum0ubNKpVKEVcPAI0xZUrwsc4L%0AF0qrVw9/7tCh4ccAnnsueLxvX3BHsNqNwPLl8d4kJvLplWb2jKQvuvvvQ55rUXAw9hOS9kj6rSZy%0AMBYACmxg4PTpoNUHhLdvD67+DXsXMHv2iJdJ9Kyb6yXdJWmWpD5JW9x9jZnNl3S3u3+qvNwanT69%0A8h53/+Yor0foAUDBlb9vvBF+VXBLy/ANwO23F+2CKQBoYu7B1b+V6G/bJn33u4QeAIpu3NDn47ov%0AAMCkEXoAKDhCDwAFR+gBoOAIPQAUHKEHgIIj9ABQcIQeAAqO0ANAwRF6ACg4Qg8ABUfoAaDgCD0A%0AFByhB4CCI/QAUHCEHgAKjtADQMERegAoOEIPAAVH6AGg4Ag9ABQcoQeAgiP0AFBwhB4ACo7QA0DB%0AEXoAKDhCDwAFN+nQm9kNZvYHMztlZh8cY7mdZvaKmW0xs99Odn0AgMmJskf/qqTrJf3POMu5pJK7%0AX+buKyKsL9eeffbZtIeQmCL/bBI/X94V/eczs9J4y0w69O7e7e5b6x3LZNdTFEX+x1bkn03i58u7%0Aov98kkrjLdCIOXqX9LSZ/c7M/rEB6wMAVGkZ60kz2yRpbshTX3X3R+tcx0fcfa+ZzZa0ycy63X3z%0ARAcKAJgcc/doL2D2jKQ73P3FOpbtkNTv7t8JeS7aQACgSbn7mNPjY+7RT0DoSszsHElT3f1tM5su%0A6a8lfSNs2fEGCgCYnCinV15vZj2SVkl6zMyeKP/5fDN7rLzYXEmbzewlSc9L+qW7b4w6aABA/SJP%0A3QAAsi31K2PN7F4z229mr6Y9lriZWauZPVO+sOz/zOyf0x5TnMzsLDN73sxeKv98nWmPKW5mNrV8%0AsV+9Jx/kSpEvaDSzmWb2MzPrMrM/mtmqtMcUFzNbXv47q/zqG6svqe/Rm9lHJfVLut/dP5DqYGJm%0AZnMlzXX3l8zsfZJ+L+k6d+9KeWixMbNz3H3AzFok/a+kf3H359MeV1zM7HZJl0s6192vSXs8cTOz%0ANyRd7u69aY8lbma2QdJz7n5v+d/ndHfvS3tccTOzKZJ2S1rh7j1hy6S+R18+1fJw2uNIgrvvc/eX%0Ayo/7JXVJmp/uqOLl7gPlh2dImiZpKMXhxMrMFki6WtKPVeyL/gr3s5nZDEkfdfd7JcndB4sY+bKr%0AJO0YLfJSBkLfLMxskaTLFByULgwzm1I+2L5f0kZ3fyHtMcXou5L+VQXaeIUo6gWNiyW9ZWb3mdmL%0AZnZ3+SzAIrpZ0n+MtQChb4DytM3PFExr9Kc9nji5+5C7/4WkBZJWmtn70x5THMzsbyQdcPctKuAe%0Ab5WPuPtlktZI+qfyVGoRtEj6oKQfuvsHJR2T9OV0hxQ/MztD0t9K+s+xliP0CTOzaZL+S9K/u/sv%0A0h5PUspvi5+RtDrtscTkw5KuKc9hPyjpSjO7P+Uxxc7d95Z/f0vSzyUV5YMHd0naVfUO82cKwl80%0AayT9vvz3NypCnyAzM0n3SPqju38v7fHEzcxmmdnM8uOzJX1SwXGI3HP3r7p7q7svVvDW+Nfu/vdp%0AjytOZnaOmZ1bfly5oLEQZ7+5+z5JPWa2rPxHV0n6Q4pDSsotCnZExhTXlbGTZmYPSrpC0oXlC7DW%0Auft9KQ8rLh+R9HeSXjGzLeU/+4q7P5nimOI0T9IGM5uqYKfhYXd/POUxJaWIF5zMkfTzYH9ELZIe%0AKNgFjV+Q9EB5emOHpM+lPJ5YlTfOV0ka99hK6qdXAgCSxdQNABQcoQeAgiP0AFBwhB4ACo7QA0DB%0AEXoAKDhCDwAFR+gBoOD+H2NDE/jEO5XjAAAAAElFTkSuQmCC"&gt;
+&lt;/div&gt;
+
+&lt;/div&gt;
+
+&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;/div&gt;
+&lt;div class="cell border-box-sizing text_cell rendered"&gt;
+&lt;div class="prompt input_prompt"&gt;
+&lt;/div&gt;
+&lt;div class="inner_cell"&gt;
+&lt;div class="text_cell_render border-box-sizing rendered_html"&gt;
+&lt;h3 id="MATLAB"&gt;MATLAB&lt;a class="anchor-link" href="https://bryansim.github.io/posts/misc-1-experimenting-with-plots/#MATLAB"&gt;¶&lt;/a&gt;&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;intercept = -.2122
+b1 = -1.1776 
+b2 = -.1192
+b3 = .4943
+x = 1:7
+% moderator = 0
+y1 = intercept + b2*x
+% moderator = 1
+y2 = intercept + b1 + b2*x + b3*x
+
+figure
+plot(x,y1,x,y2)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src="http://i.imgur.com/Gaqy1KW.png" align="left"&gt;&lt;/p&gt;
+
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="cell border-box-sizing text_cell rendered"&gt;
+&lt;div class="prompt input_prompt"&gt;
+&lt;/div&gt;
+&lt;div class="inner_cell"&gt;
+&lt;div class="text_cell_render border-box-sizing rendered_html"&gt;
+&lt;h3 id="R"&gt;R&lt;a class="anchor-link" href="https://bryansim.github.io/posts/misc-1-experimenting-with-plots/#R"&gt;¶&lt;/a&gt;&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;intercept = -.2122
+b1 = -1.1776 
+b2 = -.1192
+b3 = .4943
+
+y &amp;lt;- function(x1, x2){
+  return(intercept + b1*x1 + b2*x2 + b3*x1*x2)
+}
+
+x = c(1:7)
+y1 = sapply(x,y,x1=0)
+y2 = sapply(x,y,x1=1)
+xrange &amp;lt;- range(1:7) 
+yrange &amp;lt;- range(-1.5:1.5) 
+plot(xrange,yrange, type='n')
+lines(x,y1)
+lines(x,y2)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src="http://i.imgur.com/SyK6tqS.png" align="left"&gt;&lt;/p&gt;
+
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="cell border-box-sizing text_cell rendered"&gt;
+&lt;div class="prompt input_prompt"&gt;
+&lt;/div&gt;
+&lt;div class="inner_cell"&gt;
+&lt;div class="text_cell_render border-box-sizing rendered_html"&gt;
+&lt;h3 id="ggplot2"&gt;ggplot2&lt;a class="anchor-link" href="https://bryansim.github.io/posts/misc-1-experimenting-with-plots/#ggplot2"&gt;¶&lt;/a&gt;&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;d1 &amp;lt;- data.frame(x,y=y1,g='0')
+d2 &amp;lt;- data.frame(x,y=y2,g='1')
+data &amp;lt;- rbind(d1, d2)
+
+cbbPalette &amp;lt;- c("blue", "red")
+ggplot(data=data, aes(x=x, y=y, group=g, color = g)) +
+  geom_line() +
+  scale_color_manual(values=cbbPalette) +
+  scale_x_continuous(limits = c(1,7)) + 
+  scale_y_continuous(limits = c(-1.5,1.5))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src="http://i.imgur.com/2MEHspE.png" align="left"&gt;&lt;/p&gt;
+
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="cell border-box-sizing text_cell rendered"&gt;
+&lt;div class="prompt input_prompt"&gt;
+&lt;/div&gt;
+&lt;div class="inner_cell"&gt;
+&lt;div class="text_cell_render border-box-sizing rendered_html"&gt;
+&lt;h3 id="Excel"&gt;Excel&lt;a class="anchor-link" href="https://bryansim.github.io/posts/misc-1-experimenting-with-plots/#Excel"&gt;¶&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;&lt;img src="http://i.imgur.com/2obmVS4.png" align="left"&gt;&lt;/p&gt;
+
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="cell border-box-sizing text_cell rendered"&gt;
+&lt;div class="prompt input_prompt"&gt;
+&lt;/div&gt;
+&lt;div class="inner_cell"&gt;
+&lt;div class="text_cell_render border-box-sizing rendered_html"&gt;
+&lt;h2 id="gnuplot"&gt;gnuplot&lt;a class="anchor-link" href="https://bryansim.github.io/posts/misc-1-experimenting-with-plots/#gnuplot"&gt;¶&lt;/a&gt;&lt;/h2&gt;
+&lt;pre&gt;&lt;code&gt;set title ""
+intercept = -.2122
+b1 = -1.1776 
+b2 = -.1192
+b3 = .4943
+y1(x) = intercept + b2*x
+y2(x) = intercept + b1 + b2*x + b3*x
+
+plot [1:7] y1(x) lt rgb "blue", y2(x) lt rgb "red"&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src="http://i.imgur.com/7ekpIGZ.png" align="left"&gt;&lt;/p&gt;
+
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="cell border-box-sizing text_cell rendered"&gt;
+&lt;div class="prompt input_prompt"&gt;
+&lt;/div&gt;
+&lt;div class="inner_cell"&gt;
+&lt;div class="text_cell_render border-box-sizing rendered_html"&gt;
+&lt;h3 id="plot.ly"&gt;plot.ly&lt;a class="anchor-link" href="https://bryansim.github.io/posts/misc-1-experimenting-with-plots/#plot.ly"&gt;¶&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;plot.ly is web-based; I took screencaps of the interface:
+&lt;img src="http://i.imgur.com/URQvJPu.png" align="left"&gt;&lt;/p&gt;
+&lt;p&gt;The plot looks like this:
+&lt;img src="http://i.imgur.com/AO9e4IV.png" align="left"&gt;&lt;/p&gt;
+
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="cell border-box-sizing text_cell rendered"&gt;
+&lt;div class="prompt input_prompt"&gt;
+&lt;/div&gt;
+&lt;div class="inner_cell"&gt;
+&lt;div class="text_cell_render border-box-sizing rendered_html"&gt;
+&lt;h3 id="chart.js"&gt;chart.js&lt;a class="anchor-link" href="https://bryansim.github.io/posts/misc-1-experimenting-with-plots/#chart.js"&gt;¶&lt;/a&gt;&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;html&amp;gt;
+    &amp;lt;head&amp;gt;
+        &amp;lt;script src="Chart.js"&amp;gt;&amp;lt;/script&amp;gt;
+    &amp;lt;/head&amp;gt;
+&amp;lt;canvas id="myChart" width="640" height="480"&amp;gt;&amp;lt;/canvas&amp;gt;
+&amp;lt;body&amp;gt;
+    &amp;lt;script&amp;gt;
+        var ctx = document.getElementById("myChart");
+
+        var data = {
+            labels: Array.apply(null, Array(8)).map(function (_, i) {return i;}),
+            datasets: [
+                {
+                    label: "y1",
+                    fill: false,
+                    lineTension: 0.1,
+                    backgroundColor: "blue",
+                    borderColor: "blue",
+                    borderCapStyle: 'butt',
+                    borderJoinStyle: 'miter',
+                    pointBorderColor: "blue",
+                    pointBackgroundColor: "#fff",
+                    pointBorderWidth: 1,
+                    pointHoverRadius: 5,
+                    pointHoverBackgroundColor: "blue",
+                    pointHoverBorderColor: "blue",
+                    pointHoverBorderWidth: 2,
+                    pointRadius: 1,
+                    pointHitRadius: 10,
+                    data: [-0.3314,-0.4506,-0.5698,-0.689,-0.8082,-0.9274,-1.0466],
+                },
+                        {
+                    label: "y2",
+                    fill: false,
+                    lineTension: 0.1,
+                    backgroundColor: "red",
+                    borderColor: "red",
+                    borderCapStyle: 'butt',
+                    borderJoinStyle: 'miter',
+                    pointBorderColor: "red",
+                    pointBackgroundColor: "#fff",
+                    pointBorderWidth: 1,
+                    pointHoverRadius: 5,
+                    pointHoverBackgroundColor: "red",
+                    pointHoverBorderColor: "red",
+                    pointHoverBorderWidth: 2,
+                    pointRadius: 1,
+                    pointHitRadius: 10,
+                    data: [-1.0147,-0.6396,-0.2645,0.1106,0.4857,0.8608,1.2359],
+                }
+            ]
+        };
+
+        var myChart = new Chart(ctx, {
+            type: 'line',
+            data: data,
+            options: {
+                responsive:false,
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero:false
+                        }
+                    }]
+                }
+            }
+        });
+&amp;lt;/script&amp;gt;
+&amp;lt;/body&amp;gt;
+&amp;lt;/html&amp;gt;&lt;/code&gt;&lt;/pre&gt;
+
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="cell border-box-sizing code_cell rendered"&gt;
+&lt;div class="input"&gt;
+&lt;div class="prompt input_prompt"&gt;In [4]:&lt;/div&gt;
+&lt;div class="inner_cell"&gt;
+    &lt;div class="input_area"&gt;
+&lt;div class=" highlight hl-ipython2"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;IPython.display&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;IFrame&lt;/span&gt;
+&lt;span class="n"&gt;IFrame&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;'http://pew3.com/chartjsplot.html'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;width&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;700&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;height&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;500&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;div class="output_wrapper"&gt;
+&lt;div class="output"&gt;
+
+
+&lt;div class="output_area"&gt;&lt;div class="prompt output_prompt"&gt;Out[4]:&lt;/div&gt;
+
+&lt;div class="output_html rendered_html output_subarea output_execute_result"&gt;
+
+        &lt;iframe width="700" height="500" src="http://pew3.com/chartjsplot.html" frameborder="0" allowfullscreen&gt;&lt;/iframe&gt;
+        
+&lt;/div&gt;
+
+&lt;/div&gt;
+
+&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;/div&gt;
+&lt;div class="cell border-box-sizing text_cell rendered"&gt;
+&lt;div class="prompt input_prompt"&gt;
+&lt;/div&gt;
+&lt;div class="inner_cell"&gt;
+&lt;div class="text_cell_render border-box-sizing rendered_html"&gt;
+&lt;h3 id="Bokeh"&gt;Bokeh&lt;a class="anchor-link" href="https://bryansim.github.io/posts/misc-1-experimenting-with-plots/#Bokeh"&gt;¶&lt;/a&gt;&lt;/h3&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="cell border-box-sizing code_cell rendered"&gt;
+&lt;div class="input"&gt;
+&lt;div class="prompt input_prompt"&gt;In [5]:&lt;/div&gt;
+&lt;div class="inner_cell"&gt;
+    &lt;div class="input_area"&gt;
+&lt;div class=" highlight hl-ipython2"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;bokeh.plotting&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;figure&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;output_file&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;show&lt;/span&gt;
+
+&lt;span class="n"&gt;intercept&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="o"&gt;-.&lt;/span&gt;&lt;span class="mi"&gt;2122&lt;/span&gt;
+&lt;span class="n"&gt;b1&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mf"&gt;1.1776&lt;/span&gt; 
+&lt;span class="n"&gt;b2&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="o"&gt;-.&lt;/span&gt;&lt;span class="mi"&gt;1192&lt;/span&gt;
+&lt;span class="n"&gt;b3&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="mi"&gt;4943&lt;/span&gt;
+
+&lt;span class="c1"&gt;#x1 is a categorical predictor, x2 is a continuous predictor, x3 is their interaction&lt;/span&gt;
+&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;y&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;x1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;x2&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;intercept&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="n"&gt;b1&lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;x1&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="n"&gt;b2&lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;x2&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="n"&gt;b3&lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;x1&lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;x2&lt;/span&gt;
+
+&lt;span class="n"&gt;x&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nb"&gt;range&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;8&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;y1&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;y&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;z&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;z&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;span class="n"&gt;y2&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;y&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;z&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;z&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+
+&lt;span class="c1"&gt;# output to static HTML file&lt;/span&gt;
+&lt;span class="n"&gt;output_file&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;"bokehplot.html"&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="c1"&gt;# create a new plot&lt;/span&gt;
+&lt;span class="n"&gt;p&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;figure&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;
+   &lt;span class="n"&gt;tools&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;"pan,box_zoom,reset,save"&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+   &lt;span class="n"&gt;y_range&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mf"&gt;1.5&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mf"&gt;1.5&lt;/span&gt;&lt;span class="p"&gt;],&lt;/span&gt;
+&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="c1"&gt;# add some renderers&lt;/span&gt;
+&lt;span class="n"&gt;p&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;line&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;y1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;legend&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;"mod=0"&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;line_color&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;"blue"&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;p&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;line&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;y2&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;legend&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;"mod=1"&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;line_color&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;"red"&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="c1"&gt;# show the results&lt;/span&gt;
+&lt;span class="n"&gt;show&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;p&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;/div&gt;
+&lt;div class="cell border-box-sizing code_cell rendered"&gt;
+&lt;div class="input"&gt;
+&lt;div class="prompt input_prompt"&gt;In [10]:&lt;/div&gt;
+&lt;div class="inner_cell"&gt;
+    &lt;div class="input_area"&gt;
+&lt;div class=" highlight hl-ipython2"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;IPython.display&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;IFrame&lt;/span&gt;
+&lt;span class="n"&gt;IFrame&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;'http://pew3.com/bokehplot.html'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;width&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;700&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;height&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;675&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;div class="output_wrapper"&gt;
+&lt;div class="output"&gt;
+
+
+&lt;div class="output_area"&gt;&lt;div class="prompt output_prompt"&gt;Out[10]:&lt;/div&gt;
+
+&lt;div class="output_html rendered_html output_subarea output_execute_result"&gt;
+
+        &lt;iframe width="700" height="675" src="http://pew3.com/bokehplot.html" frameborder="0" allowfullscreen&gt;&lt;/iframe&gt;
+        
+&lt;/div&gt;
+
+&lt;/div&gt;
+
+&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;/div&gt;
+&lt;div class="cell border-box-sizing text_cell rendered"&gt;
+&lt;div class="prompt input_prompt"&gt;
+&lt;/div&gt;
+&lt;div class="inner_cell"&gt;
+&lt;div class="text_cell_render border-box-sizing rendered_html"&gt;
+&lt;h2 id="Summary"&gt;Summary&lt;a class="anchor-link" href="https://bryansim.github.io/posts/misc-1-experimenting-with-plots/#Summary"&gt;¶&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;I think, from here on out, I'll be using matplotlib for simple plots, Bokeh if I need to generate something interactive, and chart.js if I ever need to implement a dynamic chart.&lt;/p&gt;
+&lt;p&gt;With regard to the alternatives:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;MATLAB is proprietary.&lt;/li&gt;
+&lt;li&gt;The built-in packages in R generate ugly plots.&lt;/li&gt;
+&lt;li&gt;ggplot is a little unwieldy, and has defaults that I don't like (e.g., the grey background)&lt;/li&gt;
+&lt;li&gt;Excel is good to visualize something really quick, but most people who have worked with linear models for a while (including myself) can do this in our heads or with a pen and paper.&lt;/li&gt;
+&lt;li&gt;gnuplot looks really interesting, and may be something I spend more time on in the future, but it's foreign to me at the moment.&lt;/li&gt;
+&lt;li&gt;plot.ly and Tableau (which I wanted to test, but their sign-up system never sent me the confirmation email) are both web-based, and for me, needlessly obfuscate what happens in the backend. I'd be comfortable writing my own code to generate the plots I want.&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="cell border-box-sizing text_cell rendered"&gt;
+&lt;div class="prompt input_prompt"&gt;
+&lt;/div&gt;
+&lt;div class="inner_cell"&gt;
+&lt;div class="text_cell_render border-box-sizing rendered_html"&gt;
+&lt;h3 id="BONUS:-MS-Paint"&gt;BONUS: MS Paint&lt;a class="anchor-link" href="https://bryansim.github.io/posts/misc-1-experimenting-with-plots/#BONUS:-MS-Paint"&gt;¶&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;&lt;img src="http://i.imgur.com/9fVuaay.png" align="left"&gt;&lt;/p&gt;
+
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+</description><category>misc</category><guid>https://bryansim.github.io/posts/misc-1-experimenting-with-plots/</guid><pubDate>Tue, 24 May 2016 19:31:43 GMT</pubDate></item></channel></rss>
