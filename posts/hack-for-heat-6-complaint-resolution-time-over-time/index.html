@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html prefix="og: http://ogp.me/ns# article: http://ogp.me/ns/article# " lang="en">
+<head>
+<meta charset="utf-8">
+<base href="https://bryansim.github.io/posts/hack-for-heat-6-complaint-resolution-time-over-time/">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hack for Heat #6: Complaint resolution time, over time | Bryan Sim</title>
+<link href="../../assets/css/all-nocdn.css" rel="stylesheet" type="text/css">
+<link href="../../assets/css/ipython.min.css" rel="stylesheet" type="text/css">
+<link href="../../assets/css/nikola_ipython.css" rel="stylesheet" type="text/css">
+<meta content="#5670d4" name="theme-color">
+<link rel="alternate" type="application/rss+xml" title="RSS" href="../../rss.xml">
+<link rel="canonical" href="https://bryansim.github.io/posts/hack-for-heat-6-complaint-resolution-time-over-time/">
+<link rel="icon" href="http://bryans.im/favicon.ico" sizes="16x16">
+<!--[if lt IE 9]><script src="../../assets/js/html5.js"></script><![endif]--><meta name="author" content="Bryan Sim">
+<link rel="prev" href="../hack-for-heat-5-complaint-resolution-time/" title="Hack for Heat #5: Complaint resolution time" type="text/html">
+<meta property="og:site_name" content="Bryan Sim">
+<meta property="og:title" content="Hack for Heat #6: Complaint resolution time, over time">
+<meta property="og:url" content="https://bryansim.github.io/posts/hack-for-heat-6-complaint-resolution-time-over-time/">
+<meta property="og:description" content="In [1]:
+
+    
+%matplotlib inline
+
+from matplotlib import pyplot as plt
+import pandas as pd
+import numpy as np
+import psycopg2
+
+pd.options.display.max_columns = 40
+
+
+
+
+
+
+
+
+
+
+
+
+Hack for Heat #6: Complai">
+<meta property="og:type" content="article">
+<meta property="article:published_time" content="2016-05-31T09:08:01-04:00">
+</head>
+<body>
+<a href="#content" class="sr-only sr-only-focusable">Skip to main content</a>
+
+<!-- Menubar -->
+
+<nav class="navbar navbar-inverse navbar-static-top"><div class="container">
+<!-- This keeps the margins nice -->
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-navbar" aria-controls="bs-navbar" aria-expanded="false">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="https://bryansim.github.io/">
+
+                <span id="blog-title">Bryan Sim</span>
+            </a>
+        </div>
+<!-- /.navbar-header -->
+        <div class="collapse navbar-collapse" id="bs-navbar" aria-expanded="false">
+            <ul class="nav navbar-nav">
+<li>
+<a href="../../categories/heatseek">Heat Seek</a>
+                </li>
+<li>
+<a href="../../categories/mediocre-museum">Mediocre Museum</a>
+                </li>
+<li>
+<a href="../../categories/mousetracker">Mousetracker</a>
+                </li>
+<li>
+<a href="../../categories/skytrax">Skytrax</a>
+                </li>
+<li>
+<a href="../../categories/misc">Misc</a>
+                </li>
+<li>
+<a href="../../archive.html">Archive</a>
+                </li>
+<li>
+<a href="http://linkedin.com/in/bryansim">LinkedIn</a>
+
+                
+            </li>
+</ul>
+<ul class="nav navbar-nav navbar-right"></ul>
+</div>
+<!-- /.navbar-collapse -->
+    </div>
+<!-- /.container -->
+</nav><!-- End of Menubar --><div class="container" id="content" role="main">
+    <div class="body-content">
+        <!--Body content-->
+        <div class="row">
+            
+            
+<article class="post-text h-entry hentry postpage" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title" itemprop="headline name"><a href="." class="u-url">Hack for Heat #6: Complaint resolution time, over time</a></h1>
+
+        <div class="metadata">
+            <p class="byline author vcard"><span class="byline-name fn">
+                    Bryan Sim
+            </span></p>
+            <p class="dateline"><a href="." rel="bookmark"><time class="published dt-published" datetime="2016-05-31T09:08:01-04:00" itemprop="datePublished" title="2016-05-31 09:08">2016-05-31 09:08</time></a></p>
+            
+
+                    <p class="linkline"><a href="heatseek">Original site</a></p>
+        </div>
+        
+
+    </header><div class="e-content entry-content" itemprop="articleBody text">
+    <div tabindex="-1" id="notebook" class="border-box-sizing">
+    <div class="container" id="notebook-container">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [1]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="o">%</span><span class="k">matplotlib</span> inline
+
+<span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">pyplot</span> <span class="k">as</span> <span class="n">plt</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">psycopg2</span>
+
+<span class="n">pd</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">display</span><span class="o">.</span><span class="n">max_columns</span> <span class="o">=</span> <span class="mi">40</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Hack-for-Heat-#6:-Complaint-resolution-time,-over-time-and-censoring">Hack for Heat #6: Complaint resolution time, over time and censoring<a class="anchor-link" href="#Hack-for-Heat-#6:-Complaint-resolution-time,-over-time-and-censoring">¶</a>
+</h3>
+<p>As a follow up to the last post, we're going to try and find out if the average resolution time has changed over time. This might be tricky, as we might run into the issue of censoring. <a href="https://en.wikipedia.org/wiki/Censoring_(statistics">Censoring</a>) is a problem in time-series analyses that occurs when data that are missing because they lie outside of the range of the measure.</p>
+<p>In this case, what we might expect to find is that complaint resolution time <em>appears</em> shorter as we get to the present day, and that may be true, but it may also happen because cases where problems have <em>yet to be solved</em> show up as missing data. In other words, for a case that was opened in 2010, the longest possible resolution time is 5 years, whereas for a case opened yesterday, the longest possible resolution time is 1 day.</p>
+<p>So, as a first step, let's look at the proportion of unseen cases over time:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [2]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="c1">#Like before, we're going to select the relevant columns from the database:</span>
+<span class="n">connection</span> <span class="o">=</span> <span class="n">psycopg2</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="s1">'dbname= threeoneone user=threeoneoneadmin password=threeoneoneadmin'</span><span class="p">)</span>
+<span class="n">cursor</span> <span class="o">=</span> <span class="n">connection</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
+
+<span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s1">'''SELECT createddate, closeddate, borough FROM service;'''</span><span class="p">)</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">cursor</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [3]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">data</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'createddate'</span><span class="p">,</span><span class="s1">'closeddate'</span><span class="p">,</span><span class="s1">'borough'</span><span class="p">]</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Let's extract years and months again:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [4]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">data</span><span class="p">[</span><span class="s1">'cryear'</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span><span class="o">.</span><span class="n">year</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">data</span><span class="p">[</span><span class="s1">'createddate'</span><span class="p">]]</span>
+<span class="n">data</span><span class="p">[</span><span class="s1">'crmonth'</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span><span class="o">.</span><span class="n">month</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">data</span><span class="p">[</span><span class="s1">'createddate'</span><span class="p">]]</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>And now, we're going to filter out bad cases again. However, this time, we're going to be a bit more selective. We're going to include cases where the closed date is missing.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [5]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="c1">#filter out bad casesa</span>
+<span class="kn">import</span> <span class="nn">datetime</span>
+
+<span class="n">today</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">date</span><span class="p">(</span><span class="mi">2016</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">29</span><span class="p">)</span>
+<span class="n">janone</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">date</span><span class="p">(</span><span class="mi">2010</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">loc</span><span class="p">[(</span><span class="n">data</span><span class="p">[</span><span class="s1">'closeddate'</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">data</span><span class="p">[</span><span class="s1">'createddate'</span><span class="p">])</span> <span class="o">|</span> <span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">'closeddate'</span><span class="p">]</span><span class="o">.</span><span class="n">isnull</span><span class="p">()</span> <span class="o">==</span> <span class="bp">True</span><span class="p">)]</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [6]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">databyyear</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="s1">'cryear'</span><span class="p">)</span><span class="o">.</span><span class="n">count</span><span class="p">()</span>
+<span class="n">databyyear</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt output_prompt">Out[6]:</div>
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<table border="1" class="dataframe">
+<thead>
+<tr style="text-align: right;">
+<th></th>
+      <th>createddate</th>
+      <th>closeddate</th>
+      <th>borough</th>
+      <th>crmonth</th>
+    </tr>
+<tr>
+<th>cryear</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+</thead>
+<tbody>
+<tr>
+<th>2010</th>
+      <td>1340309</td>
+      <td>1281719</td>
+      <td>1340309</td>
+      <td>1340309</td>
+    </tr>
+<tr>
+<th>2011</th>
+      <td>1294795</td>
+      <td>1157180</td>
+      <td>1294795</td>
+      <td>1294795</td>
+    </tr>
+<tr>
+<th>2012</th>
+      <td>1185598</td>
+      <td>1148399</td>
+      <td>1185598</td>
+      <td>1185598</td>
+    </tr>
+<tr>
+<th>2013</th>
+      <td>1221690</td>
+      <td>1177863</td>
+      <td>1221690</td>
+      <td>1221690</td>
+    </tr>
+<tr>
+<th>2014</th>
+      <td>1354300</td>
+      <td>1305561</td>
+      <td>1354300</td>
+      <td>1354300</td>
+    </tr>
+<tr>
+<th>2015</th>
+      <td>1451521</td>
+      <td>1378090</td>
+      <td>1451521</td>
+      <td>1451521</td>
+    </tr>
+<tr>
+<th>2016</th>
+      <td>605070</td>
+      <td>530959</td>
+      <td>605070</td>
+      <td>605070</td>
+    </tr>
+</tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [7]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">data</span><span class="p">[</span><span class="s1">'timedelta'</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">'closeddate'</span><span class="p">]</span> <span class="o">-</span> <span class="n">data</span><span class="p">[</span><span class="s1">'createddate'</span><span class="p">]</span>
+<span class="n">data</span><span class="p">[</span><span class="s1">'timedeltaint'</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span><span class="o">.</span><span class="n">days</span> <span class="k">if</span> <span class="n">pd</span><span class="o">.</span><span class="n">isnull</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">==</span> <span class="bp">False</span> <span class="k">else</span> <span class="bp">None</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">data</span><span class="p">[</span><span class="s1">'timedelta'</span><span class="p">]]</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [8]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">data</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="s1">'cryear'</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt output_prompt">Out[8]:</div>
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<table border="1" class="dataframe">
+<thead>
+<tr style="text-align: right;">
+<th></th>
+      <th>crmonth</th>
+      <th>timedeltaint</th>
+    </tr>
+<tr>
+<th>cryear</th>
+      <th></th>
+      <th></th>
+    </tr>
+</thead>
+<tbody>
+<tr>
+<th>2010</th>
+      <td>6.505385</td>
+      <td>24.508043</td>
+    </tr>
+<tr>
+<th>2011</th>
+      <td>6.491262</td>
+      <td>22.512834</td>
+    </tr>
+<tr>
+<th>2012</th>
+      <td>6.617468</td>
+      <td>22.690249</td>
+    </tr>
+<tr>
+<th>2013</th>
+      <td>6.414707</td>
+      <td>20.205784</td>
+    </tr>
+<tr>
+<th>2014</th>
+      <td>6.280245</td>
+      <td>19.712918</td>
+    </tr>
+<tr>
+<th>2015</th>
+      <td>6.314193</td>
+      <td>16.731161</td>
+    </tr>
+<tr>
+<th>2016</th>
+      <td>2.799473</td>
+      <td>8.634098</td>
+    </tr>
+</tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>This table shows exactly what I'm talking about - as we get closer to the current day, the average resolution time falls more and more. If censorig is occuring, we might expect that the proportion of cases closed is also decreasing over time. This is generally the case:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [9]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">databyyear</span><span class="p">[</span><span class="s1">'propclosed'</span><span class="p">]</span> <span class="o">=</span> <span class="n">databyyear</span><span class="p">[</span><span class="s1">'closeddate'</span><span class="p">]</span><span class="o">/</span><span class="n">databyyear</span><span class="p">[</span><span class="s1">'createddate'</span><span class="p">]</span>
+<span class="n">databyyear</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt output_prompt">Out[9]:</div>
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<table border="1" class="dataframe">
+<thead>
+<tr style="text-align: right;">
+<th></th>
+      <th>createddate</th>
+      <th>closeddate</th>
+      <th>borough</th>
+      <th>crmonth</th>
+      <th>propclosed</th>
+    </tr>
+<tr>
+<th>cryear</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+</thead>
+<tbody>
+<tr>
+<th>2010</th>
+      <td>1340309</td>
+      <td>1281719</td>
+      <td>1340309</td>
+      <td>1340309</td>
+      <td>0.956286</td>
+    </tr>
+<tr>
+<th>2011</th>
+      <td>1294795</td>
+      <td>1157180</td>
+      <td>1294795</td>
+      <td>1294795</td>
+      <td>0.893717</td>
+    </tr>
+<tr>
+<th>2012</th>
+      <td>1185598</td>
+      <td>1148399</td>
+      <td>1185598</td>
+      <td>1185598</td>
+      <td>0.968624</td>
+    </tr>
+<tr>
+<th>2013</th>
+      <td>1221690</td>
+      <td>1177863</td>
+      <td>1221690</td>
+      <td>1221690</td>
+      <td>0.964126</td>
+    </tr>
+<tr>
+<th>2014</th>
+      <td>1354300</td>
+      <td>1305561</td>
+      <td>1354300</td>
+      <td>1354300</td>
+      <td>0.964012</td>
+    </tr>
+<tr>
+<th>2015</th>
+      <td>1451521</td>
+      <td>1378090</td>
+      <td>1451521</td>
+      <td>1451521</td>
+      <td>0.949411</td>
+    </tr>
+<tr>
+<th>2016</th>
+      <td>605070</td>
+      <td>530959</td>
+      <td>605070</td>
+      <td>605070</td>
+      <td>0.877517</td>
+    </tr>
+</tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>With the exception of year 2011, which we have reason to believe is wonky (see Hack for Heat #4), this is generally the case. So, how do we deal with this issue? To be honest, I don't know at the moment. But I'm going to read <a href="https://stsda.kaust.edu.sa/Documents/2007.PGG.CJS.pdf">this</a> paper tomorrow, and see if I can implement something.</p>
+
+</div>
+</div>
+</div>
+    </div>
+  </div>
+
+    </div>
+    <aside class="postpromonav"><nav><ul class="pager hidden-print">
+<li class="previous">
+                <a href="../hack-for-heat-5-complaint-resolution-time/" rel="prev" title="Hack for Heat #5: Complaint resolution time">Previous post</a>
+            </li>
+        </ul></nav></aside><script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"> </script><script type="text/x-mathjax-config">
+            MathJax.Hub.Config({tex2jax: {inlineMath: [['$latex ','$'], ['\\(','\\)']]}});
+            </script></article>
+</div>
+        <!--End of body content-->
+
+        <footer id="footer">
+            Contents © 2016         <a href="mailto:bryan.sim@nyu.edu">Bryan Sim</a> - Powered by         <a href="https://getnikola.com" rel="nofollow">Nikola</a>         
+            
+        </footer>
+</div>
+</div>
+
+
+            <script src="../../assets/js/all-nocdn.js"></script><script>$('a.image-reference:not(.islink) img:not(.islink)').parent().colorbox({rel:"gal",maxWidth:"100%",maxHeight:"100%",scalePhotos:true});</script><!-- fancy dates --><script>
+    moment.locale("en");
+    fancydates(0, "YYYY-MM-DD HH:mm");
+    </script><!-- end fancy dates -->
+</body>
+</html>

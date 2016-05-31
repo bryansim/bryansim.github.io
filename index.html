@@ -14,7 +14,7 @@
 <link rel="canonical" href="https://bryansim.github.io/">
 <link rel="icon" href="http://bryans.im/favicon.ico" sizes="16x16">
 <link rel="next" href="index-1.html" type="text/html">
-<!--[if lt IE 9]><script src="assets/js/html5.js"></script><![endif]--><link rel="prefetch" href="posts/hack-for-heat-5-complaint-resolution-time/" type="text/html">
+<!--[if lt IE 9]><script src="assets/js/html5.js"></script><![endif]--><link rel="prefetch" href="posts/hack-for-heat-6-complaint-resolution-time-over-time/" type="text/html">
 </head>
 <body>
 <a href="#content" class="sr-only sr-only-focusable">Skip to main content</a>
@@ -96,7 +96,465 @@ This is my blog of the following projects (links above):</p>
 
 </article><hr>
 <div class="postindex">
-    <article class="h-entry post-text"><header><h1 class="p-name entry-title"><a href="posts/hack-for-heat-5-complaint-resolution-time/" class="u-url">Hack for Heat #5: Complaint resolution time</a></h1>
+    <article class="h-entry post-text"><header><h1 class="p-name entry-title"><a href="posts/hack-for-heat-6-complaint-resolution-time-over-time/" class="u-url">Hack for Heat #6: Complaint resolution time, over time</a></h1>
+        <div class="metadata">
+            <p class="byline author vcard"><span class="byline-name fn">
+                Bryan Sim
+            </span></p>
+            <p class="dateline"><a href="posts/hack-for-heat-6-complaint-resolution-time-over-time/" rel="bookmark"><time class="published dt-published" datetime="2016-05-31T09:08:01-04:00" title="2016-05-31 09:08">2016-05-31 09:08</time></a></p>
+        </div>
+    </header><div class="e-content entry-content">
+    <div tabindex="-1" id="notebook" class="border-box-sizing">
+    <div class="container" id="notebook-container">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [1]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="o">%</span><span class="k">matplotlib</span> inline
+
+<span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">pyplot</span> <span class="k">as</span> <span class="n">plt</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">psycopg2</span>
+
+<span class="n">pd</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">display</span><span class="o">.</span><span class="n">max_columns</span> <span class="o">=</span> <span class="mi">40</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Hack-for-Heat-#6:-Complaint-resolution-time,-over-time-and-censoring">Hack for Heat #6: Complaint resolution time, over time and censoring<a class="anchor-link" href="posts/hack-for-heat-6-complaint-resolution-time-over-time/#Hack-for-Heat-#6:-Complaint-resolution-time,-over-time-and-censoring">¶</a>
+</h3>
+<p>As a follow up to the last post, we're going to try and find out if the average resolution time has changed over time. This might be tricky, as we might run into the issue of censoring. <a href="https://en.wikipedia.org/wiki/Censoring_(statistics">Censoring</a>) is a problem in time-series analyses that occurs when data that are missing because they lie outside of the range of the measure.</p>
+<p>In this case, what we might expect to find is that complaint resolution time <em>appears</em> shorter as we get to the present day, and that may be true, but it may also happen because cases where problems have <em>yet to be solved</em> show up as missing data. In other words, for a case that was opened in 2010, the longest possible resolution time is 5 years, whereas for a case opened yesterday, the longest possible resolution time is 1 day.</p>
+<p>So, as a first step, let's look at the proportion of unseen cases over time:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [2]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="c1">#Like before, we're going to select the relevant columns from the database:</span>
+<span class="n">connection</span> <span class="o">=</span> <span class="n">psycopg2</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="s1">'dbname= threeoneone user=threeoneoneadmin password=threeoneoneadmin'</span><span class="p">)</span>
+<span class="n">cursor</span> <span class="o">=</span> <span class="n">connection</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
+
+<span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s1">'''SELECT createddate, closeddate, borough FROM service;'''</span><span class="p">)</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">cursor</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [3]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">data</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'createddate'</span><span class="p">,</span><span class="s1">'closeddate'</span><span class="p">,</span><span class="s1">'borough'</span><span class="p">]</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Let's extract years and months again:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [4]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">data</span><span class="p">[</span><span class="s1">'cryear'</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span><span class="o">.</span><span class="n">year</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">data</span><span class="p">[</span><span class="s1">'createddate'</span><span class="p">]]</span>
+<span class="n">data</span><span class="p">[</span><span class="s1">'crmonth'</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span><span class="o">.</span><span class="n">month</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">data</span><span class="p">[</span><span class="s1">'createddate'</span><span class="p">]]</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>And now, we're going to filter out bad cases again. However, this time, we're going to be a bit more selective. We're going to include cases where the closed date is missing.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [5]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="c1">#filter out bad casesa</span>
+<span class="kn">import</span> <span class="nn">datetime</span>
+
+<span class="n">today</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">date</span><span class="p">(</span><span class="mi">2016</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">29</span><span class="p">)</span>
+<span class="n">janone</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">date</span><span class="p">(</span><span class="mi">2010</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">loc</span><span class="p">[(</span><span class="n">data</span><span class="p">[</span><span class="s1">'closeddate'</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">data</span><span class="p">[</span><span class="s1">'createddate'</span><span class="p">])</span> <span class="o">|</span> <span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">'closeddate'</span><span class="p">]</span><span class="o">.</span><span class="n">isnull</span><span class="p">()</span> <span class="o">==</span> <span class="bp">True</span><span class="p">)]</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [6]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">databyyear</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="s1">'cryear'</span><span class="p">)</span><span class="o">.</span><span class="n">count</span><span class="p">()</span>
+<span class="n">databyyear</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt output_prompt">Out[6]:</div>
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<table border="1" class="dataframe">
+<thead>
+<tr style="text-align: right;">
+<th></th>
+      <th>createddate</th>
+      <th>closeddate</th>
+      <th>borough</th>
+      <th>crmonth</th>
+    </tr>
+<tr>
+<th>cryear</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+</thead>
+<tbody>
+<tr>
+<th>2010</th>
+      <td>1340309</td>
+      <td>1281719</td>
+      <td>1340309</td>
+      <td>1340309</td>
+    </tr>
+<tr>
+<th>2011</th>
+      <td>1294795</td>
+      <td>1157180</td>
+      <td>1294795</td>
+      <td>1294795</td>
+    </tr>
+<tr>
+<th>2012</th>
+      <td>1185598</td>
+      <td>1148399</td>
+      <td>1185598</td>
+      <td>1185598</td>
+    </tr>
+<tr>
+<th>2013</th>
+      <td>1221690</td>
+      <td>1177863</td>
+      <td>1221690</td>
+      <td>1221690</td>
+    </tr>
+<tr>
+<th>2014</th>
+      <td>1354300</td>
+      <td>1305561</td>
+      <td>1354300</td>
+      <td>1354300</td>
+    </tr>
+<tr>
+<th>2015</th>
+      <td>1451521</td>
+      <td>1378090</td>
+      <td>1451521</td>
+      <td>1451521</td>
+    </tr>
+<tr>
+<th>2016</th>
+      <td>605070</td>
+      <td>530959</td>
+      <td>605070</td>
+      <td>605070</td>
+    </tr>
+</tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [7]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">data</span><span class="p">[</span><span class="s1">'timedelta'</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">'closeddate'</span><span class="p">]</span> <span class="o">-</span> <span class="n">data</span><span class="p">[</span><span class="s1">'createddate'</span><span class="p">]</span>
+<span class="n">data</span><span class="p">[</span><span class="s1">'timedeltaint'</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span><span class="o">.</span><span class="n">days</span> <span class="k">if</span> <span class="n">pd</span><span class="o">.</span><span class="n">isnull</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">==</span> <span class="bp">False</span> <span class="k">else</span> <span class="bp">None</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">data</span><span class="p">[</span><span class="s1">'timedelta'</span><span class="p">]]</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [8]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">data</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="s1">'cryear'</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt output_prompt">Out[8]:</div>
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<table border="1" class="dataframe">
+<thead>
+<tr style="text-align: right;">
+<th></th>
+      <th>crmonth</th>
+      <th>timedeltaint</th>
+    </tr>
+<tr>
+<th>cryear</th>
+      <th></th>
+      <th></th>
+    </tr>
+</thead>
+<tbody>
+<tr>
+<th>2010</th>
+      <td>6.505385</td>
+      <td>24.508043</td>
+    </tr>
+<tr>
+<th>2011</th>
+      <td>6.491262</td>
+      <td>22.512834</td>
+    </tr>
+<tr>
+<th>2012</th>
+      <td>6.617468</td>
+      <td>22.690249</td>
+    </tr>
+<tr>
+<th>2013</th>
+      <td>6.414707</td>
+      <td>20.205784</td>
+    </tr>
+<tr>
+<th>2014</th>
+      <td>6.280245</td>
+      <td>19.712918</td>
+    </tr>
+<tr>
+<th>2015</th>
+      <td>6.314193</td>
+      <td>16.731161</td>
+    </tr>
+<tr>
+<th>2016</th>
+      <td>2.799473</td>
+      <td>8.634098</td>
+    </tr>
+</tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>This table shows exactly what I'm talking about - as we get closer to the current day, the average resolution time falls more and more. If censorig is occuring, we might expect that the proportion of cases closed is also decreasing over time. This is generally the case:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [9]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">databyyear</span><span class="p">[</span><span class="s1">'propclosed'</span><span class="p">]</span> <span class="o">=</span> <span class="n">databyyear</span><span class="p">[</span><span class="s1">'closeddate'</span><span class="p">]</span><span class="o">/</span><span class="n">databyyear</span><span class="p">[</span><span class="s1">'createddate'</span><span class="p">]</span>
+<span class="n">databyyear</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt output_prompt">Out[9]:</div>
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<table border="1" class="dataframe">
+<thead>
+<tr style="text-align: right;">
+<th></th>
+      <th>createddate</th>
+      <th>closeddate</th>
+      <th>borough</th>
+      <th>crmonth</th>
+      <th>propclosed</th>
+    </tr>
+<tr>
+<th>cryear</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+</thead>
+<tbody>
+<tr>
+<th>2010</th>
+      <td>1340309</td>
+      <td>1281719</td>
+      <td>1340309</td>
+      <td>1340309</td>
+      <td>0.956286</td>
+    </tr>
+<tr>
+<th>2011</th>
+      <td>1294795</td>
+      <td>1157180</td>
+      <td>1294795</td>
+      <td>1294795</td>
+      <td>0.893717</td>
+    </tr>
+<tr>
+<th>2012</th>
+      <td>1185598</td>
+      <td>1148399</td>
+      <td>1185598</td>
+      <td>1185598</td>
+      <td>0.968624</td>
+    </tr>
+<tr>
+<th>2013</th>
+      <td>1221690</td>
+      <td>1177863</td>
+      <td>1221690</td>
+      <td>1221690</td>
+      <td>0.964126</td>
+    </tr>
+<tr>
+<th>2014</th>
+      <td>1354300</td>
+      <td>1305561</td>
+      <td>1354300</td>
+      <td>1354300</td>
+      <td>0.964012</td>
+    </tr>
+<tr>
+<th>2015</th>
+      <td>1451521</td>
+      <td>1378090</td>
+      <td>1451521</td>
+      <td>1451521</td>
+      <td>0.949411</td>
+    </tr>
+<tr>
+<th>2016</th>
+      <td>605070</td>
+      <td>530959</td>
+      <td>605070</td>
+      <td>605070</td>
+      <td>0.877517</td>
+    </tr>
+</tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>With the exception of year 2011, which we have reason to believe is wonky (see Hack for Heat #4), this is generally the case. So, how do we deal with this issue? To be honest, I don't know at the moment. But I'm going to read <a href="https://stsda.kaust.edu.sa/Documents/2007.PGG.CJS.pdf">this</a> paper tomorrow, and see if I can implement something.</p>
+
+</div>
+</div>
+</div>
+    </div>
+  </div>
+
+    </div>
+    </article><article class="h-entry post-text"><header><h1 class="p-name entry-title"><a href="posts/hack-for-heat-5-complaint-resolution-time/" class="u-url">Hack for Heat #5: Complaint resolution time</a></h1>
         <div class="metadata">
             <p class="byline author vcard"><span class="byline-name fn">
                 Bryan Sim
@@ -6639,484 +7097,6 @@ value_money_rating rsquared: 0.931569962502
 </div>
 </div>
 
-</div>
-    </div>
-  </div>
-
-    </div>
-    </article><article class="h-entry post-text"><header><h1 class="p-name entry-title"><a href="posts/the-average-thing-4-the-average-place-pt1/" class="u-url">The Average Thing #4: The Average Place pt.1</a></h1>
-        <div class="metadata">
-            <p class="byline author vcard"><span class="byline-name fn">
-                Bryan Sim
-            </span></p>
-            <p class="dateline"><a href="posts/the-average-thing-4-the-average-place-pt1/" rel="bookmark"><time class="published dt-published" datetime="2016-05-10T21:13:05-04:00" title="2016-05-10 21:13">2016-05-10 21:13</time></a></p>
-        </div>
-    </header><div class="e-content entry-content">
-    <div tabindex="-1" id="notebook" class="border-box-sizing">
-    <div class="container" id="notebook-container">
-
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In [1]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="o">%</span><span class="k">matplotlib</span> inline
-</pre></div>
-
-</div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="The-Average-Thing-#4:-The-average-place-pt.-1">The Average Thing #4: The average place pt. 1<a class="anchor-link" href="posts/the-average-thing-4-the-average-place-pt1/#The-Average-Thing-#4:-The-average-place-pt.-1">¶</a>
-</h2>
-<p>Today, we're going to take an initial look at finding where the average artifact comes from.</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In [2]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
-<span class="kn">import</span> <span class="nn">re</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">pyplot</span> <span class="k">as</span> <span class="n">plt</span>
-<span class="kn">from</span> <span class="nn">geopy.geocoders</span> <span class="kn">import</span> <span class="n">Nominatim</span>
-<span class="n">pd</span><span class="o">.</span><span class="n">get_option</span><span class="p">(</span><span class="s2">"display.max_columns"</span><span class="p">)</span>
-<span class="n">pd</span><span class="o">.</span><span class="n">set_option</span><span class="p">(</span><span class="s2">"display.max_columns"</span><span class="p">,</span> <span class="mi">40</span><span class="p">)</span>
-
-<span class="n">data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">"cstmc-CSV-en.csv"</span><span class="p">,</span> <span class="n">delimiter</span> <span class="o">=</span> <span class="s2">"|"</span><span class="p">,</span> <span class="n">error_bad_lines</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">warn_bad_lines</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-<div class="prompt"></div>
-<div class="output_subarea output_stream output_stderr output_text">
-<pre>C:\Users\dfthd\Anaconda3\envs\python2\lib\site-packages\IPython\core\interactiveshell.py:2723: DtypeWarning: Columns (9,10) have mixed types. Specify dtype option on import or set low_memory=False.
-  interactivity=interactivity, compiler=compiler, result=result)
-</pre>
-</div>
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>We're going to use the <a href="http://geopy.readthedocs.io/en/1.10.0/">GeoPy</a> package to see if we can extract the latitude and longitude data from each of the countries. Let's start with a test case:</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In [3]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="n">geolocator</span> <span class="o">=</span> <span class="n">Nominatim</span><span class="p">()</span> <span class="c1">#Using the service Nominatim</span>
-<span class="n">examplecase</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">'ManuCountry'</span><span class="p">][</span><span class="mi">7</span><span class="p">]</span>
-<span class="k">print</span> <span class="n">examplecase</span>
-<span class="n">location</span> <span class="o">=</span> <span class="n">geolocator</span><span class="o">.</span><span class="n">geocode</span><span class="p">(</span><span class="n">examplecase</span><span class="p">)</span> <span class="c1">#Use the geocode method, </span>
-<span class="k">print</span> <span class="n">location</span><span class="o">.</span><span class="n">latitude</span>
-<span class="k">print</span> <span class="n">location</span><span class="o">.</span><span class="n">longitude</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-<div class="prompt"></div>
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>United States of America
-39.7837304
--100.4458824
-</pre>
-</div>
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>Now, with that latitude and longitude, let's see where that takes us. If you imput the coordinates on Google Maps, it points to somewhere in the middle of the U.S. That's good enough for now:</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In [4]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">from</span> <span class="nn">IPython.display</span> <span class="kn">import</span> <span class="n">IFrame</span>
-<span class="kn">from</span> <span class="nn">IPython.core.display</span> <span class="kn">import</span> <span class="n">display</span>
-
-<span class="n">IFrame</span><span class="p">(</span><span class="s1">'''https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d11800310.147808608!</span><span class="se">\</span>
-<span class="s1">2d-107.43346408765365!3d38.054495438444!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMznCsDQ3JzAx</span><span class="se">\</span>
-<span class="s1">LjQiTiAxMDDCsDI2JzQ1LjIiVw!5e0!3m2!1sen!2sus!4v1462918136743'''</span><span class="p">,</span> <span class="n">width</span> <span class="o">=</span> <span class="mi">800</span><span class="p">,</span> <span class="n">height</span> <span class="o">=</span> <span class="mi">600</span><span class="p">)</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-<div class="prompt output_prompt">Out[4]:</div>
-
-<div class="output_html rendered_html output_subarea output_execute_result">
-
-        <iframe width="800" height="600" src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d11800310.147808608!2d-107.43346408765365!3d38.054495438444!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMznCsDQ3JzAxLjQiTiAxMDDCsDI2JzQ1LjIiVw!5e0!3m2!1sen!2sus!4v1462918136743" frameborder="0" allowfullscreen></iframe>
-        
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>Next, we're going to do the same for all the countries of origin:</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In [5]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="c1">#This simple function takes a string and returns a tuple of the latitude and longitude</span>
-<span class="k">def</span> <span class="nf">find_lat_long</span><span class="p">(</span><span class="n">string</span><span class="p">):</span>
-    <span class="n">geolocator</span> <span class="o">=</span> <span class="n">Nominatim</span><span class="p">()</span> <span class="c1">#Using the service Nominatim</span>
-    <span class="n">location</span> <span class="o">=</span> <span class="n">geolocator</span><span class="o">.</span><span class="n">geocode</span><span class="p">(</span><span class="n">string</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="bp">None</span><span class="p">)</span> <span class="c1">#Use the geocode method, </span>
-    <span class="k">return</span><span class="p">(</span><span class="n">location</span><span class="o">.</span><span class="n">latitude</span><span class="p">,</span> <span class="n">location</span><span class="o">.</span><span class="n">longitude</span><span class="p">)</span>
-
-<span class="kn">import</span> <span class="nn">math</span>
-
-<span class="c1">#create a dictionary of all the countries</span>
-<span class="n">country_locations</span> <span class="o">=</span> <span class="p">{</span><span class="n">country</span><span class="p">:</span><span class="s2">""</span> <span class="k">for</span> <span class="n">country</span> <span class="ow">in</span> <span class="n">data</span><span class="p">[</span><span class="s1">'ManuCountry'</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">()</span> <span class="k">if</span> <span class="p">(</span><span class="n">country</span> <span class="o">!=</span> <span class="s1">'Unknown'</span><span class="p">)</span>\
-                          <span class="ow">and</span> <span class="p">(</span><span class="n">country</span> <span class="o">!=</span> <span class="s1">'unknown'</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">country</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">str</span><span class="p">)}</span>
-
-<span class="c1">#country_locations = {k: find_lat_long(k) for k, v in country_locations.iteritems()}</span>
-<span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">country_locations</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
-    <span class="k">try</span><span class="p">:</span>
-        <span class="n">country_locations</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">find_lat_long</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
-    <span class="k">except</span><span class="p">:</span>
-        <span class="k">pass</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In [6]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="k">print</span> <span class="n">country_locations</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-<div class="prompt"></div>
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>{'Canada': (61.0666922, -107.991707), 'Brazil': (-10.3333332, -53.1999999), 'Qatar': (25.3336984, 51.2295295), 'Italy': (42.6384261, 12.674297), 'Peru': (-6.8699696, -75.0458514), 'Antarctica': (-82.1081819, 34.378236), 'Panama': (8.3096067, -81.3066245), 'Scotland': (56.7861112, -4.1140517), 'Cambodia': (13.5066394, 104.869423), 'France': (46.603354, 1.8883335), 'Great Britain': (54.31536155, -1.91802339480124), 'Bermuda': (32.3018217, -64.7603582), 'Ireland': (52.865196, -7.9794598), 'Wales': (52.2928116, -3.7389299), 'Argentina': (-34.9964962, -64.9672816), 'Norway': (64.574131, 11.5270102892405), 'Thailand': (14.8971921, 100.83273), 'Bangladesh': (24.4768783, 90.2932426), 'Federal Republic of Germany': (45.4185139, -75.6817796429953), 'Slovakia': (48.7411522, 19.4528646), 'Israel': (30.8760272, 35.0015196), 'Australia': (-24.7761085, 134.755), 'Columbia': (2.893108, -73.7845142), 'Indonesia': (-4.7993355, 114.5632032), 'Singapore': (1.2904527, 103.852038), 'Afganistan': (33.0000866, 64.9998468), 'Czechoslovakia': (41.2133453, -98.6228518), 'German Democratic Republic': (19.4347018, -99.2052135855648), 'United States of America': (39.7837304, -100.4458824), 'South America': (-21.0002178, -61.0006564), 'Union of Soviet Socialist Republics': '', 'Guatemala': (15.6356088, -89.8988086), 'Germany': (51.0834196, 10.4234469), 'Chile': (-31.7613364, -71.3187696), 'Martinique': (14.6113732, -60.9620776), 'Belgium': (50.6407351, 4.66696), 'China': (35.000074, 104.999927), 'Haiti': (19.1399952, -72.3570971), 'Hong Kong': (22.2793278, 114.1628131), 'Philippines': (12.7503486, 122.7312101), 'Spain': (40.0028028, -4.0031039), 'Ukraine': (49.4871968, 31.2718321), 'Europe': (51.0000003, 9.9999997), 'Netherlands': (52.2379891, 5.53460738161551), 'Holland': (42.7876022, -86.1090827), 'Pakistan': (30.3308401, 71.247499), 'Denmark': (55.670249, 10.3333283), 'Poland': (52.0977181, 19.0258159), 'Finland': (63.2467777, 25.9209164), 'Mexico': (19.4325301, -99.1332101), 'North America': (51.0000002, -109.0000001), 'Sweden': (59.6749712, 14.5208584), 'Korea': (35.3985008, 127.937111), 'Hungary': (47.1817585, 19.5060937), 'Switzerland': (46.7985624, 8.2319736), 'Honduras': (15.0610686, -84.5978533), 'New Zealand': (-41.500083, 172.8344077), 'Cuba': (23.0131338, -80.8328747), 'Physics': (14.4832485, 121.0269845), 'Jamaica': (18.1850507, -77.3947692), 'Romania': (45.9852129, 24.6859225), 'England': (52.7954791, -0.540240236617432), 'Portugal': (40.033265, -7.8896262), 'South Africa': (-28.8166235, 24.991639), 'Egypt': (26.2540493, 29.2675469), 'Unknown.': (24.9993709, -77.4417422759927), 'Liechtenshtein': (31.9345932, 34.8325777), 'India': (22.3511148, 78.6677428), 'United Kingdom': (54.7023545, -3.2765752), 'Malaysia': (2.3923759, 112.8471939), 'Austria': (47.2000338, 13.199959), 'Trinidad and Tabago': '', 'Republic of Korea': (35.3985008, 127.937111), 'Northern Ireland': (54.65688285, -6.5634352096912), 'Sri Lanka': (7.878, 80.7038245875), 'Japan': (36.5748441, 139.2394179), 'Taiwan': (23.9739374, 120.9820179)}
-</pre>
-</div>
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In [7]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="n">data</span><span class="p">[</span><span class="s1">'GeoLocations'</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">country_locations</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">data</span><span class="p">[</span><span class="s1">'ManuCountry'</span><span class="p">]]</span> 
-<span class="c1">#we use .get() instead of country_locations[x] to prevent errors when keys are not in the dictionary</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In [12]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="n">data</span><span class="p">[</span><span class="s1">'GeoLocations'</span><span class="p">][</span><span class="mi">80</span><span class="p">:</span><span class="mi">100</span><span class="p">]</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-<div class="prompt output_prompt">Out[12]:</div>
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>80                          None
-81                          None
-82                          None
-83    (39.7837304, -100.4458824)
-84    (39.7837304, -100.4458824)
-85                          None
-86                          None
-87     (61.0666922, -107.991707)
-88     (61.0666922, -107.991707)
-89    (39.7837304, -100.4458824)
-90    (39.7837304, -100.4458824)
-91    (39.7837304, -100.4458824)
-92    (39.7837304, -100.4458824)
-93    (39.7837304, -100.4458824)
-94    (39.7837304, -100.4458824)
-95    (39.7837304, -100.4458824)
-96    (39.7837304, -100.4458824)
-97                          None
-98                          None
-99    (39.7837304, -100.4458824)
-Name: GeoLocations, dtype: object</pre>
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>The above process has yielded tuples of latitudes and longitudes where an artifact's country of origin was available, and null where it hasn't. To average this, we're going to have to do some <a href="http://www.geomidpoint.com/calculation.html">math</a>, because the earth is round and we can't just add the latitudes and longitudes up:</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In [9]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="c1">#We're going to have to convert degrees to radians, so let's define a function to do that:</span>
-
-<span class="k">def</span> <span class="nf">to_radians</span><span class="p">(</span><span class="n">latlong</span><span class="p">):</span>
-    <span class="k">try</span><span class="p">:</span>
-        <span class="k">return</span> <span class="p">(</span><span class="n">latlong</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="mf">3.142</span><span class="o">/</span><span class="mi">180</span><span class="p">,</span> <span class="n">latlong</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="mf">3.142</span><span class="o">/</span><span class="mi">180</span><span class="p">)</span>
-    <span class="k">except</span><span class="p">:</span>
-        <span class="k">pass</span>
-
-<span class="c1">#Next, because the earth is round, we have to convert these to cartesian coordinates:</span>
-<span class="k">def</span> <span class="nf">to_cartesian</span><span class="p">(</span><span class="n">latlongradians</span><span class="p">):</span>
-    <span class="k">try</span><span class="p">:</span>
-        <span class="n">x</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">latlongradians</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">latlongradians</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
-        <span class="n">y</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">latlongradians</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">latlongradians</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
-        <span class="n">z</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">latlongradians</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-        <span class="k">return</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">z</span><span class="p">)</span>
-    <span class="k">except</span><span class="p">:</span>
-        <span class="k">pass</span>
-    
-<span class="c1">#Finally, we convert back to our original latitude/longitude:</span>
-<span class="k">def</span> <span class="nf">to_latlong</span><span class="p">(</span><span class="n">cartesian</span><span class="p">):</span>
-    <span class="k">try</span><span class="p">:</span>
-        <span class="n">x</span> <span class="o">=</span> <span class="n">cartesian</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="n">y</span> <span class="o">=</span> <span class="n">cartesian</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-        <span class="n">z</span> <span class="o">=</span> <span class="n">cartesian</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
-        <span class="n">lon</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">atan2</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
-        <span class="n">hyp</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">x</span> <span class="o">*</span> <span class="n">x</span> <span class="o">+</span> <span class="n">y</span> <span class="o">*</span> <span class="n">y</span><span class="p">)</span>
-        <span class="n">lat</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">atan2</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="n">hyp</span><span class="p">)</span>
-        <span class="k">return</span><span class="p">(</span><span class="n">lat</span><span class="o">*</span><span class="mi">180</span><span class="o">/</span><span class="mf">3.142</span><span class="p">,</span><span class="n">lon</span><span class="o">*</span><span class="mi">180</span><span class="o">/</span><span class="mf">3.142</span><span class="p">)</span>
-    <span class="k">except</span><span class="p">:</span>
-        <span class="k">pass</span>
-    
-<span class="k">print</span> <span class="n">data</span><span class="p">[</span><span class="s1">'GeoLocations'</span><span class="p">][</span><span class="mi">90</span><span class="p">]</span>    
-<span class="k">print</span> <span class="n">to_radians</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">'GeoLocations'</span><span class="p">][</span><span class="mi">90</span><span class="p">])</span>
-<span class="k">print</span> <span class="n">to_cartesian</span><span class="p">(</span><span class="n">to_radians</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">'GeoLocations'</span><span class="p">][</span><span class="mi">90</span><span class="p">]))</span>
-<span class="k">print</span> <span class="n">to_latlong</span><span class="p">(</span><span class="n">to_cartesian</span><span class="p">(</span><span class="n">to_radians</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">'GeoLocations'</span><span class="p">][</span><span class="mi">90</span><span class="p">])))</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-<div class="prompt"></div>
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>(39.7837304, -100.4458824)
-(0.6944471162044444, -1.75333868056)
-(-0.13948924758883874, -0.7556408246036178, 0.6399606972302785)
-(39.7837304, -100.4458824)
-</pre>
-</div>
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>Looks like this works! Now, let's map it to the entire series:</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In [10]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="n">data</span><span class="p">[</span><span class="s1">'GeoRadians'</span><span class="p">]</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="n">to_radians</span><span class="p">,</span><span class="n">data</span><span class="p">[</span><span class="s1">'GeoLocations'</span><span class="p">])</span>
-<span class="n">data</span><span class="p">[</span><span class="s1">'GeoCartesian'</span><span class="p">]</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="n">to_cartesian</span><span class="p">,</span> <span class="n">data</span><span class="p">[</span><span class="s1">'GeoRadians'</span><span class="p">])</span>
-
-<span class="c1">#Now, let's average across all the dimensions by reducing:</span>
-<span class="n">geo_no_nan</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">data</span><span class="p">[</span><span class="s1">'GeoCartesian'</span><span class="p">]</span><span class="o">.</span><span class="n">isnull</span><span class="p">()</span> <span class="o">==</span> <span class="bp">False</span><span class="p">][</span><span class="s1">'GeoCartesian'</span><span class="p">]</span>
-
-<span class="n">avgcoordinates</span> <span class="o">=</span> <span class="nb">reduce</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">:</span> <span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">y</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">y</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">+</span> <span class="n">y</span><span class="p">[</span><span class="mi">2</span><span class="p">]),</span> <span class="n">geo_no_nan</span><span class="p">)</span>
-<span class="k">print</span> <span class="n">avgcoordinates</span>
-<span class="n">avgcoordinates</span> <span class="o">=</span> <span class="p">(</span><span class="n">avgcoordinates</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">/</span><span class="nb">len</span><span class="p">(</span><span class="n">geo_no_nan</span><span class="p">),</span> <span class="n">avgcoordinates</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">/</span><span class="nb">len</span><span class="p">(</span><span class="n">geo_no_nan</span><span class="p">),</span> <span class="n">avgcoordinates</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">/</span><span class="nb">len</span><span class="p">(</span><span class="n">geo_no_nan</span><span class="p">))</span>
-<span class="k">print</span> <span class="n">avgcoordinates</span>
-<span class="k">print</span> <span class="n">to_latlong</span><span class="p">(</span><span class="n">avgcoordinates</span><span class="p">)</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-<div class="prompt"></div>
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>(1612.787448314339, -17961.012440354283, 33139.39424219098)
-(0.036587737030724564, -0.40746398458154, 0.7518011397956211)
-(61.43857821633736, -84.85795258473567)
-</pre>
-</div>
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>This procedure says that the location where the average artifact is manufactured is in the Hudson Bay in Canada:</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In [11]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="n">IFrame</span><span class="p">(</span><span class="s1">'''https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d9892352.643336799!2d-98.04822081277437</span><span class="se">\</span>
-<span class="s1">!3d59.40187990911089!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNjHCsDI2JzE4LjkiTiA</span><span class="se">\</span>
-<span class="s1">4NMKwNTEnMjguNiJX!5e0!3m2!1sen!2sus!4v1462926074704'''</span><span class="p">,</span> <span class="n">width</span> <span class="o">=</span> <span class="mi">800</span><span class="p">,</span> <span class="n">height</span> <span class="o">=</span> <span class="mi">600</span><span class="p">)</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-<div class="prompt output_prompt">Out[11]:</div>
-
-<div class="output_html rendered_html output_subarea output_execute_result">
-
-        <iframe width="800" height="600" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d9892352.643336799!2d-98.04822081277437!3d59.40187990911089!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNjHCsDI2JzE4LjkiTiA4NMKwNTEnMjguNiJX!5e0!3m2!1sen!2sus!4v1462926074704" frameborder="0" allowfullscreen></iframe>
-        
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>This seems a little strange to me, and I'm definitely going to have to dig deeper in a future post, but I think my math is right, and perhaps I'm just visualizing this in my head wrongly.</p>
-
-</div>
-</div>
 </div>
     </div>
   </div>
