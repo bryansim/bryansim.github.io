@@ -96,7 +96,608 @@ This is my blog of the following projects (links above):</p>
 
 </article><hr>
 <div class="postindex">
-    <article class="h-entry post-text"><header><h1 class="p-name entry-title"><a href="posts/skytrax-data-3-the-ols-model/" class="u-url">Skytrax Data #3: The OLS Model</a></h1>
+    <article class="h-entry post-text"><header><h1 class="p-name entry-title"><a href="posts/skytrax-data-4-the-logit-model/" class="u-url">Skytrax Data #4: The Logit Model</a></h1>
+        <div class="metadata">
+            <p class="byline author vcard"><span class="byline-name fn">
+                Bryan Sim
+            </span></p>
+            <p class="dateline"><a href="posts/skytrax-data-4-the-logit-model/" rel="bookmark"><time class="published dt-published" datetime="2016-05-17T17:45:22-04:00" title="2016-05-17 17:45">2016-05-17 17:45</time></a></p>
+        </div>
+    </header><div class="e-content entry-content">
+    <div tabindex="-1" id="notebook" class="border-box-sizing">
+    <div class="container" id="notebook-container">
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Skytrax-Data-#4:-The-Logit-Model">Skytrax Data #4: The Logit Model<a class="anchor-link" href="posts/skytrax-data-4-the-logit-model/#Skytrax-Data-#4:-The-Logit-Model">¶</a>
+</h2>
+<p>We're going to quickly follow up on the OLS model presented in the last post with an alternative outcome variable: Whether or not passengers chose to recommend the airline to others.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [1]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">psycopg2</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">sqlalchemy</span> <span class="kn">import</span> <span class="n">create_engine</span>
+<span class="kn">import</span> <span class="nn">math</span>
+<span class="kn">import</span> <span class="nn">statsmodels.api</span> <span class="kn">as</span> <span class="nn">sm</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [2]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="c1">#This connects to the postgres database above.</span>
+<span class="n">connection</span> <span class="o">=</span> <span class="n">psycopg2</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="s2">"dbname = skytrax user=skytraxadmin password=skytraxadmin"</span><span class="p">)</span>
+<span class="n">cursor</span> <span class="o">=</span> <span class="n">connection</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [3]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">connection</span><span class="o">.</span><span class="n">rollback</span><span class="p">()</span>
+<span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s1">'SELECT * from airline;'</span><span class="p">)</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">cursor</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [4]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+<span class="n">descriptions</span> <span class="o">=</span> <span class="p">[</span><span class="n">desc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">desc</span> <span class="ow">in</span> <span class="n">cursor</span><span class="o">.</span><span class="n">description</span><span class="p">]</span>
+<span class="n">data</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="n">descriptions</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>In these data, "recommended" is coded as 1 and "not recommended" is coded as 0:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [25]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="k">print</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">data</span><span class="p">[</span><span class="s1">'recommended'</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">])</span>
+<span class="k">print</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">data</span><span class="p">[</span><span class="s1">'recommended'</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">])</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>22098
+19298
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [27]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">data</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">by</span> <span class="o">=</span> <span class="s1">'recommended'</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt output_prompt">Out[27]:</div>
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<table border="1" class="dataframe">
+<thead>
+<tr style="text-align: right;">
+<th></th>
+      <th>overall_rating</th>
+      <th>seat_comfort_rating</th>
+      <th>cabin_staff_rating</th>
+      <th>food_beverages_rating</th>
+      <th>inflight_entertainment_rating</th>
+      <th>ground_service_rating</th>
+      <th>wifi_connectivity_rating</th>
+      <th>value_money_rating</th>
+    </tr>
+<tr>
+<th>recommended</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+</thead>
+<tbody>
+<tr>
+<th>0</th>
+      <td>2.640637</td>
+      <td>2.082208</td>
+      <td>2.094998</td>
+      <td>1.773961</td>
+      <td>1.618873</td>
+      <td>1.626176</td>
+      <td>1.403509</td>
+      <td>1.812525</td>
+    </tr>
+<tr>
+<th>1</th>
+      <td>8.327206</td>
+      <td>3.953765</td>
+      <td>4.358122</td>
+      <td>3.667807</td>
+      <td>3.043509</td>
+      <td>3.992263</td>
+      <td>3.547085</td>
+      <td>4.242555</td>
+    </tr>
+</tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Unsurprisingly, ratings for flights that are recommended are higher than those that are not.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="The-logistic-regression-model">The logistic regression model<a class="anchor-link" href="posts/skytrax-data-4-the-logit-model/#The-logistic-regression-model">¶</a>
+</h3>
+<p>How do these ratings influence whether or not a passenger ultimately choses to recommend an airline to others? To find out, we can calculate the change in odds with each unit change in each variable. For example, for every point higher an airline scores on its overall rating, what is the probability that a passenger selected "1", would recommend, rather than "0"?</p>
+<p>Again, we're going to ignore ground service ratings as well as wifi connectivity rating because the vast majority of cases have missing values on these variables.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The first thing we're going to do is center all our predictors. This, as we will see shortly, makes the constant interpretable, and is useful when trying to make point predictions (i.e., what are the odds that someone recommends an airline vs. not if he/she rated it an 8, for example).</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [ ]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">predictors</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'overall_rating'</span><span class="p">,</span> <span class="s1">'seat_comfort_rating'</span><span class="p">,</span> <span class="s1">'cabin_staff_rating'</span><span class="p">,</span> <span class="s1">'food_beverages_rating'</span><span class="p">,</span> \
+          <span class="s1">'inflight_entertainment_rating'</span><span class="p">,</span> <span class="s1">'value_money_rating'</span><span class="p">]</span>
+
+<span class="k">for</span> <span class="n">predictor</span> <span class="ow">in</span> <span class="n">predictors</span><span class="p">:</span>
+    <span class="n">data</span><span class="p">[</span><span class="s1">'{0}_centered'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">predictor</span><span class="p">)]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">predictor</span><span class="p">]</span> <span class="o">-</span> <span class="n">data</span><span class="p">[</span><span class="n">predictor</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>I ran two models, one that included passengers' overall ratings, and one that did not:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [55]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">statsmodels.api</span> <span class="kn">as</span> <span class="nn">sm</span>
+
+<span class="c1">#x = data[['seat_comfort_rating', 'cabin_staff_rating', 'food_beverages_rating', \</span>
+<span class="c1">#          'inflight_entertainment_rating', 'value_money_rating']]</span>
+
+<span class="n">x</span> <span class="o">=</span> <span class="n">data</span><span class="p">[[</span><span class="s1">'seat_comfort_rating_centered'</span><span class="p">,</span> <span class="s1">'cabin_staff_rating_centered'</span><span class="p">,</span>\
+          <span class="s1">'food_beverages_rating_centered'</span><span class="p">,</span> <span class="s1">'inflight_entertainment_rating_centered'</span><span class="p">,</span> <span class="s1">'value_money_rating_centered'</span><span class="p">]]</span>
+
+
+<span class="n">x</span> <span class="o">=</span> <span class="n">sm</span><span class="o">.</span><span class="n">add_constant</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+
+<span class="n">logit</span> <span class="o">=</span> <span class="n">sm</span><span class="o">.</span><span class="n">Logit</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">'recommended'</span><span class="p">],</span> <span class="n">x</span><span class="p">,</span> <span class="n">missing</span> <span class="o">=</span> <span class="s1">'drop'</span><span class="p">)</span> <span class="c1">#drop missing values</span>
+
+<span class="n">results</span> <span class="o">=</span> <span class="n">logit</span><span class="o">.</span><span class="n">fit</span><span class="p">()</span>
+<span class="n">results</span><span class="o">.</span><span class="n">summary</span><span class="p">()</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Optimization terminated successfully.
+         Current function value: 0.215391
+         Iterations 8
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+<div class="prompt output_prompt">Out[55]:</div>
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<table class="simpletable">
+<caption>Logit Regression Results</caption>
+<tr>
+<th>Dep. Variable:</th>    <td>recommended</td>   <th>  No. Observations:  </th>  <td> 31075</td> 
+</tr>
+<tr>
+<th>Model:</th>               <td>Logit</td>      <th>  Df Residuals:      </th>  <td> 31069</td> 
+</tr>
+<tr>
+<th>Method:</th>               <td>MLE</td>       <th>  Df Model:          </th>  <td>     5</td> 
+</tr>
+<tr>
+<th>Date:</th>          <td>Tue, 17 May 2016</td> <th>  Pseudo R-squ.:     </th>  <td>0.6876</td> 
+</tr>
+<tr>
+<th>Time:</th>              <td>17:17:33</td>     <th>  Log-Likelihood:    </th> <td> -6693.3</td>
+</tr>
+<tr>
+<th>converged:</th>           <td>True</td>       <th>  LL-Null:           </th> <td> -21423.</td>
+</tr>
+<tr>
+<th> </th>                      <td> </td>        <th>  LLR p-value:       </th>  <td> 0.000</td> 
+</tr>
+</table>
+<table class="simpletable">
+<tr>
+<td></td>                       <th>coef</th>     <th>std err</th>      <th>z</th>      <th>P&gt;|z|</th> <th>[95.0% Conf. Int.]</th> 
+</tr>
+<tr>
+<th>const</th>                                  <td>    0.0595</td> <td>    0.023</td> <td>    2.610</td> <td> 0.009</td> <td>    0.015     0.104</td>
+</tr>
+<tr>
+<th>seat_comfort_rating_centered</th>           <td>    0.5314</td> <td>    0.022</td> <td>   24.398</td> <td> 0.000</td> <td>    0.489     0.574</td>
+</tr>
+<tr>
+<th>cabin_staff_rating_centered</th>            <td>    0.8361</td> <td>    0.021</td> <td>   39.970</td> <td> 0.000</td> <td>    0.795     0.877</td>
+</tr>
+<tr>
+<th>food_beverages_rating_centered</th>         <td>    0.2134</td> <td>    0.019</td> <td>   11.344</td> <td> 0.000</td> <td>    0.177     0.250</td>
+</tr>
+<tr>
+<th>inflight_entertainment_rating_centered</th> <td>    0.0747</td> <td>    0.015</td> <td>    4.915</td> <td> 0.000</td> <td>    0.045     0.105</td>
+</tr>
+<tr>
+<th>value_money_rating_centered</th>            <td>    1.3341</td> <td>    0.026</td> <td>   52.277</td> <td> 0.000</td> <td>    1.284     1.384</td>
+</tr>
+</table>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [56]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">results</span><span class="o">.</span><span class="n">params</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt output_prompt">Out[56]:</div>
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>const                                     1.061330
+seat_comfort_rating_centered              1.701393
+cabin_staff_rating_centered               2.307242
+food_beverages_rating_centered            1.237909
+inflight_entertainment_rating_centered    1.077572
+value_money_rating_centered               3.796635
+dtype: float64</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Interpreting-the-output">Interpreting the output<a class="anchor-link" href="posts/skytrax-data-4-the-logit-model/#Interpreting-the-output">¶</a>
+</h3>
+<p>The coefficients of a logistic regression are in log odds, so to make them intuitively interpretable, we exponentiate them to get odds ratios. Odds ratios are simply the likelihood of one case over the other (in our case, it's the likelihood of recommending vs not).</p>
+<h4 id="The-constant">The constant<a class="anchor-link" href="posts/skytrax-data-4-the-logit-model/#The-constant">¶</a>
+</h4>
+<p>The constant in this model is the predicted value (in this case, the predicted log odds) when all Xs = 0.</p>
+<p>In this case, because we centered our variables at the mean, X=0 refers to the mean of that variable. Thus, our constant in this analysis refers to the odds of recommending vs not recommending for a hypothetical passenger who gave the airline mean ratings across the board. It's value, in this case, 1.06, tells us that this hypothetical passenger was 6% more likely to recommend than not. This is close to the unconditional (i.e., when we don't have any predictors) ratio of 14% (which is what you get when you divide the number of people who recommended vs not).</p>
+<h4 id="The-coefficients">The coefficients<a class="anchor-link" href="posts/skytrax-data-4-the-logit-model/#The-coefficients">¶</a>
+</h4>
+<p>The coefficients in this model refer to the change in odds with each unit change for each variable. A value above one means that higher passenger ratings on that variable makes it more likely that a passenger recommends an airline. As one might expect, this was the case across the board here.</p>
+<p>Let's look at a specific example: The coefficient of value for money, which is the largest here, tells us that, holding all other variables constant (i.e., for our hypothetical passenger that scored an airline the mean for everything), each unit change in value for money made it 3.8 times more likely (than the base rate of 6%) that he/she would recommend vs not.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Including-passengers'-overall-ratings-into-the-model">Including passengers' overall ratings into the model<a class="anchor-link" href="posts/skytrax-data-4-the-logit-model/#Including-passengers'-overall-ratings-into-the-model">¶</a>
+</h3>
+<p>Next, we're going to look at a model that includes passengers' overall ratings:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [60]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="c1">#x = data[['overall_rating', 'seat_comfort_rating', 'cabin_staff_rating', 'food_beverages_rating', \</span>
+<span class="c1">#          'inflight_entertainment_rating', 'value_money_rating']]</span>
+
+<span class="n">x</span> <span class="o">=</span> <span class="n">data</span><span class="p">[[</span><span class="s1">'overall_rating_centered'</span><span class="p">,</span> <span class="s1">'seat_comfort_rating_centered'</span><span class="p">,</span> <span class="s1">'cabin_staff_rating_centered'</span><span class="p">,</span>\
+          <span class="s1">'food_beverages_rating_centered'</span><span class="p">,</span> <span class="s1">'inflight_entertainment_rating_centered'</span><span class="p">,</span> <span class="s1">'value_money_rating_centered'</span><span class="p">]]</span>
+
+<span class="n">x</span> <span class="o">=</span> <span class="n">sm</span><span class="o">.</span><span class="n">add_constant</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+
+<span class="n">logit</span> <span class="o">=</span> <span class="n">sm</span><span class="o">.</span><span class="n">Logit</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">'recommended'</span><span class="p">],</span> <span class="n">x</span><span class="p">,</span> <span class="n">missing</span> <span class="o">=</span> <span class="s1">'drop'</span><span class="p">)</span> <span class="c1">#drop missing values</span>
+
+<span class="n">results</span> <span class="o">=</span> <span class="n">logit</span><span class="o">.</span><span class="n">fit</span><span class="p">()</span>
+<span class="n">results</span><span class="o">.</span><span class="n">summary</span><span class="p">()</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Optimization terminated successfully.
+         Current function value: 0.128654
+         Iterations 9
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+<div class="prompt output_prompt">Out[60]:</div>
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<table class="simpletable">
+<caption>Logit Regression Results</caption>
+<tr>
+<th>Dep. Variable:</th>    <td>recommended</td>   <th>  No. Observations:  </th>  <td> 28341</td> 
+</tr>
+<tr>
+<th>Model:</th>               <td>Logit</td>      <th>  Df Residuals:      </th>  <td> 28334</td> 
+</tr>
+<tr>
+<th>Method:</th>               <td>MLE</td>       <th>  Df Model:          </th>  <td>     6</td> 
+</tr>
+<tr>
+<th>Date:</th>          <td>Tue, 17 May 2016</td> <th>  Pseudo R-squ.:     </th>  <td>0.8093</td> 
+</tr>
+<tr>
+<th>Time:</th>              <td>17:32:21</td>     <th>  Log-Likelihood:    </th> <td> -3646.2</td>
+</tr>
+<tr>
+<th>converged:</th>           <td>True</td>       <th>  LL-Null:           </th> <td> -19124.</td>
+</tr>
+<tr>
+<th> </th>                      <td> </td>        <th>  LLR p-value:       </th>  <td> 0.000</td> 
+</tr>
+</table>
+<table class="simpletable">
+<tr>
+<td></td>                       <th>coef</th>     <th>std err</th>      <th>z</th>      <th>P&gt;|z|</th> <th>[95.0% Conf. Int.]</th> 
+</tr>
+<tr>
+<th>const</th>                                  <td>    0.9089</td> <td>    0.033</td> <td>   27.320</td> <td> 0.000</td> <td>    0.844     0.974</td>
+</tr>
+<tr>
+<th>overall_rating_centered</th>                <td>    1.2794</td> <td>    0.023</td> <td>   54.786</td> <td> 0.000</td> <td>    1.234     1.325</td>
+</tr>
+<tr>
+<th>seat_comfort_rating_centered</th>           <td>    0.1691</td> <td>    0.029</td> <td>    5.802</td> <td> 0.000</td> <td>    0.112     0.226</td>
+</tr>
+<tr>
+<th>cabin_staff_rating_centered</th>            <td>    0.2845</td> <td>    0.029</td> <td>    9.981</td> <td> 0.000</td> <td>    0.229     0.340</td>
+</tr>
+<tr>
+<th>food_beverages_rating_centered</th>         <td>    0.0528</td> <td>    0.027</td> <td>    1.974</td> <td> 0.048</td> <td>    0.000     0.105</td>
+</tr>
+<tr>
+<th>inflight_entertainment_rating_centered</th> <td>    0.0154</td> <td>    0.021</td> <td>    0.726</td> <td> 0.468</td> <td>   -0.026     0.057</td>
+</tr>
+<tr>
+<th>value_money_rating_centered</th>            <td>    0.5350</td> <td>    0.034</td> <td>   15.784</td> <td> 0.000</td> <td>    0.469     0.601</td>
+</tr>
+</table>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [61]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">results</span><span class="o">.</span><span class="n">params</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt output_prompt">Out[61]:</div>
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>const                                     2.481574
+overall_rating_centered                   3.594482
+seat_comfort_rating_centered              1.184220
+cabin_staff_rating_centered               1.329129
+food_beverages_rating_centered            1.054215
+inflight_entertainment_rating_centered    1.015530
+value_money_rating_centered               1.707426
+dtype: float64</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Including passengers' overall ratings substantially changed many of the coefficients. Let's go over the different parameters agian:</p>
+<h3 id="The-constant">The constant<a class="anchor-link" href="posts/skytrax-data-4-the-logit-model/#The-constant">¶</a>
+</h3>
+<p>The constant for this model is now 2.48, which tells us that the hypothetical passenger who gave the airline the mean score on all ratings is now ~2.5 times more likely to recommend than not (contrast this to 1.06 in the previous model). What this implies is that an "average" in terms of an overall rating is really, on average, an endorsement of the airline.</p>
+<h3 id="The-coefficients">The coefficients<a class="anchor-link" href="posts/skytrax-data-4-the-logit-model/#The-coefficients">¶</a>
+</h3>
+<p>Here, compared to the previous model, the coefficients for all the other ratings are "depressed", in they are much smaller than before. They are still positive, which means that in general, higher ratings on these criteria = more likely to recommend, but knowing a passenger's overall rating makes that information somewhat redundant.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Summary">Summary<a class="anchor-link" href="posts/skytrax-data-4-the-logit-model/#Summary">¶</a>
+</h2>
+<p>In sum, when passengers are made to rate airlines this way, their decision to recommend is dominated by their overall, wholistic rating of the airline. That said, these ratings are all correlated, so the takeaway point should not be that inflight entertainment (which was a non-significant predictor even with an n of 28,000) is unimportant, but rather that further analyses should be done to assess the relative contribution of each predictor to a passenger's overall rating.</p>
+
+</div>
+</div>
+</div>
+    </div>
+  </div>
+
+    </div>
+    </article><article class="h-entry post-text"><header><h1 class="p-name entry-title"><a href="posts/skytrax-data-3-the-ols-model/" class="u-url">Skytrax Data #3: The OLS Model</a></h1>
         <div class="metadata">
             <p class="byline author vcard"><span class="byline-name fn">
                 Bryan Sim

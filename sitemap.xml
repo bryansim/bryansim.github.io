@@ -15,7 +15,7 @@
  </url>
  <url>
   <loc>https://bryansim.github.io/archive.html</loc>
-  <lastmod>2016-06-07T03:59:00Z</lastmod>
+  <lastmod>2016-06-08T03:59:00Z</lastmod>
  </url>
  <url>
   <loc>https://bryansim.github.io/bokehplot.html</loc>
@@ -51,7 +51,7 @@
  </url>
  <url>
   <loc>https://bryansim.github.io/index-1.html</loc>
-  <lastmod>2016-06-08T03:57:00Z</lastmod>
+  <lastmod>2016-06-08T03:59:00Z</lastmod>
  </url>
  <url>
   <loc>https://bryansim.github.io/listings/</loc>
@@ -96,6 +96,10 @@
  <url>
   <loc>https://bryansim.github.io/posts/mousetracker-data-1/</loc>
   <lastmod>2016-05-03T04:25:00Z</lastmod>
+ </url>
+ <url>
+  <loc>https://bryansim.github.io/posts/mousetracker-data-2/</loc>
+  <lastmod>2016-06-08T03:59:00Z</lastmod>
  </url>
  <url>
   <loc>https://bryansim.github.io/posts/skytrax-data-1/</loc>

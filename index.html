@@ -14,7 +14,7 @@
 <link rel="canonical" href="https://bryansim.github.io/">
 <link rel="icon" href="http://bryans.im/favicon.ico" sizes="16x16">
 <link rel="next" href="index-1.html" type="text/html">
-<!--[if lt IE 9]><script src="assets/js/html5.js"></script><![endif]--><link rel="prefetch" href="posts/hack-for-heat-8-complaint-resolution-time-revisted/" type="text/html">
+<!--[if lt IE 9]><script src="assets/js/html5.js"></script><![endif]--><link rel="prefetch" href="posts/mousetracker-data-2/" type="text/html">
 </head>
 <body>
 <a href="#content" class="sr-only sr-only-focusable">Skip to main content</a>
@@ -96,7 +96,1643 @@ This is my blog of the following projects (links above):</p>
 
 </article><hr>
 <div class="postindex">
-    <article class="h-entry post-text"><header><h1 class="p-name entry-title"><a href="posts/hack-for-heat-8-complaint-resolution-time-revisted/" class="u-url">Hack for Heat #8: Complaint resolution time revisted</a></h1>
+    <article class="h-entry post-text"><header><h1 class="p-name entry-title"><a href="posts/mousetracker-data-2/" class="u-url">Mousetracker Data #2</a></h1>
+        <div class="metadata">
+            <p class="byline author vcard"><span class="byline-name fn">
+                Bryan Sim
+            </span></p>
+            <p class="dateline"><a href="posts/mousetracker-data-2/" rel="bookmark"><time class="published dt-published" datetime="2016-06-07T23:59:22-04:00" title="2016-06-07 23:59">2016-06-07 23:59</time></a></p>
+        </div>
+    </header><div class="e-content entry-content">
+    <div tabindex="-1" id="notebook" class="border-box-sizing">
+    <div class="container" id="notebook-container">
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Overview">Overview<a class="anchor-link" href="posts/mousetracker-data-2/#Overview">¶</a>
+</h2>
+<p>Since the time of the last post about these data, my friends and I at the NYU couples lab have collect some actual Mousetracker data from online participants. In this post, I wrote some code to pre-process and clean the dataset.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Current-project">Current project<a class="anchor-link" href="posts/mousetracker-data-2/#Current-project">¶</a>
+</h2>
+<p>As a refresher, we hypothesized that at any given time, individuals are concerned with:</p>
+<ol>
+<li>their self-interest</li>
+<li>their partner's interests</li>
+<li>the interest of the <em>group</em> or dyad, or the relationship, or them as a pair</li>
+</ol>
+<p>and these motives affect the way individuals choose to distribute resources.</p>
+<p>To distinguish between these three motives, we generated three sets of stimuli using poker chips that pit each of these motives against each other:</p>
+<ol>
+<li>The first set of stimuli pit participants' self-interest against the interests of their partner.</li>
+<li>The second set of stimuli pits a participant's concern for the interest of their partner vs. their own self interest and the group's interest. </li>
+<li>The last set of stimuli pit participants' self-interest against that of their partner and the group.</li>
+</ol>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="The-data">The data<a class="anchor-link" href="posts/mousetracker-data-2/#The-data">¶</a>
+</h2>
+<p>The data come in a person-period dataset. This is a "long" format where each participant has multiple rows that represent each trial of the experiment (there were 60 or so trials). However, each row also contains multiple columns each representing a bin of average locations the participant's mouse pointer was during that time span. There are ~100 such bins.</p>
+<p>In other words, each participant made 60 choices, and their mouse positions were averaged into ~100 time points per trial.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The first thing we're going to do is actually some cleaning. Each of the .csv files have a redundant first row, so we're just going to delete that:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [1]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">re</span>
+
+<span class="n">files</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="s1">'./data'</span><span class="p">)</span>
+<span class="n">files</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt output_prompt">Out[1]:</div>
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>['GBPG SMGL VS. SLGM n=118.csv',
+ 'GBPG SMGM VS. SLGL n=118.csv',
+ 'GBPG SO n=118.csv',
+ 'GBPR SMGL VS. SLGM n=121.csv',
+ 'GBPR SMGM vs. SLGL n=121.csv',
+ 'GBPR SO n=121.csv',
+ 'RBPG SMGL vs. SLGM n=105.csv',
+ 'RBPG SMGM vs. SLGL n=105.csv',
+ 'RBPG SO n=105.csv',
+ 'RBPR SMGL vs. SLGM n=120.csv',
+ 'RBPR SMGM vs. SLGL n=120.csv',
+ 'RBPR SO n=120.csv']</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [2]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="c1">#for all our files</span>
+<span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">files</span><span class="p">:</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">'./data/{0}'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">))</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">contents</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">readlines</span><span class="p">()</span>
+    <span class="n">out</span> <span class="o">=</span>  <span class="nb">open</span><span class="p">(</span><span class="s1">'./data cleaned/{0}.csv'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="s1">r'(.*) n=.*'</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)),</span> <span class="s1">'wb'</span><span class="p">)</span>
+    
+    <span class="n">found</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">contents</span><span class="p">[</span><span class="mi">1</span><span class="p">:]:</span>
+        <span class="k">if</span> <span class="n">line</span> <span class="o">==</span> <span class="s1">'MEAN SUBJECT-BY-SUBJECT DATA</span><span class="se">\n</span><span class="s1">'</span><span class="p">:</span>
+            <span class="n">found</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">elif</span> <span class="n">found</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">out</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">found</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">pass</span>
+    <span class="n">out</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>If there wasn't a section at the end I had to delete, I could have just done this:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [3]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
+   
+<span class="n">testdata</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">'./data/</span><span class="si">%s</span><span class="s1">'</span> <span class="o">%</span> <span class="n">files</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">skiprows</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">testdata</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt output_prompt">Out[3]:</div>
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<table border="1" class="dataframe">
+<thead><tr style="text-align: right;">
+<th></th>
+      <th>subject</th>
+      <th>trial</th>
+      <th>stimfile</th>
+      <th>condition</th>
+      <th>code</th>
+      <th>resp_1</th>
+      <th>resp_2</th>
+      <th>response</th>
+      <th>distractor</th>
+      <th>error</th>
+      <th>...</th>
+      <th>Y_93</th>
+      <th>Y_94</th>
+      <th>Y_95</th>
+      <th>Y_96</th>
+      <th>Y_97</th>
+      <th>Y_98</th>
+      <th>Y_99</th>
+      <th>Y_100</th>
+      <th>Y_101</th>
+      <th>Unnamed: 226</th>
+    </tr></thead>
+<tbody>
+<tr>
+<th>0</th>
+      <td>75870</td>
+      <td>2</td>
+      <td>NaN</td>
+      <td>1</td>
+      <td>smglvsslgm4</td>
+      <td>~S9_O7.jpg</td>
+      <td>~S8_O12.jpg</td>
+      <td>1</td>
+      <td>2</td>
+      <td>0</td>
+      <td>...</td>
+      <td>1.1770</td>
+      <td>1.1811</td>
+      <td>1.1826</td>
+      <td>1.1825</td>
+      <td>1.1824</td>
+      <td>1.1874</td>
+      <td>1.1875</td>
+      <td>1.1875</td>
+      <td>1.1875</td>
+      <td>NaN</td>
+    </tr>
+<tr>
+<th>1</th>
+      <td>75870</td>
+      <td>3</td>
+      <td>NaN</td>
+      <td>1</td>
+      <td>smglvsslgm6</td>
+      <td>~S10_O15.jpg</td>
+      <td>~S12_O8.jpg</td>
+      <td>2</td>
+      <td>1</td>
+      <td>0</td>
+      <td>...</td>
+      <td>1.1825</td>
+      <td>1.1825</td>
+      <td>1.1823</td>
+      <td>1.1837</td>
+      <td>1.1865</td>
+      <td>1.1876</td>
+      <td>1.1875</td>
+      <td>1.1875</td>
+      <td>1.1875</td>
+      <td>NaN</td>
+    </tr>
+<tr>
+<th>2</th>
+      <td>75870</td>
+      <td>7</td>
+      <td>NaN</td>
+      <td>1</td>
+      <td>smglvsslgm18</td>
+      <td>~S12_O7.jpg</td>
+      <td>~S8_O13.jpg</td>
+      <td>1</td>
+      <td>2</td>
+      <td>0</td>
+      <td>...</td>
+      <td>1.2003</td>
+      <td>1.1955</td>
+      <td>1.1950</td>
+      <td>1.1935</td>
+      <td>1.1924</td>
+      <td>1.1925</td>
+      <td>1.1925</td>
+      <td>1.1925</td>
+      <td>1.1925</td>
+      <td>NaN</td>
+    </tr>
+<tr>
+<th>3</th>
+      <td>75870</td>
+      <td>9</td>
+      <td>NaN</td>
+      <td>1</td>
+      <td>smglvsslgm19</td>
+      <td>~S9_O12.jpg</td>
+      <td>~S12_O8.jpg</td>
+      <td>2</td>
+      <td>1</td>
+      <td>0</td>
+      <td>...</td>
+      <td>1.3081</td>
+      <td>1.3013</td>
+      <td>1.2999</td>
+      <td>1.3000</td>
+      <td>1.3000</td>
+      <td>1.3000</td>
+      <td>1.3000</td>
+      <td>1.3000</td>
+      <td>1.3000</td>
+      <td>NaN</td>
+    </tr>
+<tr>
+<th>4</th>
+      <td>75870</td>
+      <td>14</td>
+      <td>NaN</td>
+      <td>2</td>
+      <td>smglvsslgm9</td>
+      <td>~S9_O7.jpg</td>
+      <td>~S10_O5.jpg</td>
+      <td>1</td>
+      <td>1</td>
+      <td>1</td>
+      <td>...</td>
+      <td>1.2577</td>
+      <td>1.2575</td>
+      <td>1.2575</td>
+      <td>1.2577</td>
+      <td>1.2565</td>
+      <td>1.2543</td>
+      <td>1.2519</td>
+      <td>1.2500</td>
+      <td>1.2500</td>
+      <td>NaN</td>
+    </tr>
+</tbody>
+</table>
+<p>5 rows × 227 columns</p>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Next, I'm going to write a loop that basically does what I did in the first post to all the separate datasets. Again, we're going to be finding the mean of participants' reaction time (RT), maximum deviation (MD), and the area under curve (AUC).</p>
+<p>What we want in the end is a csv file that has the overall mean RT, MD, AUC, as well as those metrics when participants' were correct vs. incorrect.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>I wrote two functions that basically do what I did by hand in the first post. The first combines two redundant columns, and the second finds the mean of that column, depending on whether the participant made an error or not, or whether we want the grand mean.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [4]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">'./data cleaned/</span><span class="si">%s</span><span class="s1">'</span> <span class="o">%</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="s1">'./data cleaned'</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
+<span class="n">data</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt output_prompt">Out[4]:</div>
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<table border="1" class="dataframe">
+<thead><tr style="text-align: right;">
+<th></th>
+      <th>subject</th>
+      <th>trial</th>
+      <th>stimfile</th>
+      <th>condition</th>
+      <th>code</th>
+      <th>resp_1</th>
+      <th>resp_2</th>
+      <th>response</th>
+      <th>distractor</th>
+      <th>error</th>
+      <th>...</th>
+      <th>Y_93</th>
+      <th>Y_94</th>
+      <th>Y_95</th>
+      <th>Y_96</th>
+      <th>Y_97</th>
+      <th>Y_98</th>
+      <th>Y_99</th>
+      <th>Y_100</th>
+      <th>Y_101</th>
+      <th>Unnamed: 226</th>
+    </tr></thead>
+<tbody>
+<tr>
+<th>0</th>
+      <td>75870</td>
+      <td>2</td>
+      <td>NaN</td>
+      <td>1</td>
+      <td>smglvsslgm4</td>
+      <td>~S9_O7.jpg</td>
+      <td>~S8_O12.jpg</td>
+      <td>1</td>
+      <td>2</td>
+      <td>0</td>
+      <td>...</td>
+      <td>1.1770</td>
+      <td>1.1811</td>
+      <td>1.1826</td>
+      <td>1.1825</td>
+      <td>1.1824</td>
+      <td>1.1874</td>
+      <td>1.1875</td>
+      <td>1.1875</td>
+      <td>1.1875</td>
+      <td>NaN</td>
+    </tr>
+<tr>
+<th>1</th>
+      <td>75870</td>
+      <td>3</td>
+      <td>NaN</td>
+      <td>1</td>
+      <td>smglvsslgm6</td>
+      <td>~S10_O15.jpg</td>
+      <td>~S12_O8.jpg</td>
+      <td>2</td>
+      <td>1</td>
+      <td>0</td>
+      <td>...</td>
+      <td>1.1825</td>
+      <td>1.1825</td>
+      <td>1.1823</td>
+      <td>1.1837</td>
+      <td>1.1865</td>
+      <td>1.1876</td>
+      <td>1.1875</td>
+      <td>1.1875</td>
+      <td>1.1875</td>
+      <td>NaN</td>
+    </tr>
+<tr>
+<th>2</th>
+      <td>75870</td>
+      <td>7</td>
+      <td>NaN</td>
+      <td>1</td>
+      <td>smglvsslgm18</td>
+      <td>~S12_O7.jpg</td>
+      <td>~S8_O13.jpg</td>
+      <td>1</td>
+      <td>2</td>
+      <td>0</td>
+      <td>...</td>
+      <td>1.2003</td>
+      <td>1.1955</td>
+      <td>1.1950</td>
+      <td>1.1935</td>
+      <td>1.1924</td>
+      <td>1.1925</td>
+      <td>1.1925</td>
+      <td>1.1925</td>
+      <td>1.1925</td>
+      <td>NaN</td>
+    </tr>
+<tr>
+<th>3</th>
+      <td>75870</td>
+      <td>9</td>
+      <td>NaN</td>
+      <td>1</td>
+      <td>smglvsslgm19</td>
+      <td>~S9_O12.jpg</td>
+      <td>~S12_O8.jpg</td>
+      <td>2</td>
+      <td>1</td>
+      <td>0</td>
+      <td>...</td>
+      <td>1.3081</td>
+      <td>1.3013</td>
+      <td>1.2999</td>
+      <td>1.3000</td>
+      <td>1.3000</td>
+      <td>1.3000</td>
+      <td>1.3000</td>
+      <td>1.3000</td>
+      <td>1.3000</td>
+      <td>NaN</td>
+    </tr>
+<tr>
+<th>4</th>
+      <td>75870</td>
+      <td>14</td>
+      <td>NaN</td>
+      <td>2</td>
+      <td>smglvsslgm9</td>
+      <td>~S9_O7.jpg</td>
+      <td>~S10_O5.jpg</td>
+      <td>1</td>
+      <td>1</td>
+      <td>1</td>
+      <td>...</td>
+      <td>1.2577</td>
+      <td>1.2575</td>
+      <td>1.2575</td>
+      <td>1.2577</td>
+      <td>1.2565</td>
+      <td>1.2543</td>
+      <td>1.2519</td>
+      <td>1.2500</td>
+      <td>1.2500</td>
+      <td>NaN</td>
+    </tr>
+</tbody>
+</table>
+<p>5 rows × 227 columns</p>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [5]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="c1">#first, combine the redundant columns and type the relevant columns</span>
+<span class="k">def</span> <span class="nf">combine_columns</span><span class="p">(</span><span class="n">dddd</span><span class="p">):</span>
+    <span class="n">dddd</span><span class="p">[</span><span class="s1">'MD'</span><span class="p">]</span> <span class="o">=</span> <span class="n">dddd</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">dddd</span><span class="p">[</span><span class="s1">'MD_1'</span><span class="p">]</span><span class="o">.</span><span class="n">isnull</span><span class="p">()</span> <span class="o">==</span> <span class="bp">False</span><span class="p">,</span> <span class="p">[</span><span class="s1">'MD_1'</span><span class="p">]]</span>
+    <span class="n">dddd</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">dddd</span><span class="p">[</span><span class="s1">'MD'</span><span class="p">]</span><span class="o">.</span><span class="n">isnull</span><span class="p">()</span> <span class="o">==</span> <span class="bp">True</span><span class="p">,[</span><span class="s1">'MD'</span><span class="p">]]</span> <span class="o">=</span> <span class="n">dddd</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">dddd</span><span class="p">[</span><span class="s1">'MD_2'</span><span class="p">]</span><span class="o">.</span><span class="n">isnull</span><span class="p">()</span> <span class="o">==</span> <span class="bp">False</span><span class="p">][</span><span class="s1">'MD_2'</span><span class="p">]</span> 
+    <span class="n">dddd</span><span class="p">[</span><span class="s1">'AUC'</span><span class="p">]</span> <span class="o">=</span> <span class="n">dddd</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">dddd</span><span class="p">[</span><span class="s1">'AUC_1'</span><span class="p">]</span><span class="o">.</span><span class="n">isnull</span><span class="p">()</span> <span class="o">==</span> <span class="bp">False</span><span class="p">,</span> <span class="p">[</span><span class="s1">'AUC_1'</span><span class="p">]]</span>
+    <span class="n">dddd</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">dddd</span><span class="p">[</span><span class="s1">'AUC'</span><span class="p">]</span><span class="o">.</span><span class="n">isnull</span><span class="p">()</span> <span class="o">==</span> <span class="bp">True</span><span class="p">,</span> <span class="p">[</span><span class="s1">'AUC'</span><span class="p">]]</span> <span class="o">=</span> <span class="n">dddd</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">dddd</span><span class="p">[</span><span class="s1">'AUC_2'</span><span class="p">]</span><span class="o">.</span><span class="n">isnull</span><span class="p">()</span> <span class="o">==</span> <span class="bp">False</span><span class="p">][</span><span class="s1">'AUC_2'</span><span class="p">]</span>
+    
+<span class="n">combine_columns</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [6]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="k">def</span> <span class="nf">find_mean</span><span class="p">(</span><span class="n">datasource</span><span class="p">,</span> <span class="n">participantid</span><span class="p">,</span> <span class="n">metric</span><span class="p">,</span> <span class="n">error</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="n">participantsdata</span> <span class="o">=</span> <span class="n">datasource</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">datasource</span><span class="p">[</span><span class="s1">'subject'</span><span class="p">]</span> <span class="o">==</span> <span class="n">participantid</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">error</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">participantsdata</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">participantsdata</span><span class="p">[</span><span class="s1">'error'</span><span class="p">]</span><span class="o">==</span><span class="mi">1</span><span class="p">][</span><span class="n">metric</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">'float'</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+    <span class="k">elif</span> <span class="n">error</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">participantsdata</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">participantsdata</span><span class="p">[</span><span class="s1">'error'</span><span class="p">]</span><span class="o">==</span><span class="mi">0</span><span class="p">][</span><span class="n">metric</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">'float'</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+    <span class="k">else</span><span class="p">:</span>        
+        <span class="k">return</span> <span class="n">participantsdata</span><span class="p">[</span><span class="n">metric</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">'float'</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>        
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Next, we're going to test some code that calculates the mean of the afore-mentioned metrics for every participant in a dataset:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [7]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">combine_columns</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [8]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">participants</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">'subject'</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">()</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [9]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">participantdict</span> <span class="o">=</span> <span class="p">{</span><span class="n">x</span><span class="p">:[]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">participants</span><span class="p">}</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [10]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="k">for</span> <span class="n">participant</span> <span class="ow">in</span> <span class="n">participantdict</span><span class="p">:</span>
+    <span class="k">for</span> <span class="n">metric</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">'AUC'</span><span class="p">,</span> <span class="s1">'MD'</span><span class="p">,</span> <span class="s1">'RT'</span><span class="p">]:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">participantdict</span><span class="p">[</span><span class="n">participant</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">find_mean</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">participant</span><span class="p">,</span> <span class="n">metric</span><span class="p">,</span> <span class="n">error</span> <span class="o">=</span> <span class="mi">1</span><span class="p">))</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="n">participantdict</span><span class="p">[</span><span class="n">participant</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">None</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [11]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">outdata</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">participantdict</span><span class="p">,</span><span class="n">orient</span><span class="o">=</span><span class="s1">'index'</span><span class="p">)</span>
+<span class="n">outdata</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'AUC'</span><span class="p">,</span> <span class="s1">'MD'</span><span class="p">,</span> <span class="s1">'RT'</span><span class="p">]</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [12]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">outdata</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt output_prompt">Out[12]:</div>
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<table border="1" class="dataframe">
+<thead><tr style="text-align: right;">
+<th></th>
+      <th>AUC</th>
+      <th>MD</th>
+      <th>RT</th>
+    </tr></thead>
+<tbody>
+<tr>
+<th>9104386</th>
+      <td>0.222260</td>
+      <td>0.147950</td>
+      <td>618.200000</td>
+    </tr>
+<tr>
+<th>7279624</th>
+      <td>-0.039400</td>
+      <td>-0.006537</td>
+      <td>1208.375000</td>
+    </tr>
+<tr>
+<th>3452429</th>
+      <td>0.378033</td>
+      <td>0.257911</td>
+      <td>1381.444444</td>
+    </tr>
+<tr>
+<th>7354384</th>
+      <td>0.034620</td>
+      <td>0.038660</td>
+      <td>1102.700000</td>
+    </tr>
+<tr>
+<th>479766</th>
+      <td>-0.036642</td>
+      <td>-0.048183</td>
+      <td>867.166667</td>
+    </tr>
+</tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Let's write this as a function:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [13]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="k">def</span> <span class="nf">sum_participants</span><span class="p">(</span><span class="n">pkeys</span><span class="p">,</span><span class="n">metrics</span><span class="p">,</span><span class="n">err</span><span class="p">,</span><span class="n">datttt</span><span class="p">):</span>
+    <span class="n">adictionary</span> <span class="o">=</span> <span class="p">{</span><span class="n">x</span><span class="p">:[]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">pkeys</span><span class="p">}</span>
+    <span class="k">for</span> <span class="n">participant</span> <span class="ow">in</span> <span class="n">adictionary</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">metric</span> <span class="ow">in</span> <span class="n">metrics</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">adictionary</span><span class="p">[</span><span class="n">participant</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">find_mean</span><span class="p">(</span><span class="n">datttt</span><span class="p">,</span> <span class="n">participant</span><span class="p">,</span> <span class="n">metric</span> <span class="p">,</span><span class="n">error</span> <span class="o">=</span> <span class="n">err</span><span class="p">))</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="n">adictionary</span><span class="p">[</span><span class="n">participant</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">None</span><span class="p">)</span>
+        <span class="n">adictionary</span><span class="p">[</span><span class="n">participant</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">adictionary</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Definitely not production code, but it should work.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Combining-datasets">Combining datasets<a class="anchor-link" href="posts/mousetracker-data-2/#Combining-datasets">¶</a>
+</h3>
+<p>Alright, now we have all of that working, let's combine the datasets that we have, and add features to tell us where the data came from:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [14]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">files</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="s1">'./data cleaned'</span><span class="p">)</span>
+<span class="n">files</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt output_prompt">Out[14]:</div>
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>['GBPG SMGL VS. SLGM.csv',
+ 'GBPG SMGM VS. SLGL.csv',
+ 'GBPG SO.csv',
+ 'GBPR SMGL VS. SLGM.csv',
+ 'GBPR SMGM vs. SLGL.csv',
+ 'GBPR SO.csv',
+ 'RBPG SMGL vs. SLGM.csv',
+ 'RBPG SMGM vs. SLGL.csv',
+ 'RBPG SO.csv',
+ 'RBPR SMGL vs. SLGM.csv',
+ 'RBPR SMGM vs. SLGL.csv',
+ 'RBPR SO.csv']</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>What we're going to do is first create an empty DataFrame with all our columns. Next, we'll load all of our data, do the math for the 3 measures, add a feature that captures where the data came from (i.e., one column for the color codes, another color for the comparison type).</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [15]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">combineddata</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span> <span class="p">[</span><span class="s1">'AUC'</span><span class="p">,</span> <span class="s1">'MD'</span><span class="p">,</span> <span class="s1">'RT'</span><span class="p">,</span> <span class="s1">'ERROR'</span><span class="p">,</span> <span class="s1">'COLORCODE'</span><span class="p">,</span> <span class="s1">'COMPARISON'</span><span class="p">])</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Now, let's put everything together, and loop through all the filenames:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [16]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">metrics</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'AUC'</span><span class="p">,</span> <span class="s1">'MD'</span><span class="p">,</span> <span class="s1">'RT'</span><span class="p">]</span>
+
+<span class="k">for</span> <span class="n">filename</span> <span class="ow">in</span> <span class="n">files</span><span class="p">:</span>
+    <span class="n">tempdata</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">'./data cleaned/{0}'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">filename</span><span class="p">))</span>
+    
+    <span class="n">combine_columns</span><span class="p">(</span><span class="n">tempdata</span><span class="p">)</span>
+    
+    <span class="n">participants</span> <span class="o">=</span> <span class="n">tempdata</span><span class="p">[</span><span class="s1">'subject'</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">()</span>
+    
+    <span class="n">correctdict</span> <span class="o">=</span> <span class="n">sum_participants</span><span class="p">(</span><span class="n">participants</span><span class="p">,</span><span class="n">metrics</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="n">tempdata</span><span class="p">)</span>
+    <span class="n">errordict</span> <span class="o">=</span> <span class="n">sum_participants</span><span class="p">(</span><span class="n">participants</span><span class="p">,</span><span class="n">metrics</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="n">tempdata</span><span class="p">)</span>
+    
+    <span class="n">correctdata</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">correctdict</span><span class="p">,</span><span class="n">orient</span><span class="o">=</span><span class="s1">'index'</span><span class="p">)</span>
+    <span class="n">errordata</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">errordict</span><span class="p">,</span><span class="n">orient</span><span class="o">=</span><span class="s1">'index'</span><span class="p">)</span>
+    
+    <span class="n">outdata</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">correctdata</span><span class="p">,</span><span class="n">errordata</span><span class="p">])</span>
+    <span class="n">outdata</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'AUC'</span><span class="p">,</span> <span class="s1">'MD'</span><span class="p">,</span> <span class="s1">'RT'</span><span class="p">,</span> <span class="s1">'ERROR'</span><span class="p">]</span>
+    <span class="n">outdata</span><span class="p">[</span><span class="s1">'COLORCODE'</span><span class="p">]</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="s1">r'(....)'</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">outdata</span><span class="p">[</span><span class="s1">'COMPARISON'</span><span class="p">]</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="s1">r'.... (.*).csv'</span><span class="p">,</span><span class="n">filename</span><span class="p">)</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+    
+    <span class="k">print</span> <span class="n">filename</span>
+    <span class="k">print</span> <span class="nb">len</span><span class="p">(</span><span class="n">outdata</span><span class="p">)</span>
+    
+    <span class="n">combineddata</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">combineddata</span><span class="p">,</span><span class="n">outdata</span><span class="p">])</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>GBPG SMGL VS. SLGM.csv
+236
+GBPG SMGM VS. SLGL.csv
+236
+GBPG SO.csv
+236
+GBPR SMGL VS. SLGM.csv
+242
+GBPR SMGM vs. SLGL.csv
+242
+GBPR SO.csv
+242
+RBPG SMGL vs. SLGM.csv
+210
+RBPG SMGM vs. SLGL.csv
+210
+RBPG SO.csv
+210
+RBPR SMGL vs. SLGM.csv
+240
+RBPR SMGM vs. SLGL.csv
+240
+RBPR SO.csv
+240
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [17]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">combineddata</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt output_prompt">Out[17]:</div>
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<table border="1" class="dataframe">
+<thead><tr style="text-align: right;">
+<th></th>
+      <th>AUC</th>
+      <th>MD</th>
+      <th>RT</th>
+      <th>ERROR</th>
+      <th>COLORCODE</th>
+      <th>COMPARISON</th>
+    </tr></thead>
+<tbody>
+<tr>
+<th>9104386</th>
+      <td>0.198260</td>
+      <td>0.117420</td>
+      <td>729.000000</td>
+      <td>0.0</td>
+      <td>GBPG</td>
+      <td>SMGL VS. SLGM</td>
+    </tr>
+<tr>
+<th>7279624</th>
+      <td>0.147017</td>
+      <td>0.087525</td>
+      <td>1235.500000</td>
+      <td>0.0</td>
+      <td>GBPG</td>
+      <td>SMGL VS. SLGM</td>
+    </tr>
+<tr>
+<th>3452429</th>
+      <td>0.530336</td>
+      <td>0.300000</td>
+      <td>1443.727273</td>
+      <td>0.0</td>
+      <td>GBPG</td>
+      <td>SMGL VS. SLGM</td>
+    </tr>
+<tr>
+<th>7354384</th>
+      <td>0.006440</td>
+      <td>0.003520</td>
+      <td>1173.000000</td>
+      <td>0.0</td>
+      <td>GBPG</td>
+      <td>SMGL VS. SLGM</td>
+    </tr>
+<tr>
+<th>479766</th>
+      <td>0.005037</td>
+      <td>0.016762</td>
+      <td>814.250000</td>
+      <td>0.0</td>
+      <td>GBPG</td>
+      <td>SMGL VS. SLGM</td>
+    </tr>
+</tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>This is what the data should look like, so let's write it to a csv:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [18]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">combineddata</span><span class="o">.</span><span class="n">sort_index</span><span class="p">()</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="s1">'combineddata.csv'</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [19]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">outdata</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt output_prompt">Out[19]:</div>
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<table border="1" class="dataframe">
+<thead><tr style="text-align: right;">
+<th></th>
+      <th>AUC</th>
+      <th>MD</th>
+      <th>RT</th>
+      <th>ERROR</th>
+      <th>COLORCODE</th>
+      <th>COMPARISON</th>
+    </tr></thead>
+<tbody>
+<tr>
+<th>448004</th>
+      <td>2.707033</td>
+      <td>1.111633</td>
+      <td>906.333333</td>
+      <td>0</td>
+      <td>RBPR</td>
+      <td>SO</td>
+    </tr>
+<tr>
+<th>2675720</th>
+      <td>0.352980</td>
+      <td>0.169195</td>
+      <td>953.950000</td>
+      <td>0</td>
+      <td>RBPR</td>
+      <td>SO</td>
+    </tr>
+<tr>
+<th>2947082</th>
+      <td>0.160825</td>
+      <td>0.137081</td>
+      <td>1037.437500</td>
+      <td>0</td>
+      <td>RBPR</td>
+      <td>SO</td>
+    </tr>
+<tr>
+<th>8594447</th>
+      <td>0.907000</td>
+      <td>0.577125</td>
+      <td>1015.250000</td>
+      <td>0</td>
+      <td>RBPR</td>
+      <td>SO</td>
+    </tr>
+<tr>
+<th>515090</th>
+      <td>0.394933</td>
+      <td>0.282000</td>
+      <td>833.888889</td>
+      <td>0</td>
+      <td>RBPR</td>
+      <td>SO</td>
+    </tr>
+<tr>
+<th>1283091</th>
+      <td>0.474890</td>
+      <td>0.310680</td>
+      <td>781.600000</td>
+      <td>0</td>
+      <td>RBPR</td>
+      <td>SO</td>
+    </tr>
+<tr>
+<th>1591835</th>
+      <td>2.229329</td>
+      <td>0.997536</td>
+      <td>920.357143</td>
+      <td>0</td>
+      <td>RBPR</td>
+      <td>SO</td>
+    </tr>
+<tr>
+<th>8448030</th>
+      <td>0.717493</td>
+      <td>0.313850</td>
+      <td>748.642857</td>
+      <td>0</td>
+      <td>RBPR</td>
+      <td>SO</td>
+    </tr>
+<tr>
+<th>8767007</th>
+      <td>1.628893</td>
+      <td>0.699000</td>
+      <td>990.214286</td>
+      <td>0</td>
+      <td>RBPR</td>
+      <td>SO</td>
+    </tr>
+<tr>
+<th>9444902</th>
+      <td>0.676900</td>
+      <td>0.361963</td>
+      <td>800.750000</td>
+      <td>0</td>
+      <td>RBPR</td>
+      <td>SO</td>
+    </tr>
+<tr>
+<th>8873015</th>
+      <td>0.907767</td>
+      <td>0.487600</td>
+      <td>660.000000</td>
+      <td>0</td>
+      <td>RBPR</td>
+      <td>SO</td>
+    </tr>
+<tr>
+<th>8469940</th>
+      <td>0.164550</td>
+      <td>0.122125</td>
+      <td>647.375000</td>
+      <td>0</td>
+      <td>RBPR</td>
+      <td>SO</td>
+    </tr>
+<tr>
+<th>8325642</th>
+      <td>1.047320</td>
+      <td>0.590833</td>
+      <td>852.800000</td>
+      <td>0</td>
+      <td>RBPR</td>
+      <td>SO</td>
+    </tr>
+<tr>
+<th>503358</th>
+      <td>0.058525</td>
+      <td>0.050817</td>
+      <td>682.333333</td>
+      <td>0</td>
+      <td>RBPR</td>
+      <td>SO</td>
+    </tr>
+<tr>
+<th>7386178</th>
+      <td>1.234072</td>
+      <td>0.637233</td>
+      <td>924.611111</td>
+      <td>0</td>
+      <td>RBPR</td>
+      <td>SO</td>
+    </tr>
+<tr>
+<th>953414</th>
+      <td>-0.118170</td>
+      <td>-0.146170</td>
+      <td>862.500000</td>
+      <td>0</td>
+      <td>RBPR</td>
+      <td>SO</td>
+    </tr>
+<tr>
+<th>5312076</th>
+      <td>0.395989</td>
+      <td>0.157433</td>
+      <td>548.111111</td>
+      <td>0</td>
+      <td>RBPR</td>
+      <td>SO</td>
+    </tr>
+<tr>
+<th>2515533</th>
+      <td>0.960689</td>
+      <td>0.571544</td>
+      <td>974.222222</td>
+      <td>0</td>
+      <td>RBPR</td>
+      <td>SO</td>
+    </tr>
+<tr>
+<th>6012496</th>
+      <td>1.453787</td>
+      <td>0.773067</td>
+      <td>973.066667</td>
+      <td>0</td>
+      <td>RBPR</td>
+      <td>SO</td>
+    </tr>
+<tr>
+<th>4717240</th>
+      <td>0.883219</td>
+      <td>0.595013</td>
+      <td>1131.687500</td>
+      <td>0</td>
+      <td>RBPR</td>
+      <td>SO</td>
+    </tr>
+<tr>
+<th>3007065</th>
+      <td>0.044767</td>
+      <td>0.053333</td>
+      <td>739.555556</td>
+      <td>0</td>
+      <td>RBPR</td>
+      <td>SO</td>
+    </tr>
+<tr>
+<th>3507292</th>
+      <td>-0.100017</td>
+      <td>-0.085700</td>
+      <td>537.000000</td>
+      <td>0</td>
+      <td>RBPR</td>
+      <td>SO</td>
+    </tr>
+<tr>
+<th>1363052</th>
+      <td>1.691200</td>
+      <td>0.790547</td>
+      <td>985.941176</td>
+      <td>0</td>
+      <td>RBPR</td>
+      <td>SO</td>
+    </tr>
+<tr>
+<th>1426541</th>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>404.636364</td>
+      <td>0</td>
+      <td>RBPR</td>
+      <td>SO</td>
+    </tr>
+<tr>
+<th>9603603</th>
+      <td>0.744925</td>
+      <td>0.492655</td>
+      <td>1258.700000</td>
+      <td>0</td>
+      <td>RBPR</td>
+      <td>SO</td>
+    </tr>
+<tr>
+<th>5480054</th>
+      <td>-0.025157</td>
+      <td>-0.026857</td>
+      <td>649.714286</td>
+      <td>0</td>
+      <td>RBPR</td>
+      <td>SO</td>
+    </tr>
+<tr>
+<th>1355895</th>
+      <td>0.970286</td>
+      <td>0.480421</td>
+      <td>1062.285714</td>
+      <td>0</td>
+      <td>RBPR</td>
+      <td>SO</td>
+    </tr>
+<tr>
+<th>7049336</th>
+      <td>0.971658</td>
+      <td>0.564100</td>
+      <td>852.736842</td>
+      <td>0</td>
+      <td>RBPR</td>
+      <td>SO</td>
+    </tr>
+<tr>
+<th>3354234</th>
+      <td>0.390192</td>
+      <td>0.230254</td>
+      <td>1166.076923</td>
+      <td>0</td>
+      <td>RBPR</td>
+      <td>SO</td>
+    </tr>
+<tr>
+<th>2585535</th>
+      <td>1.319237</td>
+      <td>0.650863</td>
+      <td>829.250000</td>
+      <td>0</td>
+      <td>RBPR</td>
+      <td>SO</td>
+    </tr>
+<tr>
+<th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+<tr>
+<th>84352</th>
+      <td>0.928446</td>
+      <td>0.443062</td>
+      <td>743.384615</td>
+      <td>1</td>
+      <td>RBPR</td>
+      <td>SO</td>
+    </tr>
+<tr>
+<th>3042691</th>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>1</td>
+      <td>RBPR</td>
+      <td>SO</td>
+    </tr>
+<tr>
+<th>2597764</th>
+      <td>2.076241</td>
+      <td>0.906424</td>
+      <td>939.000000</td>
+      <td>1</td>
+      <td>RBPR</td>
+      <td>SO</td>
+    </tr>
+<tr>
+<th>9324421</th>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>1</td>
+      <td>RBPR</td>
+      <td>SO</td>
+    </tr>
+<tr>
+<th>5227406</th>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>1</td>
+      <td>RBPR</td>
+      <td>SO</td>
+    </tr>
+<tr>
+<th>7229839</th>
+      <td>0.029771</td>
+      <td>0.035086</td>
+      <td>437.714286</td>
+      <td>1</td>
+      <td>RBPR</td>
+      <td>SO</td>
+    </tr>
+<tr>
+<th>4169107</th>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>1</td>
+      <td>RBPR</td>
+      <td>SO</td>
+    </tr>
+<tr>
+<th>6001558</th>
+      <td>-0.091046</td>
+      <td>-0.119262</td>
+      <td>596.538462</td>
+      <td>1</td>
+      <td>RBPR</td>
+      <td>SO</td>
+    </tr>
+<tr>
+<th>647592</th>
+      <td>1.448136</td>
+      <td>0.694329</td>
+      <td>1193.571429</td>
+      <td>1</td>
+      <td>RBPR</td>
+      <td>SO</td>
+    </tr>
+<tr>
+<th>6338986</th>
+      <td>-0.117800</td>
+      <td>-0.135150</td>
+      <td>452.000000</td>
+      <td>1</td>
+      <td>RBPR</td>
+      <td>SO</td>
+    </tr>
+<tr>
+<th>3329964</th>
+      <td>0.321055</td>
+      <td>0.133191</td>
+      <td>687.454545</td>
+      <td>1</td>
+      <td>RBPR</td>
+      <td>SO</td>
+    </tr>
+<tr>
+<th>4264365</th>
+      <td>0.253538</td>
+      <td>0.165177</td>
+      <td>686.923077</td>
+      <td>1</td>
+      <td>RBPR</td>
+      <td>SO</td>
+    </tr>
+<tr>
+<th>3035571</th>
+      <td>0.064817</td>
+      <td>0.089733</td>
+      <td>607.333333</td>
+      <td>1</td>
+      <td>RBPR</td>
+      <td>SO</td>
+    </tr>
+<tr>
+<th>6431156</th>
+      <td>0.261650</td>
+      <td>0.240750</td>
+      <td>892.500000</td>
+      <td>1</td>
+      <td>RBPR</td>
+      <td>SO</td>
+    </tr>
+<tr>
+<th>7201720</th>
+      <td>0.105188</td>
+      <td>0.100663</td>
+      <td>598.250000</td>
+      <td>1</td>
+      <td>RBPR</td>
+      <td>SO</td>
+    </tr>
+<tr>
+<th>5427132</th>
+      <td>0.064814</td>
+      <td>0.078571</td>
+      <td>694.571429</td>
+      <td>1</td>
+      <td>RBPR</td>
+      <td>SO</td>
+    </tr>
+<tr>
+<th>1544127</th>
+      <td>0.308789</td>
+      <td>0.272522</td>
+      <td>692.666667</td>
+      <td>1</td>
+      <td>RBPR</td>
+      <td>SO</td>
+    </tr>
+<tr>
+<th>265153</th>
+      <td>0.999410</td>
+      <td>0.517540</td>
+      <td>603.100000</td>
+      <td>1</td>
+      <td>RBPR</td>
+      <td>SO</td>
+    </tr>
+<tr>
+<th>1399240</th>
+      <td>0.176720</td>
+      <td>0.162690</td>
+      <td>813.000000</td>
+      <td>1</td>
+      <td>RBPR</td>
+      <td>SO</td>
+    </tr>
+<tr>
+<th>5108681</th>
+      <td>-0.053300</td>
+      <td>-0.107300</td>
+      <td>858.000000</td>
+      <td>1</td>
+      <td>RBPR</td>
+      <td>SO</td>
+    </tr>
+<tr>
+<th>9541367</th>
+      <td>0.321488</td>
+      <td>0.219350</td>
+      <td>659.250000</td>
+      <td>1</td>
+      <td>RBPR</td>
+      <td>SO</td>
+    </tr>
+<tr>
+<th>2938324</th>
+      <td>0.060600</td>
+      <td>0.097500</td>
+      <td>781.000000</td>
+      <td>1</td>
+      <td>RBPR</td>
+      <td>SO</td>
+    </tr>
+<tr>
+<th>374233</th>
+      <td>0.635582</td>
+      <td>0.401791</td>
+      <td>760.272727</td>
+      <td>1</td>
+      <td>RBPR</td>
+      <td>SO</td>
+    </tr>
+<tr>
+<th>8976353</th>
+      <td>0.608600</td>
+      <td>0.358400</td>
+      <td>1020.000000</td>
+      <td>1</td>
+      <td>RBPR</td>
+      <td>SO</td>
+    </tr>
+<tr>
+<th>8706045</th>
+      <td>0.005117</td>
+      <td>0.013417</td>
+      <td>734.833333</td>
+      <td>1</td>
+      <td>RBPR</td>
+      <td>SO</td>
+    </tr>
+<tr>
+<th>9728496</th>
+      <td>0.165137</td>
+      <td>0.152912</td>
+      <td>538.250000</td>
+      <td>1</td>
+      <td>RBPR</td>
+      <td>SO</td>
+    </tr>
+<tr>
+<th>7825395</th>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>1</td>
+      <td>RBPR</td>
+      <td>SO</td>
+    </tr>
+<tr>
+<th>6582776</th>
+      <td>0.665817</td>
+      <td>0.497900</td>
+      <td>1213.333333</td>
+      <td>1</td>
+      <td>RBPR</td>
+      <td>SO</td>
+    </tr>
+<tr>
+<th>4016125</th>
+      <td>1.036192</td>
+      <td>0.571175</td>
+      <td>828.333333</td>
+      <td>1</td>
+      <td>RBPR</td>
+      <td>SO</td>
+    </tr>
+<tr>
+<th>7075839</th>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>1</td>
+      <td>RBPR</td>
+      <td>SO</td>
+    </tr>
+</tbody>
+</table>
+<p>240 rows × 6 columns</p>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    </div>
+  </div>
+
+    </div>
+    </article><article class="h-entry post-text"><header><h1 class="p-name entry-title"><a href="posts/hack-for-heat-8-complaint-resolution-time-revisted/" class="u-url">Hack for Heat #8: Complaint resolution time revisted</a></h1>
         <div class="metadata">
             <p class="byline author vcard"><span class="byline-name fn">
                 Bryan Sim
@@ -8058,607 +9694,6 @@ plot [1:7] y1(x) lt rgb "blue", y2(x) lt rgb "red"</code></pre>
 <h3 id="Summary-and-next-steps">Summary and next steps<a class="anchor-link" href="posts/hack-for-heat-1-initial-thoughts-on-hpd-open-data/#Summary-and-next-steps">¶</a>
 </h3>
 <p>In the immediate future, I'm going to be writing script to join and clean this dataset. This can either be done either in python, or by writing some SQL. I haven't decided yet. Additionally, I'm going to be writing some code to do things like convert date strings, and perhaps scrape text.</p>
-
-</div>
-</div>
-</div>
-    </div>
-  </div>
-
-    </div>
-    </article><article class="h-entry post-text"><header><h1 class="p-name entry-title"><a href="posts/skytrax-data-4-the-logit-model/" class="u-url">Skytrax Data #4: The Logit Model</a></h1>
-        <div class="metadata">
-            <p class="byline author vcard"><span class="byline-name fn">
-                Bryan Sim
-            </span></p>
-            <p class="dateline"><a href="posts/skytrax-data-4-the-logit-model/" rel="bookmark"><time class="published dt-published" datetime="2016-05-17T17:45:22-04:00" title="2016-05-17 17:45">2016-05-17 17:45</time></a></p>
-        </div>
-    </header><div class="e-content entry-content">
-    <div tabindex="-1" id="notebook" class="border-box-sizing">
-    <div class="container" id="notebook-container">
-
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Skytrax-Data-#4:-The-Logit-Model">Skytrax Data #4: The Logit Model<a class="anchor-link" href="posts/skytrax-data-4-the-logit-model/#Skytrax-Data-#4:-The-Logit-Model">¶</a>
-</h2>
-<p>We're going to quickly follow up on the OLS model presented in the last post with an alternative outcome variable: Whether or not passengers chose to recommend the airline to others.</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In [1]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">psycopg2</span>
-<span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">sqlalchemy</span> <span class="kn">import</span> <span class="n">create_engine</span>
-<span class="kn">import</span> <span class="nn">math</span>
-<span class="kn">import</span> <span class="nn">statsmodels.api</span> <span class="kn">as</span> <span class="nn">sm</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In [2]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="c1">#This connects to the postgres database above.</span>
-<span class="n">connection</span> <span class="o">=</span> <span class="n">psycopg2</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="s2">"dbname = skytrax user=skytraxadmin password=skytraxadmin"</span><span class="p">)</span>
-<span class="n">cursor</span> <span class="o">=</span> <span class="n">connection</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In [3]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="n">connection</span><span class="o">.</span><span class="n">rollback</span><span class="p">()</span>
-<span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s1">'SELECT * from airline;'</span><span class="p">)</span>
-<span class="n">data</span> <span class="o">=</span> <span class="n">cursor</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In [4]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="n">data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
-<span class="n">descriptions</span> <span class="o">=</span> <span class="p">[</span><span class="n">desc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">desc</span> <span class="ow">in</span> <span class="n">cursor</span><span class="o">.</span><span class="n">description</span><span class="p">]</span>
-<span class="n">data</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="n">descriptions</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>In these data, "recommended" is coded as 1 and "not recommended" is coded as 0:</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In [25]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="k">print</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">data</span><span class="p">[</span><span class="s1">'recommended'</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">])</span>
-<span class="k">print</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">data</span><span class="p">[</span><span class="s1">'recommended'</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">])</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-<div class="prompt"></div>
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>22098
-19298
-</pre>
-</div>
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In [27]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="n">data</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">by</span> <span class="o">=</span> <span class="s1">'recommended'</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-<div class="prompt output_prompt">Out[27]:</div>
-
-<div class="output_html rendered_html output_subarea output_execute_result">
-<div>
-<table border="1" class="dataframe">
-<thead>
-<tr style="text-align: right;">
-<th></th>
-      <th>overall_rating</th>
-      <th>seat_comfort_rating</th>
-      <th>cabin_staff_rating</th>
-      <th>food_beverages_rating</th>
-      <th>inflight_entertainment_rating</th>
-      <th>ground_service_rating</th>
-      <th>wifi_connectivity_rating</th>
-      <th>value_money_rating</th>
-    </tr>
-<tr>
-<th>recommended</th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-    </tr>
-</thead>
-<tbody>
-<tr>
-<th>0</th>
-      <td>2.640637</td>
-      <td>2.082208</td>
-      <td>2.094998</td>
-      <td>1.773961</td>
-      <td>1.618873</td>
-      <td>1.626176</td>
-      <td>1.403509</td>
-      <td>1.812525</td>
-    </tr>
-<tr>
-<th>1</th>
-      <td>8.327206</td>
-      <td>3.953765</td>
-      <td>4.358122</td>
-      <td>3.667807</td>
-      <td>3.043509</td>
-      <td>3.992263</td>
-      <td>3.547085</td>
-      <td>4.242555</td>
-    </tr>
-</tbody>
-</table>
-</div>
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>Unsurprisingly, ratings for flights that are recommended are higher than those that are not.</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="The-logistic-regression-model">The logistic regression model<a class="anchor-link" href="posts/skytrax-data-4-the-logit-model/#The-logistic-regression-model">¶</a>
-</h3>
-<p>How do these ratings influence whether or not a passenger ultimately choses to recommend an airline to others? To find out, we can calculate the change in odds with each unit change in each variable. For example, for every point higher an airline scores on its overall rating, what is the probability that a passenger selected "1", would recommend, rather than "0"?</p>
-<p>Again, we're going to ignore ground service ratings as well as wifi connectivity rating because the vast majority of cases have missing values on these variables.</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>The first thing we're going to do is center all our predictors. This, as we will see shortly, makes the constant interpretable, and is useful when trying to make point predictions (i.e., what are the odds that someone recommends an airline vs. not if he/she rated it an 8, for example).</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In [ ]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="n">predictors</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'overall_rating'</span><span class="p">,</span> <span class="s1">'seat_comfort_rating'</span><span class="p">,</span> <span class="s1">'cabin_staff_rating'</span><span class="p">,</span> <span class="s1">'food_beverages_rating'</span><span class="p">,</span> \
-          <span class="s1">'inflight_entertainment_rating'</span><span class="p">,</span> <span class="s1">'value_money_rating'</span><span class="p">]</span>
-
-<span class="k">for</span> <span class="n">predictor</span> <span class="ow">in</span> <span class="n">predictors</span><span class="p">:</span>
-    <span class="n">data</span><span class="p">[</span><span class="s1">'{0}_centered'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">predictor</span><span class="p">)]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">predictor</span><span class="p">]</span> <span class="o">-</span> <span class="n">data</span><span class="p">[</span><span class="n">predictor</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>I ran two models, one that included passengers' overall ratings, and one that did not:</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In [55]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">statsmodels.api</span> <span class="kn">as</span> <span class="nn">sm</span>
-
-<span class="c1">#x = data[['seat_comfort_rating', 'cabin_staff_rating', 'food_beverages_rating', \</span>
-<span class="c1">#          'inflight_entertainment_rating', 'value_money_rating']]</span>
-
-<span class="n">x</span> <span class="o">=</span> <span class="n">data</span><span class="p">[[</span><span class="s1">'seat_comfort_rating_centered'</span><span class="p">,</span> <span class="s1">'cabin_staff_rating_centered'</span><span class="p">,</span>\
-          <span class="s1">'food_beverages_rating_centered'</span><span class="p">,</span> <span class="s1">'inflight_entertainment_rating_centered'</span><span class="p">,</span> <span class="s1">'value_money_rating_centered'</span><span class="p">]]</span>
-
-
-<span class="n">x</span> <span class="o">=</span> <span class="n">sm</span><span class="o">.</span><span class="n">add_constant</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-
-<span class="n">logit</span> <span class="o">=</span> <span class="n">sm</span><span class="o">.</span><span class="n">Logit</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">'recommended'</span><span class="p">],</span> <span class="n">x</span><span class="p">,</span> <span class="n">missing</span> <span class="o">=</span> <span class="s1">'drop'</span><span class="p">)</span> <span class="c1">#drop missing values</span>
-
-<span class="n">results</span> <span class="o">=</span> <span class="n">logit</span><span class="o">.</span><span class="n">fit</span><span class="p">()</span>
-<span class="n">results</span><span class="o">.</span><span class="n">summary</span><span class="p">()</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-<div class="prompt"></div>
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>Optimization terminated successfully.
-         Current function value: 0.215391
-         Iterations 8
-</pre>
-</div>
-</div>
-
-<div class="output_area">
-<div class="prompt output_prompt">Out[55]:</div>
-
-<div class="output_html rendered_html output_subarea output_execute_result">
-<table class="simpletable">
-<caption>Logit Regression Results</caption>
-<tr>
-<th>Dep. Variable:</th>    <td>recommended</td>   <th>  No. Observations:  </th>  <td> 31075</td> 
-</tr>
-<tr>
-<th>Model:</th>               <td>Logit</td>      <th>  Df Residuals:      </th>  <td> 31069</td> 
-</tr>
-<tr>
-<th>Method:</th>               <td>MLE</td>       <th>  Df Model:          </th>  <td>     5</td> 
-</tr>
-<tr>
-<th>Date:</th>          <td>Tue, 17 May 2016</td> <th>  Pseudo R-squ.:     </th>  <td>0.6876</td> 
-</tr>
-<tr>
-<th>Time:</th>              <td>17:17:33</td>     <th>  Log-Likelihood:    </th> <td> -6693.3</td>
-</tr>
-<tr>
-<th>converged:</th>           <td>True</td>       <th>  LL-Null:           </th> <td> -21423.</td>
-</tr>
-<tr>
-<th> </th>                      <td> </td>        <th>  LLR p-value:       </th>  <td> 0.000</td> 
-</tr>
-</table>
-<table class="simpletable">
-<tr>
-<td></td>                       <th>coef</th>     <th>std err</th>      <th>z</th>      <th>P&gt;|z|</th> <th>[95.0% Conf. Int.]</th> 
-</tr>
-<tr>
-<th>const</th>                                  <td>    0.0595</td> <td>    0.023</td> <td>    2.610</td> <td> 0.009</td> <td>    0.015     0.104</td>
-</tr>
-<tr>
-<th>seat_comfort_rating_centered</th>           <td>    0.5314</td> <td>    0.022</td> <td>   24.398</td> <td> 0.000</td> <td>    0.489     0.574</td>
-</tr>
-<tr>
-<th>cabin_staff_rating_centered</th>            <td>    0.8361</td> <td>    0.021</td> <td>   39.970</td> <td> 0.000</td> <td>    0.795     0.877</td>
-</tr>
-<tr>
-<th>food_beverages_rating_centered</th>         <td>    0.2134</td> <td>    0.019</td> <td>   11.344</td> <td> 0.000</td> <td>    0.177     0.250</td>
-</tr>
-<tr>
-<th>inflight_entertainment_rating_centered</th> <td>    0.0747</td> <td>    0.015</td> <td>    4.915</td> <td> 0.000</td> <td>    0.045     0.105</td>
-</tr>
-<tr>
-<th>value_money_rating_centered</th>            <td>    1.3341</td> <td>    0.026</td> <td>   52.277</td> <td> 0.000</td> <td>    1.284     1.384</td>
-</tr>
-</table>
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In [56]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">results</span><span class="o">.</span><span class="n">params</span><span class="p">)</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-<div class="prompt output_prompt">Out[56]:</div>
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>const                                     1.061330
-seat_comfort_rating_centered              1.701393
-cabin_staff_rating_centered               2.307242
-food_beverages_rating_centered            1.237909
-inflight_entertainment_rating_centered    1.077572
-value_money_rating_centered               3.796635
-dtype: float64</pre>
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="Interpreting-the-output">Interpreting the output<a class="anchor-link" href="posts/skytrax-data-4-the-logit-model/#Interpreting-the-output">¶</a>
-</h3>
-<p>The coefficients of a logistic regression are in log odds, so to make them intuitively interpretable, we exponentiate them to get odds ratios. Odds ratios are simply the likelihood of one case over the other (in our case, it's the likelihood of recommending vs not).</p>
-<h4 id="The-constant">The constant<a class="anchor-link" href="posts/skytrax-data-4-the-logit-model/#The-constant">¶</a>
-</h4>
-<p>The constant in this model is the predicted value (in this case, the predicted log odds) when all Xs = 0.</p>
-<p>In this case, because we centered our variables at the mean, X=0 refers to the mean of that variable. Thus, our constant in this analysis refers to the odds of recommending vs not recommending for a hypothetical passenger who gave the airline mean ratings across the board. It's value, in this case, 1.06, tells us that this hypothetical passenger was 6% more likely to recommend than not. This is close to the unconditional (i.e., when we don't have any predictors) ratio of 14% (which is what you get when you divide the number of people who recommended vs not).</p>
-<h4 id="The-coefficients">The coefficients<a class="anchor-link" href="posts/skytrax-data-4-the-logit-model/#The-coefficients">¶</a>
-</h4>
-<p>The coefficients in this model refer to the change in odds with each unit change for each variable. A value above one means that higher passenger ratings on that variable makes it more likely that a passenger recommends an airline. As one might expect, this was the case across the board here.</p>
-<p>Let's look at a specific example: The coefficient of value for money, which is the largest here, tells us that, holding all other variables constant (i.e., for our hypothetical passenger that scored an airline the mean for everything), each unit change in value for money made it 3.8 times more likely (than the base rate of 6%) that he/she would recommend vs not.</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="Including-passengers'-overall-ratings-into-the-model">Including passengers' overall ratings into the model<a class="anchor-link" href="posts/skytrax-data-4-the-logit-model/#Including-passengers'-overall-ratings-into-the-model">¶</a>
-</h3>
-<p>Next, we're going to look at a model that includes passengers' overall ratings:</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In [60]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="c1">#x = data[['overall_rating', 'seat_comfort_rating', 'cabin_staff_rating', 'food_beverages_rating', \</span>
-<span class="c1">#          'inflight_entertainment_rating', 'value_money_rating']]</span>
-
-<span class="n">x</span> <span class="o">=</span> <span class="n">data</span><span class="p">[[</span><span class="s1">'overall_rating_centered'</span><span class="p">,</span> <span class="s1">'seat_comfort_rating_centered'</span><span class="p">,</span> <span class="s1">'cabin_staff_rating_centered'</span><span class="p">,</span>\
-          <span class="s1">'food_beverages_rating_centered'</span><span class="p">,</span> <span class="s1">'inflight_entertainment_rating_centered'</span><span class="p">,</span> <span class="s1">'value_money_rating_centered'</span><span class="p">]]</span>
-
-<span class="n">x</span> <span class="o">=</span> <span class="n">sm</span><span class="o">.</span><span class="n">add_constant</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-
-<span class="n">logit</span> <span class="o">=</span> <span class="n">sm</span><span class="o">.</span><span class="n">Logit</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">'recommended'</span><span class="p">],</span> <span class="n">x</span><span class="p">,</span> <span class="n">missing</span> <span class="o">=</span> <span class="s1">'drop'</span><span class="p">)</span> <span class="c1">#drop missing values</span>
-
-<span class="n">results</span> <span class="o">=</span> <span class="n">logit</span><span class="o">.</span><span class="n">fit</span><span class="p">()</span>
-<span class="n">results</span><span class="o">.</span><span class="n">summary</span><span class="p">()</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-<div class="prompt"></div>
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>Optimization terminated successfully.
-         Current function value: 0.128654
-         Iterations 9
-</pre>
-</div>
-</div>
-
-<div class="output_area">
-<div class="prompt output_prompt">Out[60]:</div>
-
-<div class="output_html rendered_html output_subarea output_execute_result">
-<table class="simpletable">
-<caption>Logit Regression Results</caption>
-<tr>
-<th>Dep. Variable:</th>    <td>recommended</td>   <th>  No. Observations:  </th>  <td> 28341</td> 
-</tr>
-<tr>
-<th>Model:</th>               <td>Logit</td>      <th>  Df Residuals:      </th>  <td> 28334</td> 
-</tr>
-<tr>
-<th>Method:</th>               <td>MLE</td>       <th>  Df Model:          </th>  <td>     6</td> 
-</tr>
-<tr>
-<th>Date:</th>          <td>Tue, 17 May 2016</td> <th>  Pseudo R-squ.:     </th>  <td>0.8093</td> 
-</tr>
-<tr>
-<th>Time:</th>              <td>17:32:21</td>     <th>  Log-Likelihood:    </th> <td> -3646.2</td>
-</tr>
-<tr>
-<th>converged:</th>           <td>True</td>       <th>  LL-Null:           </th> <td> -19124.</td>
-</tr>
-<tr>
-<th> </th>                      <td> </td>        <th>  LLR p-value:       </th>  <td> 0.000</td> 
-</tr>
-</table>
-<table class="simpletable">
-<tr>
-<td></td>                       <th>coef</th>     <th>std err</th>      <th>z</th>      <th>P&gt;|z|</th> <th>[95.0% Conf. Int.]</th> 
-</tr>
-<tr>
-<th>const</th>                                  <td>    0.9089</td> <td>    0.033</td> <td>   27.320</td> <td> 0.000</td> <td>    0.844     0.974</td>
-</tr>
-<tr>
-<th>overall_rating_centered</th>                <td>    1.2794</td> <td>    0.023</td> <td>   54.786</td> <td> 0.000</td> <td>    1.234     1.325</td>
-</tr>
-<tr>
-<th>seat_comfort_rating_centered</th>           <td>    0.1691</td> <td>    0.029</td> <td>    5.802</td> <td> 0.000</td> <td>    0.112     0.226</td>
-</tr>
-<tr>
-<th>cabin_staff_rating_centered</th>            <td>    0.2845</td> <td>    0.029</td> <td>    9.981</td> <td> 0.000</td> <td>    0.229     0.340</td>
-</tr>
-<tr>
-<th>food_beverages_rating_centered</th>         <td>    0.0528</td> <td>    0.027</td> <td>    1.974</td> <td> 0.048</td> <td>    0.000     0.105</td>
-</tr>
-<tr>
-<th>inflight_entertainment_rating_centered</th> <td>    0.0154</td> <td>    0.021</td> <td>    0.726</td> <td> 0.468</td> <td>   -0.026     0.057</td>
-</tr>
-<tr>
-<th>value_money_rating_centered</th>            <td>    0.5350</td> <td>    0.034</td> <td>   15.784</td> <td> 0.000</td> <td>    0.469     0.601</td>
-</tr>
-</table>
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In [61]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">results</span><span class="o">.</span><span class="n">params</span><span class="p">)</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-<div class="prompt output_prompt">Out[61]:</div>
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>const                                     2.481574
-overall_rating_centered                   3.594482
-seat_comfort_rating_centered              1.184220
-cabin_staff_rating_centered               1.329129
-food_beverages_rating_centered            1.054215
-inflight_entertainment_rating_centered    1.015530
-value_money_rating_centered               1.707426
-dtype: float64</pre>
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>Including passengers' overall ratings substantially changed many of the coefficients. Let's go over the different parameters agian:</p>
-<h3 id="The-constant">The constant<a class="anchor-link" href="posts/skytrax-data-4-the-logit-model/#The-constant">¶</a>
-</h3>
-<p>The constant for this model is now 2.48, which tells us that the hypothetical passenger who gave the airline the mean score on all ratings is now ~2.5 times more likely to recommend than not (contrast this to 1.06 in the previous model). What this implies is that an "average" in terms of an overall rating is really, on average, an endorsement of the airline.</p>
-<h3 id="The-coefficients">The coefficients<a class="anchor-link" href="posts/skytrax-data-4-the-logit-model/#The-coefficients">¶</a>
-</h3>
-<p>Here, compared to the previous model, the coefficients for all the other ratings are "depressed", in they are much smaller than before. They are still positive, which means that in general, higher ratings on these criteria = more likely to recommend, but knowing a passenger's overall rating makes that information somewhat redundant.</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Summary">Summary<a class="anchor-link" href="posts/skytrax-data-4-the-logit-model/#Summary">¶</a>
-</h2>
-<p>In sum, when passengers are made to rate airlines this way, their decision to recommend is dominated by their overall, wholistic rating of the airline. That said, these ratings are all correlated, so the takeaway point should not be that inflight entertainment (which was a non-significant predictor even with an n of 28,000) is unimportant, but rather that further analyses should be done to assess the relative contribution of each predictor to a passenger's overall rating.</p>
 
 </div>
 </div>
