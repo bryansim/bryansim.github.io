@@ -74,7 +74,599 @@
 
 
 <div class="postindex">
-    <article class="h-entry post-text"><header><h1 class="p-name entry-title"><a href="../../posts/hack-for-heat-9-total-complaints-over-time-complaints-per-capita-etc/" class="u-url">Hack for Heat #9: Total complaints over time, complaints per capita, etc.</a></h1>
+    <article class="h-entry post-text"><header><h1 class="p-name entry-title"><a href="../../posts/hack-for-heat-10-nycs-top-complaints/" class="u-url">Hack for Heat #10: NYC's top complaints</a></h1>
+        <div class="metadata">
+            <p class="byline author vcard"><span class="byline-name fn">
+                Bryan Sim
+            </span></p>
+            <p class="dateline"><a href="../../posts/hack-for-heat-10-nycs-top-complaints/" rel="bookmark"><time class="published dt-published" datetime="2016-07-04T17:50:09-04:00" title="2016-07-04 17:50">2016-07-04 17:50</time></a></p>
+        </div>
+    </header><div class="e-content entry-content">
+    <div tabindex="-1" id="notebook" class="border-box-sizing">
+    <div class="container" id="notebook-container">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [1]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="o">%</span><span class="k">matplotlib</span> inline
+
+<span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">pyplot</span> <span class="k">as</span> <span class="n">plt</span>
+<span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">patches</span> <span class="k">as</span> <span class="n">mpatches</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">psycopg2</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">date</span>
+
+
+<span class="n">pd</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">display</span><span class="o">.</span><span class="n">max_columns</span> <span class="o">=</span> <span class="mi">40</span>
+
+<span class="n">connection</span> <span class="o">=</span> <span class="n">psycopg2</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="s1">'dbname = threeoneone user=threeoneoneadmin password=threeoneoneadmin'</span><span class="p">)</span>
+<span class="n">cursor</span> <span class="o">=</span> <span class="n">connection</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Hack-for-Heat-#10:-NYC's-top-complaints">Hack for Heat #10: NYC's top complaints<a class="anchor-link" href="../../posts/hack-for-heat-10-nycs-top-complaints/#Hack-for-Heat-#10:-NYC's-top-complaints">¶</a>
+</h2>
+<p>In this post, I'm going to look at what the top 311 complaints in NYC are, and how their numbers have changed over the years.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [2]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s1">'''SELECT createddate, borough, complainttype FROM service'''</span><span class="p">)</span>
+<span class="n">totalcomplaints</span> <span class="o">=</span> <span class="n">cursor</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [3]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="nb">len</span><span class="p">(</span><span class="n">totalcomplaints</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt output_prompt">Out[3]:</div>
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>13092182</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Over the past 7 years, there were about 13 million complaints, which is about just 1.5 per person over the 7 years, or .22 complaints per person per year</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [4]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">totalcomplaints</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">totalcomplaints</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [5]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">totalcomplaints</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'Date'</span><span class="p">,</span> <span class="s1">'Boro'</span><span class="p">,</span> <span class="s1">'Comptype'</span><span class="p">]</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [6]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">totalcomplaints</span><span class="p">[</span><span class="s1">'Year'</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span><span class="o">.</span><span class="n">year</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">totalcomplaints</span><span class="p">[</span><span class="s1">'Date'</span><span class="p">]]</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>This is how it breaks down over the years:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [7]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">totalcomplaints</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="p">[</span><span class="s1">'Year'</span><span class="p">])</span><span class="o">.</span><span class="n">count</span><span class="p">()</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt output_prompt">Out[7]:</div>
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<table border="1" class="dataframe">
+<thead>
+<tr style="text-align: right;">
+<th></th>
+      <th>Date</th>
+      <th>Boro</th>
+      <th>Comptype</th>
+    </tr>
+<tr>
+<th>Year</th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+</thead>
+<tbody>
+<tr>
+<th>2010</th>
+      <td>2005730</td>
+      <td>2005730</td>
+      <td>2005730</td>
+    </tr>
+<tr>
+<th>2011</th>
+      <td>1918888</td>
+      <td>1918888</td>
+      <td>1918888</td>
+    </tr>
+<tr>
+<th>2012</th>
+      <td>1783013</td>
+      <td>1783013</td>
+      <td>1783013</td>
+    </tr>
+<tr>
+<th>2013</th>
+      <td>1848938</td>
+      <td>1848938</td>
+      <td>1848938</td>
+    </tr>
+<tr>
+<th>2014</th>
+      <td>2102177</td>
+      <td>2102177</td>
+      <td>2102177</td>
+    </tr>
+<tr>
+<th>2015</th>
+      <td>2286697</td>
+      <td>2286697</td>
+      <td>2286697</td>
+    </tr>
+<tr>
+<th>2016</th>
+      <td>1146739</td>
+      <td>1146739</td>
+      <td>1146739</td>
+    </tr>
+</tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [8]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">complainttypesbyseason</span> <span class="o">=</span> <span class="n">totalcomplaints</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="p">[</span><span class="s1">'Year'</span><span class="p">,</span><span class="s1">'Comptype'</span><span class="p">])</span><span class="o">.</span><span class="n">count</span><span class="p">()</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [9]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">topfive</span> <span class="o">=</span> <span class="n">complainttypesbyseason</span><span class="p">[</span><span class="s1">'Date'</span><span class="p">]</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">group_keys</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span><span class="n">x</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="n">ascending</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">5</span><span class="p">))</span>
+<span class="n">topfive</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt output_prompt">Out[9]:</div>
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>Year  Comptype              
+2010  HEATING                   214218
+      GENERAL CONSTRUCTION      127131
+      Street Light Condition    116466
+      Noise - Residential       115615
+      PLUMBING                  111504
+2011  HEATING                   190184
+      GENERAL CONSTRUCTION      133242
+      PLUMBING                  113218
+      Noise - Residential       111447
+      Street Condition          104694
+2012  HEATING                   182974
+      Noise - Residential       127943
+      GENERAL CONSTRUCTION      112436
+      Street Light Condition     93981
+      PLUMBING                   87561
+2013  HEATING                   202896
+      Noise - Residential       151516
+      GENERAL CONSTRUCTION      112169
+      Street Light Condition     92502
+      PLUMBING                   86564
+2014  Noise - Residential       192608
+      HEAT/HOT WATER            132767
+      Street Condition          114545
+      HEATING                    97597
+      Street Light Condition     94665
+2015  HEAT/HOT WATER            225706
+      Noise - Residential       208026
+      Street Condition          124378
+      Blocked Driveway          100881
+      Street Light Condition     98106
+2016  HEAT/HOT WATER            126906
+      Noise - Residential       104324
+      Illegal Parking            55932
+      Blocked Driveway           53955
+      Street Condition           51977
+dtype: int64</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>These data gives us a rough idea of how the number of complaints have changed over time, but one problem is that the labels that were used changed each year (presumably because they were replaced by new labels that better reflected what the complaints were). Secondly, for our purposes, some categories can be combined. For example, 'Street Condition' and 'Street Light Condition' may be important for administrators, but for now, we can be content with just "stuff that's gone wrong on the street".</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [10]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">topfive</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">levels</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt output_prompt">Out[10]:</div>
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>Index([u'Blocked Driveway', u'GENERAL CONSTRUCTION', u'HEAT/HOT WATER',
+       u'HEATING', u'Illegal Parking', u'Noise - Residential', u'PLUMBING',
+       u'Street Condition', u'Street Light Condition'],
+      dtype='object', name=u'Comptype')</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>So, over the last 5 years, there have been 10 different categories that have made up the top five. Notice that some of these labels have changed over time. We'll have to standardize them.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [11]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">years</span> <span class="o">=</span> <span class="n">totalcomplaints</span><span class="o">.</span><span class="n">Year</span><span class="o">.</span><span class="n">unique</span><span class="p">()</span>
+
+<span class="c1">#first have a list of labels that are the same</span>
+<span class="n">oldlabels</span> <span class="o">=</span> <span class="n">totalcomplaints</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">totalcomplaints</span><span class="p">[</span><span class="s1">'Year'</span><span class="p">]</span> <span class="o">==</span> <span class="n">years</span><span class="p">[</span><span class="mi">0</span><span class="p">],[</span><span class="s1">'Comptype'</span><span class="p">]][</span><span class="s1">'Comptype'</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">()</span>
+
+<span class="n">newlabels</span> <span class="o">=</span> <span class="p">[]</span>
+
+<span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">years</span><span class="p">:</span>
+    <span class="n">yearslabels</span> <span class="o">=</span> <span class="n">totalcomplaints</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">totalcomplaints</span><span class="p">[</span><span class="s1">'Year'</span><span class="p">]</span> <span class="o">==</span> <span class="n">x</span><span class="p">,[</span><span class="s1">'Comptype'</span><span class="p">]][</span><span class="s1">'Comptype'</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">()</span>
+    <span class="p">[</span><span class="n">newlabels</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">yearslabels</span> <span class="k">if</span> <span class="n">x</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">oldlabels</span> <span class="ow">and</span> <span class="n">x</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">newlabels</span><span class="p">]</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>From doing this, we get two lists: oldlabels and newlabels, that we will use to decide how to combine stuff.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [12]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="c1">#sorted(oldlabels)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [13]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="c1">#sorted(newlabels)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>One modification I'm going to make is to combine 'Street Condition', 'Street Light Condition', 'Street Sign - Damaged', 'Street Sign - Dangling', and 'Street Sign - Missing' into 'Street Condition'.</p>
+<p>For the current purposes, these are the same thing.</p>
+<p>I'm also going to collapse 'GENERAL CONSTRUCTION', 'General Construction/Plumbing' and 'PLUMBING' into a new category called 'CONSTRUCTION/PLUMBING'.</p>
+<p>I'll collapse noise related complaints ('Noise', 'Noise - Commercial', 'Noise - Helicopter', 'Noise - House of Worship', 'Noise - Park', 'Noise - Residential', 'Noise - Street/Sidewalk', 'Noise - Vehicle') into a label named 'NOISY'.</p>
+<p>Finally, I'll combine 'HEAT/HOT WATER' and 'HEATING' into 'HEAT RELATED'.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [14]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">streetconditioncomb</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'Street Condition'</span><span class="p">,</span> <span class="s1">'Street Light Condition'</span><span class="p">,</span> <span class="s1">'Street Sign - Damaged'</span><span class="p">,</span> <span class="s1">'Street Sign - Dangling'</span><span class="p">,</span> \
+                       <span class="s1">'Street Sign - Missing'</span><span class="p">]</span>
+
+<span class="n">totalcomplaints</span><span class="p">[</span><span class="s1">'RevComptype'</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'Street Condition'</span> <span class="k">if</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">streetconditioncomb</span> <span class="k">else</span> <span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">totalcomplaints</span><span class="p">[</span><span class="s1">'Comptype'</span><span class="p">]]</span>
+
+<span class="n">genconstructcomb</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'GENERAL CONSTRUCTION'</span><span class="p">,</span> <span class="s1">'General Construction/Plumbing'</span><span class="p">,</span> <span class="s1">'PLUMBING'</span><span class="p">]</span>
+
+<span class="n">totalcomplaints</span><span class="p">[</span><span class="s1">'RevComptype'</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'CONSTRUCTION/PLUMBING'</span> <span class="k">if</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">genconstructcomb</span> <span class="k">else</span> <span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">totalcomplaints</span><span class="p">[</span><span class="s1">'RevComptype'</span><span class="p">]]</span>
+
+<span class="n">noisecomb</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'Noise'</span><span class="p">,</span> <span class="s1">'Noise - Commercial'</span><span class="p">,</span> <span class="s1">'Noise - Helicopter'</span><span class="p">,</span> <span class="s1">'Noise - House of Worship'</span><span class="p">,</span> <span class="s1">'Noise - Park'</span><span class="p">,</span>\
+             <span class="s1">'Noise - Residential'</span><span class="p">,</span> <span class="s1">'Noise - Street/Sidewalk'</span><span class="p">,</span> <span class="s1">'Noise - Vehicle'</span><span class="p">]</span>
+
+<span class="n">totalcomplaints</span><span class="p">[</span><span class="s1">'RevComptype'</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'NOISY'</span> <span class="k">if</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">noisecomb</span> <span class="k">else</span> <span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">totalcomplaints</span><span class="p">[</span><span class="s1">'RevComptype'</span><span class="p">]]</span>
+
+<span class="n">heatcomb</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'HEAT/HOT WATER'</span><span class="p">,</span> <span class="s1">'HEATING'</span><span class="p">]</span>
+
+<span class="n">totalcomplaints</span><span class="p">[</span><span class="s1">'RevComptype'</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'HEAT RELATED'</span> <span class="k">if</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">heatcomb</span> <span class="k">else</span> <span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">totalcomplaints</span><span class="p">[</span><span class="s1">'RevComptype'</span><span class="p">]]</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [15]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">revisedcomplainttypes</span> <span class="o">=</span> <span class="n">totalcomplaints</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="p">[</span><span class="s1">'Year'</span><span class="p">,</span><span class="s1">'RevComptype'</span><span class="p">])</span><span class="o">.</span><span class="n">count</span><span class="p">()</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [16]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">topfiverev</span> <span class="o">=</span> <span class="n">revisedcomplainttypes</span><span class="p">[</span><span class="s1">'Date'</span><span class="p">]</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">group_keys</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span> <span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="n">ascending</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">8</span><span class="p">))</span>
+<span class="n">topfiverev</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt output_prompt">Out[16]:</div>
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>Year  RevComptype             
+2010  CONSTRUCTION/PLUMBING       287253
+      Street Condition            229584
+      HEAT RELATED                214218
+      NOISY                       201834
+      PAINT - PLASTER              93194
+      Water System                 70346
+      NONCONST                     69659
+      Traffic Signal Condition     53773
+2011  CONSTRUCTION/PLUMBING       272234
+      Street Condition            216865
+      NOISY                       196453
+      HEAT RELATED                190184
+      PAINT - PLASTER             100704
+      NONCONST                     68407
+      Water System                 61577
+      Blocked Driveway             52592
+2012  CONSTRUCTION/PLUMBING       225338
+      NOISY                       220392
+      HEAT RELATED                182974
+      Street Condition            171910
+      PAINT - PLASTER              77287
+      NONCONST                     60055
+      Water System                 57678
+      Blocked Driveway             50818
+2013  NOISY                       259356
+      CONSTRUCTION/PLUMBING       223314
+      HEAT RELATED                202896
+      Street Condition            182618
+      PAINT - PLASTER              77957
+      Blocked Driveway             57408
+      NONCONST                     53831
+      Water System                 53186
+2014  NOISY                       337892
+      HEAT RELATED                230364
+      Street Condition            221097
+      CONSTRUCTION/PLUMBING       106251
+      Blocked Driveway             79170
+      PAINT/PLASTER                63503
+      Illegal Parking              63243
+      UNSANITARY CONDITION         61789
+2015  NOISY                       387227
+      Street Condition            233839
+      HEAT RELATED                225706
+      Blocked Driveway            100881
+      Illegal Parking              92679
+      CONSTRUCTION/PLUMBING        83585
+      UNSANITARY CONDITION         82888
+      Water System                 71086
+2016  NOISY                       197186
+      HEAT RELATED                126906
+      Street Condition            105346
+      Illegal Parking              55932
+      Blocked Driveway             53955
+      CONSTRUCTION/PLUMBING        39460
+      UNSANITARY CONDITION         35357
+      Water System                 31299
+dtype: int64</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>This gives us some different numbers. Taken together, although heat related complaints are still constantly in the top 5, what we observe over time is also a gradual decrease in construction related complaints, a constant, variable but large amount of street-related complaints, and a steady increase in noise-related complaints. Next, I'll post a version of this looking at only the heating season.</p>
+
+</div>
+</div>
+</div>
+    </div>
+  </div>
+
+    </div>
+    </article><article class="h-entry post-text"><header><h1 class="p-name entry-title"><a href="../../posts/hack-for-heat-9-total-complaints-over-time-complaints-per-capita-etc/" class="u-url">Hack for Heat #9: Total complaints over time, complaints per capita, etc.</a></h1>
         <div class="metadata">
             <p class="byline author vcard"><span class="byline-name fn">
                 Bryan Sim

@@ -15,7 +15,7 @@
  </url>
  <url>
   <loc>https://bryansim.github.io/archive.html</loc>
-  <lastmod>2016-06-19T19:18:00Z</lastmod>
+  <lastmod>2016-07-04T21:50:00Z</lastmod>
  </url>
  <url>
   <loc>https://bryansim.github.io/bokehplot.html</loc>
@@ -55,7 +55,7 @@
  </url>
  <url>
   <loc>https://bryansim.github.io/index-2.html</loc>
-  <lastmod>2016-06-19T19:18:00Z</lastmod>
+  <lastmod>2016-07-04T21:50:00Z</lastmod>
  </url>
  <url>
   <loc>https://bryansim.github.io/listings/</loc>
@@ -64,6 +64,10 @@
  <url>
   <loc>https://bryansim.github.io/posts/hack-for-heat-1-initial-thoughts-on-hpd-open-data/</loc>
   <lastmod>2016-05-21T00:01:00Z</lastmod>
+ </url>
+ <url>
+  <loc>https://bryansim.github.io/posts/hack-for-heat-10-nycs-top-complaints/</loc>
+  <lastmod>2016-07-04T21:50:00Z</lastmod>
  </url>
  <url>
   <loc>https://bryansim.github.io/posts/hack-for-heat-2-problem-types-over-time/</loc>
