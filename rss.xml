@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<?xml-stylesheet type="text/xsl" href="assets/xml/rss.xsl" media="all"?><rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/"><channel><title>Bryan Sim</title><link>https://bryansim.github.io/</link><description>This is my blog!</description><atom:link rel="self" type="application/rss+xml" href="https://bryansim.github.io/rss.xml"></atom:link><language>en</language><lastBuildDate>Wed, 06 Jul 2016 00:55:02 GMT</lastBuildDate><generator>https://getnikola.com/</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>Hack for Heast #11: HNYC's top complaints pt.2</title><link>https://bryansim.github.io/posts/hack-for-heast-11-hnycs-top-complaints-pt2/</link><dc:creator>Bryan Sim</dc:creator><description>&lt;div tabindex="-1" id="notebook" class="border-box-sizing"&gt;
+<?xml-stylesheet type="text/xsl" href="assets/xml/rss.xsl" media="all"?><rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:dc="http://purl.org/dc/elements/1.1/" version="2.0"><channel><title>Bryan Sim</title><link>https://bryansim.github.io/</link><description>This is my blog!</description><atom:link type="application/rss+xml" rel="self" href="https://bryansim.github.io/rss.xml"></atom:link><language>en</language><lastBuildDate>Wed, 06 Jul 2016 00:56:22 GMT</lastBuildDate><generator>https://getnikola.com/</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>Hack for Heat #11: NYC's top complaints pt.2</title><link>https://bryansim.github.io/posts/hack-for-heat-11-nycs-top-complaints-pt2/</link><dc:creator>Bryan Sim</dc:creator><description>&lt;div tabindex="-1" id="notebook" class="border-box-sizing"&gt;
     &lt;div class="container" id="notebook-container"&gt;
 
 &lt;div class="cell border-box-sizing code_cell rendered"&gt;
@@ -31,7 +31,7 @@
 &lt;/div&gt;
 &lt;div class="inner_cell"&gt;
 &lt;div class="text_cell_render border-box-sizing rendered_html"&gt;
-&lt;h2 id="Hack-for-Heat-#11:-NYC's-top-complaints-pt.-2"&gt;Hack for Heat #11: NYC's top complaints pt. 2&lt;a class="anchor-link" href="https://bryansim.github.io/posts/hack-for-heast-11-hnycs-top-complaints-pt2/#Hack-for-Heat-#11:-NYC's-top-complaints-pt.-2"&gt;¶&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;In this post, I'm going to post a visualization of the top complaints reported in the previous post. I have this in a csv:&lt;/p&gt;
+&lt;h2 id="Hack-for-Heat-#11:-NYC's-top-complaints-pt.-2"&gt;Hack for Heat #11: NYC's top complaints pt. 2&lt;a class="anchor-link" href="https://bryansim.github.io/posts/hack-for-heat-11-nycs-top-complaints-pt2/#Hack-for-Heat-#11:-NYC's-top-complaints-pt.-2"&gt;¶&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;In this post, I'm going to post a visualization of the top complaints reported in the previous post. I have this in a csv:&lt;/p&gt;
 
 &lt;/div&gt;
 &lt;/div&gt;
@@ -537,7 +537,7 @@
 &lt;/div&gt;
     &lt;/div&gt;
   &lt;/div&gt;
-</description><category>heatseek</category><guid>https://bryansim.github.io/posts/hack-for-heast-11-hnycs-top-complaints-pt2/</guid><pubDate>Wed, 06 Jul 2016 00:53:45 GMT</pubDate></item><item><title>Hack for Heat #10: NYC's top complaints</title><link>https://bryansim.github.io/posts/hack-for-heat-10-nycs-top-complaints/</link><dc:creator>Bryan Sim</dc:creator><description>&lt;div tabindex="-1" id="notebook" class="border-box-sizing"&gt;
+</description><category>heatseek</category><guid>https://bryansim.github.io/posts/hack-for-heat-11-nycs-top-complaints-pt2/</guid><pubDate>Wed, 06 Jul 2016 00:53:45 GMT</pubDate></item><item><title>Hack for Heat #10: NYC's top complaints</title><link>https://bryansim.github.io/posts/hack-for-heat-10-nycs-top-complaints/</link><dc:creator>Bryan Sim</dc:creator><description>&lt;div tabindex="-1" id="notebook" class="border-box-sizing"&gt;
     &lt;div class="container" id="notebook-container"&gt;
 
 &lt;div class="cell border-box-sizing code_cell rendered"&gt;
