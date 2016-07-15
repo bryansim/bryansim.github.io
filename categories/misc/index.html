@@ -74,7 +74,723 @@
 
 
 <div class="postindex">
-    <article class="h-entry post-text"><header><h1 class="p-name entry-title"><a href="../../posts/misc-1-experimenting-with-plots/" class="u-url">Misc #1: Experimenting with plots</a></h1>
+    <article class="h-entry post-text"><header><h1 class="p-name entry-title"><a href="../../posts/misc-2-restructuring-data/" class="u-url">Misc #2: Restructuring data</a></h1>
+        <div class="metadata">
+            <p class="byline author vcard"><span class="byline-name fn">
+                Bryan Sim
+            </span></p>
+            <p class="dateline"><a href="../../posts/misc-2-restructuring-data/" rel="bookmark"><time class="published dt-published" datetime="2016-07-15T17:32:29-04:00" title="2016-07-15 17:32">2016-07-15 17:32</time></a></p>
+        </div>
+    </header><div class="e-content entry-content">
+    <div tabindex="-1" id="notebook" class="border-box-sizing">
+    <div class="container" id="notebook-container">
+
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [1]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Misc-#2:-Restructuring-data">Misc #2: Restructuring data<a class="anchor-link" href="../../posts/misc-2-restructuring-data/#Misc-#2:-Restructuring-data">¶</a>
+</h3>
+<p>This post details some of the "dirty work" (specifically, restructuring data), that goes on behind data analysis.</p>
+<p>In this case, I'm trying to restructure a person-period/stacked dataset into a person-level/long dataset.</p>
+<p>These two formats can be transposed from one to the other, but we often prefer one over the other for readibility/analytic purposes (detailed later).</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Person-period-vs.-person-level-data">Person-period vs. person-level data<a class="anchor-link" href="../../posts/misc-2-restructuring-data/#Person-period-vs.-person-level-data">¶</a>
+</h3>
+<p>Person-period datasets are usually found in longitudinal research, where a single person contributes multiple rows of data, reflecting the same measure at multiple time points. For example, a person's blood pressure measured every day over a year might be stored in a table where every row is a new blood pressure reading. Each person contributes 365 rows of data, identified by an ID number.</p>
+<p>On the other hand, this blood pressure data can also be stored in a person-level dataset, where each row represents a single person, and multiple variables represent each time point (for example, "BP1", "BP2", "BP3" for days 1, 2 and 3 respectively).</p>
+<p>As you might have guessed, in this example, a person-period dataset would be preferred. Firstly, it would take less space to store, as we only have to declare the type of data once for the column and not have to do it for each new row. In contrast, a person-level dataset would have to store information about what type of data is contained in each column, and this redundant information is replicated every time a new reading is taken.</p>
+<p>Person-period datasets are also more convenient when missing data is to be expected. Substantial amounts of missing data in a person-level dataset would mean lots of empty cells, whereas missing rows do not have to be stored, unless there are other unique, period-specific data (e.g., if we were missing blood pressure data, but also had to store heart rate data for the day).</p>
+<p>On the other hand, person-level datasets are often preferred when there are multiple variables that do not change with each time period. They also tend to be more human-readable. For example, if we were interested in someone's blood pressure at 3 time points, and also 100 other variables about their stable, demographic information a person-period dataset would result in a lot of redundancy, as these 100 variables are replicated for each new row.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Current-data">Current data<a class="anchor-link" href="../../posts/misc-2-restructuring-data/#Current-data">¶</a>
+</h3>
+<p>The annonymized data I'm working with here come from an experiment I did a couple of years ago. In this study, participants completed a simple counting task where they had to count backwards, and I measured how long they took for each response. The specific details about the study are irrelevant to this post.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [2]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">stackeddata</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">'stacked dataset.csv'</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>This is what the person-period version of the data look like:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [3]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">stackeddata</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt output_prompt">Out[3]:</div>
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<table border="1" class="dataframe">
+<thead><tr style="text-align: right;">
+<th></th>
+      <th>﻿ID</th>
+      <th>TIME</th>
+      <th>TIMETRIAL</th>
+      <th>MISTAKE</th>
+      <th>NUMBER</th>
+      <th>MISTAKESTOTAL</th>
+      <th>SCORET</th>
+      <th>RESPONSENUM</th>
+      <th>SPLINE</th>
+      <th>PASSED</th>
+      <th>...</th>
+      <th>IPOVERTC</th>
+      <th>SPEED100</th>
+      <th>PASSEDNUM</th>
+      <th>HIvsLEffect</th>
+      <th>DIFFBIN</th>
+      <th>RESPONSENUMC</th>
+      <th>DIFFICULTYC</th>
+      <th>PHIGHSCORE</th>
+      <th>PASSEDBY</th>
+      <th>PASSEDBIN</th>
+    </tr></thead>
+<tbody>
+<tr>
+<th>0</th>
+      <td>25</td>
+      <td>16.262476</td>
+      <td>16.262476</td>
+      <td>1</td>
+      <td>2018</td>
+      <td>1</td>
+      <td>1981</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>...</td>
+      <td>-1.091039</td>
+      <td>6.149125</td>
+      <td>55</td>
+      <td>-1</td>
+      <td>1</td>
+      <td>-5</td>
+      <td>4.56</td>
+      <td>14.0</td>
+      <td>41.0</td>
+      <td>0</td>
+    </tr>
+<tr>
+<th>1</th>
+      <td>25</td>
+      <td>26.887734</td>
+      <td>10.625258</td>
+      <td>0</td>
+      <td>2017</td>
+      <td>1</td>
+      <td>1981</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>...</td>
+      <td>-1.091039</td>
+      <td>9.411536</td>
+      <td>54</td>
+      <td>-1</td>
+      <td>1</td>
+      <td>-4</td>
+      <td>4.56</td>
+      <td>14.0</td>
+      <td>41.0</td>
+      <td>0</td>
+    </tr>
+<tr>
+<th>2</th>
+      <td>25</td>
+      <td>33.911948</td>
+      <td>7.024214</td>
+      <td>0</td>
+      <td>2014</td>
+      <td>1</td>
+      <td>1981</td>
+      <td>2</td>
+      <td>0</td>
+      <td>0</td>
+      <td>...</td>
+      <td>-1.091039</td>
+      <td>14.236468</td>
+      <td>53</td>
+      <td>-1</td>
+      <td>1</td>
+      <td>-3</td>
+      <td>4.56</td>
+      <td>14.0</td>
+      <td>41.0</td>
+      <td>0</td>
+    </tr>
+<tr>
+<th>3</th>
+      <td>25</td>
+      <td>39.654125</td>
+      <td>5.742177</td>
+      <td>0</td>
+      <td>2011</td>
+      <td>1</td>
+      <td>1981</td>
+      <td>3</td>
+      <td>0</td>
+      <td>0</td>
+      <td>...</td>
+      <td>-1.091039</td>
+      <td>17.414998</td>
+      <td>52</td>
+      <td>-1</td>
+      <td>1</td>
+      <td>-2</td>
+      <td>4.56</td>
+      <td>14.0</td>
+      <td>41.0</td>
+      <td>0</td>
+    </tr>
+<tr>
+<th>4</th>
+      <td>25</td>
+      <td>48.295860</td>
+      <td>8.641734</td>
+      <td>0</td>
+      <td>2008</td>
+      <td>1</td>
+      <td>1981</td>
+      <td>4</td>
+      <td>0</td>
+      <td>0</td>
+      <td>...</td>
+      <td>-1.091039</td>
+      <td>11.571752</td>
+      <td>51</td>
+      <td>-1</td>
+      <td>1</td>
+      <td>-1</td>
+      <td>4.56</td>
+      <td>14.0</td>
+      <td>41.0</td>
+      <td>0</td>
+    </tr>
+</tbody>
+</table>
+<p>5 rows × 31 columns</p>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Here, you can see ID, the unique identifier for each participant, TIME and TIMETRIAL, the time they took to type in each response both cumulatively and trial-by-trial (so these are all different for each row), as well as some time-invariant data, such as the total number of mistakes they made (MISTAKESTOTAL).</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Transposing from person-period to person-level data involves summarizing data in some way. In this case, I'd like to analyze how many responses participants made in total, so that's what I'm going to collapse the data against.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [4]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">longdata</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="n">stackeddata</span><span class="p">[</span><span class="n">stackeddata</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span><span class="o">.</span><span class="n">unique</span><span class="p">(),</span> <span class="n">columns</span> <span class="o">=</span> <span class="p">(</span><span class="s1">'TOTRESPONSES'</span><span class="p">,</span><span class="s1">'BEFPASS'</span><span class="p">,</span>\
+                                                                     <span class="s1">'AFTPASS'</span><span class="p">,</span> <span class="s1">'IPOVERT'</span><span class="p">,</span> <span class="s1">'IP'</span><span class="p">,</span> <span class="s1">'T'</span><span class="p">,</span> <span class="s1">'DIFFICULTY'</span><span class="p">,</span> <span class="s1">'HIvsLEffect'</span><span class="p">))</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>This creates an empty dataframe with the unique participant IDs as indices, as well as the columns I want to carry over.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [5]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">longdata</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt output_prompt">Out[5]:</div>
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<table border="1" class="dataframe">
+<thead><tr style="text-align: right;">
+<th></th>
+      <th>TOTRESPONSES</th>
+      <th>BEFPASS</th>
+      <th>AFTPASS</th>
+      <th>IPOVERT</th>
+      <th>IP</th>
+      <th>T</th>
+      <th>DIFFICULTY</th>
+      <th>HIvsLEffect</th>
+    </tr></thead>
+<tbody>
+<tr>
+<th>25</th>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+<tr>
+<th>26</th>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+<tr>
+<th>28</th>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+<tr>
+<th>29</th>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+<tr>
+<th>31</th>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+</tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Let's deal with the time-invariant columns first. They're easy (because each row is the same for each participant, so we can just take the first one):</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [6]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="k">for</span> <span class="n">column</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">'IPOVERT'</span><span class="p">,</span> <span class="s1">'IP'</span><span class="p">,</span> <span class="s1">'T'</span><span class="p">,</span> <span class="s1">'DIFFICULTY'</span><span class="p">,</span> <span class="s1">'HIvsLEffect'</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">participant</span> <span class="ow">in</span> <span class="n">longdata</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">values</span><span class="p">:</span>
+        <span class="n">longdata</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">participant</span><span class="p">,</span><span class="n">column</span><span class="p">]</span> <span class="o">=</span>  <span class="n">stackeddata</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">stackeddata</span><span class="p">[</span><span class="n">stackeddata</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span><span class="o">==</span><span class="n">participant</span><span class="p">][</span><span class="n">column</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [7]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">longdata</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt output_prompt">Out[7]:</div>
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<table border="1" class="dataframe">
+<thead><tr style="text-align: right;">
+<th></th>
+      <th>TOTRESPONSES</th>
+      <th>BEFPASS</th>
+      <th>AFTPASS</th>
+      <th>IPOVERT</th>
+      <th>IP</th>
+      <th>T</th>
+      <th>DIFFICULTY</th>
+      <th>HIvsLEffect</th>
+    </tr></thead>
+<tbody>
+<tr>
+<th>25</th>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>-2</td>
+      <td>2.33333</td>
+      <td>4.33333</td>
+      <td>10</td>
+      <td>-1</td>
+    </tr>
+<tr>
+<th>26</th>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>-1.33333</td>
+      <td>2.16667</td>
+      <td>3.5</td>
+      <td>8</td>
+      <td>-1</td>
+    </tr>
+<tr>
+<th>28</th>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>0.666667</td>
+      <td>5</td>
+      <td>4.33333</td>
+      <td>5</td>
+      <td>-1</td>
+    </tr>
+<tr>
+<th>29</th>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>-2.33333</td>
+      <td>3.83333</td>
+      <td>6.16667</td>
+      <td>8</td>
+      <td>-1</td>
+    </tr>
+<tr>
+<th>31</th>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>-4.33333</td>
+      <td>1.66667</td>
+      <td>6</td>
+      <td>6</td>
+      <td>-1</td>
+    </tr>
+</tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>There are three columns that we have to populate. The first, TOTRESPONSES is simply the number of responses that each participant made.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [8]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="k">for</span> <span class="n">participant</span> <span class="ow">in</span> <span class="n">longdata</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">values</span><span class="p">:</span>
+        <span class="n">longdata</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">participant</span><span class="p">,</span> <span class="s1">'TOTRESPONSES'</span><span class="p">]</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">stackeddata</span><span class="o">.</span><span class="n">loc</span><span class="p">[(</span><span class="n">stackeddata</span><span class="p">[</span><span class="n">stackeddata</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span><span class="o">==</span><span class="n">participant</span><span class="p">)</span> <span class="o">&amp;</span> \
+                                                           <span class="p">(</span><span class="n">stackeddata</span><span class="p">[</span><span class="s1">'MISTAKE'</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)])</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [9]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">longdata</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt output_prompt">Out[9]:</div>
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<table border="1" class="dataframe">
+<thead><tr style="text-align: right;">
+<th></th>
+      <th>TOTRESPONSES</th>
+      <th>BEFPASS</th>
+      <th>AFTPASS</th>
+      <th>IPOVERT</th>
+      <th>IP</th>
+      <th>T</th>
+      <th>DIFFICULTY</th>
+      <th>HIvsLEffect</th>
+    </tr></thead>
+<tbody>
+<tr>
+<th>25</th>
+      <td>13</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>-2</td>
+      <td>2.33333</td>
+      <td>4.33333</td>
+      <td>10</td>
+      <td>-1</td>
+    </tr>
+<tr>
+<th>26</th>
+      <td>34</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>-1.33333</td>
+      <td>2.16667</td>
+      <td>3.5</td>
+      <td>8</td>
+      <td>-1</td>
+    </tr>
+<tr>
+<th>28</th>
+      <td>20</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>0.666667</td>
+      <td>5</td>
+      <td>4.33333</td>
+      <td>5</td>
+      <td>-1</td>
+    </tr>
+<tr>
+<th>29</th>
+      <td>10</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>-2.33333</td>
+      <td>3.83333</td>
+      <td>6.16667</td>
+      <td>8</td>
+      <td>-1</td>
+    </tr>
+<tr>
+<th>31</th>
+      <td>26</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>-4.33333</td>
+      <td>1.66667</td>
+      <td>6</td>
+      <td>6</td>
+      <td>-1</td>
+    </tr>
+</tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>BEFPASS and AFTPASS have to do with whether or not a participant passed a displayed score on the screen (denoted by the column PASSED; 0 for no, 1 for yes).</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [10]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="k">for</span> <span class="n">participant</span> <span class="ow">in</span> <span class="n">longdata</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">values</span><span class="p">:</span>
+        <span class="n">longdata</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">participant</span><span class="p">,</span> <span class="s1">'BEFPASS'</span><span class="p">]</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">stackeddata</span><span class="o">.</span><span class="n">loc</span><span class="p">[(</span><span class="n">stackeddata</span><span class="p">[</span><span class="n">stackeddata</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span><span class="o">==</span><span class="n">participant</span><span class="p">)</span> <span class="o">&amp;</span> \
+                                                           <span class="p">(</span><span class="n">stackeddata</span><span class="p">[</span><span class="s1">'MISTAKE'</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">stackeddata</span><span class="p">[</span><span class="s1">'PASSED'</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)])</span>
+        <span class="n">longdata</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">participant</span><span class="p">,</span> <span class="s1">'AFTPASS'</span><span class="p">]</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">stackeddata</span><span class="o">.</span><span class="n">loc</span><span class="p">[(</span><span class="n">stackeddata</span><span class="p">[</span><span class="n">stackeddata</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span><span class="o">==</span><span class="n">participant</span><span class="p">)</span> <span class="o">&amp;</span> \
+                                                           <span class="p">(</span><span class="n">stackeddata</span><span class="p">[</span><span class="s1">'MISTAKE'</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">stackeddata</span><span class="p">[</span><span class="s1">'PASSED'</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)])</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Finally, let's output these data to a csv:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [11]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">longdata</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="s1">'long data.csv'</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+    </div>
+  </div>
+
+    </div>
+    </article><article class="h-entry post-text"><header><h1 class="p-name entry-title"><a href="../../posts/misc-1-experimenting-with-plots/" class="u-url">Misc #1: Experimenting with plots</a></h1>
         <div class="metadata">
             <p class="byline author vcard"><span class="byline-name fn">
                 Bryan Sim
